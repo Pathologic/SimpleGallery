@@ -39,13 +39,9 @@ class sgData extends \autoTable {
 		return $out;
 	}
 	
-	public function deleteThumb($url) {	
-		$thumbsCache = 'assets/.sgThumbs/';
-		if (isset($this->modx->pluginCache['SimpleGalleryProps'])) {
-			$pluginParams = $this->modx->parseProperties($this->modx->pluginCache['SimpleGalleryProps']);
-			if (isset($pluginParams['thumbsCache'])) $thumbsCache = $pluginParams['thumbsCache'];
-		}
-		$thumb = $this->modx->config['base_path'].$thumbsCache.$url;
+	public function deleteThumb($url, $cache = false) {
+		if (empty($url)) return;
+		$thumb = $this->modx->config['base_path'].$url;
 		if (file_exists($thumb)) {
 			$dir = pathinfo($thumb);
 			$dir = $dir['dirname'];
@@ -53,6 +49,14 @@ class sgData extends \autoTable {
 			$iterator = new \FilesystemIterator($dir);
 			if (!$iterator->valid()) rmdir ($dir);
 		}
+		if ($cache) return;
+		$thumbsCache = 'assets/.sgThumbs/';
+		if (isset($this->modx->pluginCache['SimpleGalleryProps'])) {
+			$pluginParams = $this->modx->parseProperties($this->modx->pluginCache['SimpleGalleryProps']);
+			if (isset($pluginParams['thumbsCache'])) $thumbsCache = $pluginParams['thumbsCache'];
+		}
+		$thumb = $thumbsCache.$url;
+		if (file_exists($this->modx->config['base_path'].$thumb)) $this->deleteThumb($thumb, true);
 	}
 
 	public function reorder($source, $target, $point, $rid, $orderDir) {

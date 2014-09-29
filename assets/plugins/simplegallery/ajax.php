@@ -110,6 +110,20 @@ switch ($mode) {
 		}
 		break;
 	case 'edit':
+		$id = isset($_REQUEST['sg_id']) ? (int)$_REQUEST['sg_id'] : 0;
+		if ($id) {
+			$fields = array(
+				'sg_title'		 => $_REQUEST['sg_title'],
+				'sg_description' => $_REQUEST['sg_description'],
+				'sg_add'		 => $_REQUEST['sg_add']
+			);
+			$fields['sg_isactive'] = isset($_REQUEST['sg_isactive']) ? 1 : 0;
+			$data->edit($id)->fromArray($fields)->save();
+			$out['success'] = true;
+		} else {
+			$out['success'] = false;
+			$out['message'] = "Не удалось сохранить.";
+		}
 		break;
 	case 'reorder' :
 		if (!$rid) die();
