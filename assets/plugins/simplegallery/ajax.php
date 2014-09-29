@@ -40,7 +40,7 @@ switch ($mode) {
 
 		if( strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ){
 			$files	= \FileAPI::getFiles(); // Retrieve File List
-			$dir = "assets/galleries/$rid/";
+			$dir = $params['folder'].$rid."/";
 			$uploadDir = MODX_BASE_PATH.$dir;
 			if (!is_dir($uploadDir)) mkdir($uploadDir,intval($modx->config['new_folder_permissions'],8),true);
 			if ($files['sg_files']['error'] == UPLOAD_ERR_OK) {
@@ -152,7 +152,7 @@ switch ($mode) {
 		break;
 	default:
 		if (!$rid) die();
-		$fields = "id,image,title,description,isactive,properties,createdon,index";
+		$fields = "id,image,title,description,isactive,properties,createdon,index,add";
 		$param = array(
             "controller" 	=> 	"onetable",
             "table" 		=> 	"sg_images",

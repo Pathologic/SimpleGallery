@@ -15,6 +15,7 @@ class sgData extends \autoTable {
 		'sg_title' => '',
 		'sg_description' => '',
 		'sg_properties' => '',
+		'sg_add' => '',
 		'sg_isactive' => 1,
 		'sg_rid' => 0,
 		'sg_index' => 0,
