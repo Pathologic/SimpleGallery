@@ -47,23 +47,28 @@ switch ($mode) {
         		$tmp_name = $files["sg_files"]["tmp_name"];
         		$name = $modx->stripAlias($_FILES["sg_files"]["name"]);
         		$name = $data->getInexistantFilename("$uploadDir/$name");
-        		if (@move_uploaded_file($tmp_name, "$uploadDir/$name")) {
-        			if ($data->makeThumb('',$dir.$name,"w={$modx->config['maxImageWidth']}&h={$modx->config['maxImageHeight']}")) {
-	        			$info = getimagesize("$uploadDir/$name");
-        				$properties = array (
-	        				'width'=>$info[0],
-	        				'height'=>$info[1],
-	        				'size'=>filesize("$uploadDir/$name")
-        				);
-	        			$data->create(array(
-	        				'sg_image' => $dir.$name,
-	        				'sg_rid' => $rid,
-	        				'sg_title' => preg_replace('/\\.[^.\\s]{2,4}$/', '', $_FILES["sg_files"]["name"]),
-	        				'sg_properties' => json_encode($properties)
-	        			))->save();
-        			} else {
-        				@unlink($uploadDir.$name);
-        			}
+        		$ext = strtolower(end(explode('.',$name)));
+        		if (in_array($ext,array('png', 'jpg', 'gif', 'jpeg' ))) {
+        			if (@move_uploaded_file($tmp_name, "$uploadDir/$name")) {
+        				if ($data->makeThumb('',$dir.$name,"w={$modx->config['maxImageWidth']}&h={$modx->config['maxImageHeight']}")) {
+	        				$info = getimagesize("$uploadDir/$name");
+        					$properties = array (
+	        					'width'=>$info[0],
+	        					'height'=>$info[1],
+	        					'size'=>filesize("$uploadDir/$name")
+        					);
+	        				$data->create(array(
+		        				'sg_image' => $dir.$name,
+		        				'sg_rid' => $rid,
+		        				'sg_title' => preg_replace('/\\.[^.\\s]{2,4}$/', '', $_FILES["sg_files"]["name"]),
+		        				'sg_properties' => json_encode($properties)
+	        				))->save();
+        				} else {
+        					@unlink($uploadDir.$name);
+        				}
+    				}
+    			} else {
+    				$files['sg_files']['error'] = UPLOAD_ERR_NO_FILE;
     			}
     		}
 				// Fetch all image-info from files list

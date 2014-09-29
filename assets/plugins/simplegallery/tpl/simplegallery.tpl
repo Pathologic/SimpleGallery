@@ -151,8 +151,47 @@ user-select: none;
 	padding:4px;
 	margin-bottom:10px;
 }
+#sgForm input[type="checkbox"] {
+	vertical-align: bottom;
+}
 #sgForm textarea {
 	height:112px;
+}
+#sgProgress {
+	padding:10px;
+}
+#sgProgress div {
+	width:0;
+	height:10px;
+	background: green;
+	transition: width 0.5s ease;
+	border-radius: 5px;
+}
+#sgFilesList{
+	height:285px;
+	overflow-y: scroll;
+}
+#sgUploadState table {
+	width:100%;
+}
+#sgUploadState table td, #sgUploadState table th {
+	padding:3px 5px;
+}
+#sgUploadState .sgrow1 {
+	width:251px;
+}
+#sgUploadState .sgrow2 {
+	width:65px;
+	text-align: center;
+}
+#sgUploadState .sgrow3 {
+	text-align: center;
+}
+#sgFilesList table tbody tr:nth-child(even) {
+	background-color: #f5f5f5;
+}
+#sgFilesList table tbody tr:nth-child(odd) {
+	background-color: #fff;
 }
 </style>
 <script type="text/javascript">
@@ -160,13 +199,14 @@ var rid = [+id+],
     sgLoaded = false,
     sgTotal = [+total+],
     sgSort = null,
+    sgFileId = 0,
     sgLastChecked = null;
 (function($){
 
 	$.fn.pagination.defaults.pageList = [50,100,150,200];
 	var sgHelper = {
 		init: function() {
-			$('#SimpleGallery').append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/folder_page_add.png">Загрузить</div><input id="sg_files" name="sg_files" class="btn-input" type="file" accept="image/*" multiple /></div><div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/refresh.png">Обновить превью</div></div><div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
+			$('#SimpleGallery').append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/folder_page_add.png">Загрузить</div><input id="sg_files" name="sg_files" class="btn-input" type="file" multiple /></div><div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/refresh.png">Обновить превью</div></div><div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
 			$('#sg_refresh').click(function(){
 		    	sgHelper.refresh();
 		    });
@@ -179,18 +219,63 @@ var rid = [+id+],
             	data: {
             		'sg_rid': [+id+]
             	},
-            	maxSize: FileAPI.MB*10, // max file size
-            	onBeforeUpload: function(e,uiE) {
-            		
+            	filterFn: function (file, info) {
+            		return /jpeg|gif|png$/.test(file.type) 
             	},
+            	onBeforeUpload: function(e,uiE) {
+	            	var uploadStateForm = $('<div id="sgUploadState"><div id="sgProgress"><span></span><div></div></div><table><thead><tr><th class="sgrow1">Файл</th><th class="sgrow2">Размер</th><th class="sgrow3">Прогресс</th></tr></thead></table><div id="sgFilesList"><table><tbody></tbody></table></div><div style="clear:both;padding:10px;float:right;"><div id="sgUploadCancel" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/stop.png"><span>Отменить</span></div></div></div></div>');
+	            	$.each(uiE.files,function(i,file){
+	            		$('tbody',uploadStateForm).append('<tr id="sgFilesListRow'+(i+1)+'"><td class="sgrow1">'+file.name+'</td><td class="sgrow2">'+sgHelper.bytesToSize(file.size)+'</td><td class="sgrow3 progress"></td></tr>')
+	            	});
+	            	uploadStateForm.window({
+	    				width:450,
+	    				modal:true,
+	    				title:'Загрузка файлов',
+	    				doSize:true,
+		    			collapsible:false,
+		    			minimizable:false,
+		    			maximizable:false,
+		    			resizable:false,
+		    			onOpen: function() {
+		    				/*$('#sgEditCancel').click(function(e){
+		    					$('#sgEdit').window('close',true);
+		    				})*/
+	            			$('body').css('overflow','hidden');
+	            			$('#sgUploadCancel').click(function(e){
+	            				$('#sgUploadState').window('close');
+	            			})
+		    			},
+		    			onClose: function() {
+		    				$('#SimpleGallery').fileapi('abort');
+		    				$('#sgUploadState').window('destroy',true);
+		    				$('.window-shadow,.window-mask').remove();
+		    				$('body').css('overflow','auto');
+		    			}
+		    		});
+            	},
+            	onProgress: function (e, uiE){
+    				var part = uiE.loaded / uiE.total;
+    				var total = uiE.files.length;
+    				$('#sgProgress > div').css('width',100*part+'%');
+    				$('#sgProgress > span').text('Загружено '+Math.floor(total * part)+' из '+total);
+				},
+				onFilePrepare: function (e,uiE) {
+					sgFileId++;
+				},
+				onFileProgress: function (e,uiE) {
+					var part = uiE.loaded / uiE.total;
+					$('.progress','#sgFilesListRow'+sgFileId).text(Math.floor(100*part)+'%');
+				},
             	onFileComplete: function(e,uiE) {
             	},
             	onComplete: function(e,uiE) {
-            		$('#sg_pages').pagination('select');
+            		sgFileId = 0;
             		var btn = $('#sg_files');
             		btn.replaceWith(btn.val('').clone(true));
             		e.widget.files = [];
             		e.widget.uploaded = [];
+            		$('#sg_pages').pagination('select');
+            		$('#sgUploadCancel span').text('Закрыть');
             	},
             	elements: {
           			dnd: {
