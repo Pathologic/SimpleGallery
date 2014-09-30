@@ -73,7 +73,8 @@ class sgPlugin {
 			'kcfinder_url'	=> 	MODX_MANAGER_URL."media/browser/mcpuk/browse.php?type=images",
 			'w' 			=> 	$w,
 			'h' 			=> 	$h,
-			'total'			=> 	$total
+			'total'			=> 	$total,
+			'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">Обновить превью</div></div>' : ''
 			);
 		$scripts = MODX_BASE_PATH.'assets/plugins/simplegallery/js/scripts.json';
 		if(file_exists($scripts)) {

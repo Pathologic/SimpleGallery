@@ -28,7 +28,7 @@ var rid = [+id+],
 	$.fn.pagination.defaults.pageList = [50,100,150,200];
 	var sgHelper = {
 		init: function() {
-			$('#SimpleGallery').append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/folder_page_add.png">Загрузить</div><input id="sg_files" name="sg_files" class="btn-input" type="file" multiple /></div><div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/refresh.png">Обновить превью</div></div><div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
+			$('#SimpleGallery').append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/folder_page_add.png">Загрузить</div><input id="sg_files" name="sg_files" class="btn-input" type="file" multiple /></div>[+refreshBtn+]<div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
 			$('#sg_refresh').click(function(){
 		    	sgHelper.refresh();
 		    });
