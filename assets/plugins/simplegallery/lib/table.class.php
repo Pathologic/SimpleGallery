@@ -30,12 +30,19 @@ class sgData extends \autoTable {
 	}
 	public function delete($ids, $fire_events = NULL) {
 		$ids = explode(',',$ids);
-		foreach ($ids as $id) {
-			$fields = $this->edit($id)->toArray();
-			$out = parent::delete($id);
-			$rows = $this->modx->db->update( '`sg_index`=`sg_index`-1', $this->_table, '`sg_rid`='.($fields['sg_rid'] ? $fields['sg_rid'] : 0).' AND `sg_id` > ' . $id);
-			$this->deleteThumb($fields['sg_image']);
+		foreach ($ids as &$id) $id = (int)$id;
+		$min = min ($ids);
+		$count = count($ids);
+		$fields = $this->edit($min)->toArray();
+
+		$ids = implode(',',$ids);
+		$images = $this->modx->db->select('`sg_image`',$this->_table,"`sg_id` IN ($ids)");
+		while ($row = $this->modx->db->getRow($images)) {
+			$this->deleteThumb($row['sg_image']);
 		}
+		$out = parent::delete($ids);
+		$rows = $this->modx->db->update( "`sg_index`=`sg_index`-$count", $this->_table, '`sg_rid`='.($fields['sg_rid'] ? $fields['sg_rid'] : 0).' AND `sg_id` > ' . $min);
+		
 		return $out;
 	}
 	

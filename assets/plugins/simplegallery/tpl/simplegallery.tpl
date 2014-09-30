@@ -1,196 +1,19 @@
 <link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simplegallery/js/easy-ui/themes/bootstrap/easyui.css">
 <link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simplegallery/js/easy-ui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simplegallery/css/style.css">
 <style type="text/css">
-#SimpleGallery .pagination select, #SimpleGallery .pagination input {
-    width:auto;
-    height:auto;
-}
-#SimpleGallery .pagination td {
-    vertical-align: middle;
-}
-.js-fileapi-wrapper {
-	min-height: 300px;
-	opacity:1;
-}
-.dnd_hover {
-	opacity:0.5;
-}
-.btn {
-display: inline-block;
-*display: inline;
-*zoom: 1;
-position: relative;
-overflow: hidden;
-cursor: pointer;
-padding: 4px 15px;
-vertical-align: middle;
-border: 1px solid #ccc;
-border-radius: 3px;
-background-color: #f5f5f5;
-background: -moz-linear-gradient(top, #fff 0%, #f5f5f5 49%, #ececec 50%, #eee 100%);
-background: -webkit-linear-gradient(top, #fff 0%,#f5f5f5 49%,#ececec 50%,#eee 100%);
-background: -o-linear-gradient(top, #fff 0%,#f5f5f5 49%,#ececec 50%,#eee 100%);
-background: linear-gradient(to bottom, #fff 0%,#f5f5f5 49%,#ececec 50%,#eee 100%);
--webkit-user-select: none;
--moz-user-select: none;
-user-select: none;
-}
-.btn:hover {
-	border-color: #fa0;
-	box-shadow: 0 0 2px #fa0;
-}
-
-.btn-text {
-	font-weight: bold;
-}
-.btn-text img {
-	vertical-align: top;
-	margin-right: 2px;
-}
-.btn-input {
-	cursor: pointer;
-	opacity: 0;
-	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
-	top: -10px;
-	right: -40px;
-	font-size: 50px;
-	position: absolute;
-}
-.btn-right {
-	float: right;
-	margin-left: 10px;
-}
-#sg_pages {
-	margin-top:20px;
-	background:#efefef;
-	border:1px solid #ccc;
-}
-.btn-deleteAll {
-	background: url([+manager_url+]media/style/[+theme+]/images/icons/trash.png) -2px center no-repeat;
-}
-#sg_images {
-	margin:20px 0;
-}
 .sg_image {
-	display:inline-block;
-	border:1px solid #ccc;
-	margin:0 10px 10px 0;
-	padding:5px;
-	border-radius: 5px;
-	background: none;
 	width:[+w+]px;
-	position:relative;
-}
-.sg_image:hover {
-	background: #ddebf8;
-}
-.selected,.selected:hover {
-	background: #5b9bda;
 }
 .sg_image img {
 	width:[+w+]px;
 	height:[+h+]px;
 }
-.sg_image .name {
-	font-weight: bold;
-    height: 32px;
-    margin-top: 5px;
-    overflow: hidden;
-    text-align: center;
-    font-size:11px;
-    font-family:Tahoma,Verdana,Arial,sans-serif;
-    text-overflow: ellipsis;
-}
-.sg_image .notactive {
-	color:red;
-	font-style: italic;
-}
 .sg_image .del {
-	width:16px;
-	height:16px;
-	display: block;
-	position: absolute;
-	top:-6px;
-	right:-6px;
 	background: url([+manager_url+]media/style/[+theme+]/images/icons/delete.png) 0 0 no-repeat;
 }
-.sortable-ghost {
-	opacity: .2;
-	cursor: move;
-}
-#sgEdit img {
-	max-width: 100%;
-	max-height: 210px;
-}
-#sgEdit .sgRow {
-	width: 300px;
-	float:left;
-}
-#sgEdit .sgRow > div {
-	padding:10px;
-}
-#sgEdit table {
-	width:100%;
-}
-#sgEdit table td {
-	padding:3px 5px;
-	vertical-align: top;
-}
-#sgEdit table td.rowTitle {
-	font-weight: bold;
-	text-align: right;
-}
-#sgForm label {
-	display: block;
-	margin:3px 0;
-	font-weight: bold;
-}
-#sgForm input[type="text"], #sgForm textarea {
-	width:270px;
-	padding:4px;
-	margin-bottom:10px;
-}
-#sgForm input[type="checkbox"] {
-	vertical-align: bottom;
-}
-#sgForm textarea {
-	height:112px;
-}
-#sgProgress {
-	padding:10px;
-}
-#sgProgress div {
-	width:0;
-	height:10px;
-	background: green;
-	transition: width 0.5s ease;
-	border-radius: 5px;
-}
-#sgFilesList{
-	height:285px;
-	overflow-y: scroll;
-}
-#sgUploadState table {
-	width:100%;
-}
-#sgUploadState table td, #sgUploadState table th {
-	padding:3px 5px;
-}
-#sgUploadState .sgrow1 {
-	width:251px;
-}
-#sgUploadState .sgrow2 {
-	width:65px;
-	text-align: center;
-}
-#sgUploadState .sgrow3 {
-	text-align: center;
-}
-#sgFilesList table tbody tr:nth-child(even) {
-	background-color: #f5f5f5;
-}
-#sgFilesList table tbody tr:nth-child(odd) {
-	background-color: #fff;
+.btn-deleteAll {
+	background: url([+manager_url+]media/style/[+theme+]/images/icons/trash.png) -2px center no-repeat;
 }
 </style>
 <script type="text/javascript">
@@ -236,9 +59,6 @@ var rid = [+id+],
 		    			maximizable:false,
 		    			resizable:false,
 		    			onOpen: function() {
-		    				/*$('#sgEditCancel').click(function(e){
-		    					$('#sgEdit').window('close',true);
-		    				})*/
 	            			$('body').css('overflow','hidden');
 	            			$('#sgUploadCancel').click(function(e){
 	            				$('#sgUploadState').window('close');
@@ -315,26 +135,21 @@ var rid = [+id+],
 			this.initImages();
 		},
 		initImages: function() {
+			var _this = this;
 			$(document).keydown(function(e) {
-        		return !sgHelper.selectAll(e);
+        		return !_this.selectAll(e);
     		});
     		$('.del','.sg_image').click(function(e) {
-    			sgHelper.delete($(this).parent());
+    			_this.delete($(this).parent());
     		});
 			$('.sg_image').unbind();
     		$('.sg_image').click(function(e) {
-        		sgHelper.unselect();
-        		sgHelper.select($(this), e);
+        		_this.unselect();
+        		_this.select($(this), e);
     		});
     		$('.sg_image').dblclick(function() {
-		        sgHelper.unselect();
-		        sgHelper.edit($(this));
-		    });
-		    $('.sg_image').mouseup(function() {
-		        sgHelper.unselect();
-		    });
-		    $('.sg_image').mouseout(function() {
-		        sgHelper.unselect();
+		        _this.unselect();
+		        _this.edit($(this));
 		    });
 		    $('body').attr('ondragstart','');
 		    if (sgSort !== null) sgSort.destroy();
@@ -435,10 +250,10 @@ var rid = [+id+],
 		},
 		edit: function(image) {
 			var data = image.data('properties');
-			var editForm = $('<div id="sgEdit"><div class="sgRow"><div style="font-size:0;text-align:center;"><img src="[+site_url+]'+data.sg_image+'"></div><div><table><tr><td class="rowTitle">ID</td><td>'+data.sg_id+'</td></tr><tr><td class="rowTitle">Файл</td><td>'+data.sg_image+'</td></tr><tr><td class="rowTitle">Размер</td><td>'+data.sg_properties.width+'x'+data.sg_properties.height+', '+sgHelper.bytesToSize(data.sg_properties.size)+'</td></tr><tr><td class="rowTitle">Добавлен</td><td>'+data.sg_createdon+'</td></tr></table></div></div><div class="sgRow"><div><form id="sgForm"><input type="hidden" name="sg_id" value="'+data.sg_id+'"><label>Название</label><input name="sg_title" type="text" value="'+this.escape(data.sg_title)+'"><label>Описание</label><textarea name="sg_description">'+this.escape(data.sg_description)+'</textarea><label>Дополнительно</label><input name="sg_add" type="text" value="'+this.escape(data.sg_add)+'"><label>Показывать</label><input type="checkbox" name="sg_isactive" value="1" '+ (parseInt(data.sg_isactive) ? 'checked' : '')+'>Да</form></div></div><div style="clear:both;padding:10px;float:right;"><div id="sgEditSave" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/save.png">Сохранить</div></div><div id="sgEditCancel" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/stop.png">Отменить</div></div></div></div>');
+			var editForm = $('<div id="sgEdit"><div class="sgRow"><div style="font-size:0;text-align:center;"><img src="[+site_url+]'+data.sg_image+'"></div><div><table><tr><td class="rowTitle">ID</td><td>'+data.sg_id+'</td></tr><tr><td class="rowTitle">Файл</td><td>'+data.sg_image+'</td></tr><tr><td class="rowTitle">Размер</td><td>'+data.sg_properties.width+'x'+data.sg_properties.height+', '+this.bytesToSize(data.sg_properties.size)+'</td></tr><tr><td class="rowTitle">Добавлен</td><td>'+data.sg_createdon+'</td></tr></table></div></div><div class="sgRow"><div><form id="sgForm"><input type="hidden" name="sg_id" value="'+data.sg_id+'"><label>Название</label><input name="sg_title" maxlength="255" type="text" value="'+this.escape(data.sg_title)+'"><label>Описание</label><textarea name="sg_description">'+this.escape(data.sg_description)+'</textarea><label>Дополнительно</label><input name="sg_add" type="text" value="'+this.escape(data.sg_add)+'"><label>Показывать</label><input type="checkbox" name="sg_isactive" value="1" '+ (parseInt(data.sg_isactive) ? 'checked' : '')+'>Да</form></div></div><div style="clear:both;padding:10px;float:right;"><div id="sgEditSave" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/save.png">Сохранить</div></div><div id="sgEditCancel" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/stop.png">Отменить</div></div></div></div>');
 			editForm.window({
     			modal:true,
-    			title:data.sg_title,
+    			title:sgHelper.escape(this.stripText(data.sg_title,80)),
     			doSize:true,
     			collapsible:false,
     			minimizable:false,

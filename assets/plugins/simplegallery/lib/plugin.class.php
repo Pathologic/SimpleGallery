@@ -103,11 +103,11 @@ class sgPlugin {
     	$sql = <<< OUT
 CREATE TABLE IF NOT EXISTS `{$table}sg_images` (
 `sg_id` int(10) NOT NULL auto_increment,
-`sg_image` varchar(255) NOT NULL default '',
+`sg_image` TEXT NOT NULL default '',
 `sg_title` varchar(255) NOT NULL default '',
-`sg_description` varchar(255) NOT NULL default '',
-`sg_properties` varchar(255) NOT NULL default '',
-`sg_add` varchar(255) NOT NULL default '',
+`sg_description` TEXT NOT NULL default '',
+`sg_properties` TEXT NOT NULL default '',
+`sg_add` TEXT NOT NULL default '',
 `sg_isactive` int(1) NOT NULL default '1',
 `sg_rid` int(10) default NULL,
 `sg_index` int(10) NOT NULL default '0',
