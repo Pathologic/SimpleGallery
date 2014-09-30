@@ -91,22 +91,24 @@ switch ($mode) {
 		break;
 	case 'remove':
 		$id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
+		$out['success'] = false;
+		$out['message'] = "Не удалось удалить.";
 		if ($id) {
-			$data->delete($id);
-			$out['success'] = true;
-		} else {
-			$out['success'] = false;
-			$out['message'] = "Не удалось удалить.";
+			if ($data->delete($id)) {
+				$out['success'] = true;
+				unset($out['message']);
+			}
 		}
 		break;
 	case 'removeAll':
 		$ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
+		$out['success'] = false;
+		$out['message'] = "Не удалось удалить.";
 		if (!empty($ids)) {
-			$data->delete($ids);
-			$out['success'] = true;
-		} else {
-			$out['success'] = false;
-			$out['message'] = "Не удалось удалить.";
+			if ($data->delete($ids)) {
+				$out['success'] = true;
+				unset($out['message']);
+			}
 		}
 		break;
 	case 'edit':

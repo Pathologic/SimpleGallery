@@ -32,17 +32,21 @@ class sgData extends \autoTable {
 		$ids = explode(',',$ids);
 		foreach ($ids as &$id) $id = (int)$id;
 		$min = min ($ids);
+		if (!$min) return false;
 		$count = count($ids);
 		$fields = $this->edit($min)->toArray();
 
 		$ids = implode(',',$ids);
-		$images = $this->modx->db->select('`sg_image`',$this->_table,"`sg_id` IN ($ids)");
+		$images = $this->modx->db->select('`sg_id`,`sg_image`',$this->_table,"`sg_id` IN ($ids)");
+		$out = parent::delete($ids);
 		while ($row = $this->modx->db->getRow($images)) {
 			$this->deleteThumb($row['sg_image']);
+			$this->invokeEvent('OnSimpleGalleryDelete',array(
+				'id'	=>	$row['sg_id'],
+				'image'	=>	$row['sg_image']
+				),true);
 		}
-		$out = parent::delete($ids);
 		$rows = $this->modx->db->update( "`sg_index`=`sg_index`-$count", $this->_table, '`sg_rid`='.($fields['sg_rid'] ? $fields['sg_rid'] : 0).' AND `sg_id` > ' . $min);
-		
 		return $out;
 	}
 	
@@ -98,7 +102,17 @@ class sgData extends \autoTable {
 			$this->field['sg_index'] = $this->modx->db->getRecordCount($rows);
 			$this->field['sg_createdon'] = date('Y-m-d H:i:s');
 		}
-		return parent::save();
+		if (parent::save()) {
+			if ($this->newDoc) {
+				$filename = end(explode('/',$this->field['sg_image']));
+				$filepath = MODX_BASE_PATH.str_replace('/'.$filename, '', $this->field['sg_image']);
+				$this->invokeEvent('OnFileBrowserUpload',array(
+					'filepath' => $filepath,
+					'filename' => $filename
+					),true);
+			} 
+			$this->invokeEvent('OnSimpleGallerySave',$this->field,true);
+		}
 	}
 
 	public function makeThumb($folder,$url,$options) {

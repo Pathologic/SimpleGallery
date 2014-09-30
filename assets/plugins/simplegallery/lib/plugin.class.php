@@ -117,6 +117,15 @@ PRIMARY KEY  (`sg_id`)
 ) ENGINE=MyISAM COMMENT='Datatable for SimpleGallery plugin.';
 OUT;
     	if ($this->modx->db->query($sql)) {
+    		$result = $this->modx->db->select('`id`',$table.'system_eventnames',"`name` IN ('OnSimpleGallerySave','OnSimpleGalleryDelete','OnSimpleGalleryRefresh')");
+			if (!$this->modx->db->getRecordCount($result)) {
+				$sql = "INSERT INTO `{$table}system_eventnames` VALUES (NULL, 'OnSimpleGallerySave', '6', 'SimpleGallery Events')";
+				$this->modx->db->query($sql);
+				$sql = "INSERT INTO `{$table}system_eventnames` VALUES (NULL, 'OnSimpleGalleryDelete', '6', 'SimpleGallery Events')";
+				$this->modx->db->query($sql);
+				$sql = "INSERT INTO `{$table}system_eventnames` VALUES (NULL, 'OnSimpleGalleryRefresh', '6', 'SimpleGallery Events')";
+				$this->modx->db->query($sql);
+			}
     		return true;
     	} else {
     		return false;
