@@ -41,9 +41,12 @@ class sgData extends \autoTable {
 		$out = parent::delete($ids);
 		while ($row = $this->modx->db->getRow($images)) {
 			$this->deleteThumb($row['sg_image']);
+			$filename = end(explode('/',$row['sg_image']));
+			$filepath = MODX_BASE_PATH.str_replace('/'.$filename, '', $row['sg_image']);
 			$this->invokeEvent('OnSimpleGalleryDelete',array(
-				'id'	=>	$row['sg_id'],
-				'image'	=>	$row['sg_image']
+				'id'		=>	$row['sg_id'],
+				'filepath'	=>	$filepath,
+				'filename'	=>	$filename
 				),true);
 		}
 		$rows = $this->modx->db->update( "`sg_index`=`sg_index`-$count", $this->_table, '`sg_rid`='.($fields['sg_rid'] ? $fields['sg_rid'] : 0).' AND `sg_id` > ' . $min);
