@@ -313,7 +313,7 @@ var rid = [+id+],
 			var placeholder = $('#sg_images');
 			placeholder.html('');
 			for (i = 0; i < len; i++) {
- 				var image = $('<div class="sg_image"><a href="javascript:void(0)" class="del"></a><img title="'+sgHelper.stripText(rows[i].sg_description,100)+'" src="[+thumb_prefix+]'+rows[i].sg_image+'"><div class="name'+(parseInt(rows[i].sg_isactive) ? '' : ' notactive')+'">'+rows[i].sg_title+'</div></div>');
+ 				var image = $('<div class="sg_image"><a href="javascript:void(0)" class="del"></a><img title="'+this.escape(this.stripText(rows[i].sg_description,100))+'" src="[+thumb_prefix+]'+rows[i].sg_image+'"><div class="name'+(parseInt(rows[i].sg_isactive) ? '' : ' notactive')+'">'+rows[i].sg_title+'</div></div>');
  				rows[i].sg_properties = $.parseJSON(rows[i].sg_properties);
  				image.data('properties',rows[i]);
  				placeholder.append(image);
@@ -441,7 +441,7 @@ var rid = [+id+],
 		},
 		edit: function(image) {
 			var data = image.data('properties');
-			var editForm = $('<div id="sgEdit"><div class="sgRow"><div style="font-size:0;text-align:center;"><img src="[+site_url+]'+data.sg_image+'"></div><div><table><tr><td class="rowTitle">ID</td><td>'+data.sg_id+'</td></tr><tr><td class="rowTitle">Файл</td><td>'+data.sg_image+'</td></tr><tr><td class="rowTitle">Размер</td><td>'+data.sg_properties.width+'x'+data.sg_properties.height+', '+sgHelper.bytesToSize(data.sg_properties.size)+'</td></tr><tr><td class="rowTitle">Добавлен</td><td>'+data.sg_createdon+'</td></tr></table></div></div><div class="sgRow"><div><form id="sgForm"><input type="hidden" name="sg_id" value="'+data.sg_id+'"><label>Название</label><input name="sg_title" type="text" value="'+data.sg_title+'"><label>Описание</label><textarea name="sg_description">'+data.sg_description+'</textarea><label>Дополнительно</label><input name="sg_add" type="text" value="'+data.sg_add+'"><label>Показывать</label><input type="checkbox" name="sg_isactive" value="1" '+ (parseInt(data.sg_isactive) ? 'checked' : '')+'>Да</form></div></div><div style="clear:both;padding:10px;float:right;"><div id="sgEditSave" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/save.png">Сохранить</div></div><div id="sgEditCancel" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/stop.png">Отменить</div></div></div></div>');
+			var editForm = $('<div id="sgEdit"><div class="sgRow"><div style="font-size:0;text-align:center;"><img src="[+site_url+]'+data.sg_image+'"></div><div><table><tr><td class="rowTitle">ID</td><td>'+data.sg_id+'</td></tr><tr><td class="rowTitle">Файл</td><td>'+data.sg_image+'</td></tr><tr><td class="rowTitle">Размер</td><td>'+data.sg_properties.width+'x'+data.sg_properties.height+', '+sgHelper.bytesToSize(data.sg_properties.size)+'</td></tr><tr><td class="rowTitle">Добавлен</td><td>'+data.sg_createdon+'</td></tr></table></div></div><div class="sgRow"><div><form id="sgForm"><input type="hidden" name="sg_id" value="'+data.sg_id+'"><label>Название</label><input name="sg_title" type="text" value="'+this.escape(data.sg_title)+'"><label>Описание</label><textarea name="sg_description">'+this.escape(data.sg_description)+'</textarea><label>Дополнительно</label><input name="sg_add" type="text" value="'+this.escape(data.sg_add)+'"><label>Показывать</label><input type="checkbox" name="sg_isactive" value="1" '+ (parseInt(data.sg_isactive) ? 'checked' : '')+'>Да</form></div></div><div style="clear:both;padding:10px;float:right;"><div id="sgEditSave" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/save.png">Сохранить</div></div><div id="sgEditCancel" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/stop.png">Отменить</div></div></div></div>');
 			editForm.window({
     			modal:true,
     			title:data.sg_title,
@@ -486,6 +486,13 @@ var rid = [+id+],
 			str.replace(/<\/?[^>]+>/gi, '');
 			if (str.length > len) str = str.slice(0,len) + '...';
 			return str;
+		},
+		escape: function(str) {
+			return str
+			    .replace(/&/g, '&amp;')
+			    .replace(/>/g, '&gt;')
+			    .replace(/</g, '&lt;')
+			    .replace(/"/g, '&quot;');
 		},
 		refresh: function() {
 			$.messager.confirm('Обновление превью','Эта операция может занять много времени. Вы точно хотите продолжить?',function(r){
