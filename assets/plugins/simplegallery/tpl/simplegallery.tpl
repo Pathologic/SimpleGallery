@@ -1,11 +1,5 @@
-[+jquery+]
 <link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simplegallery/js/easy-ui/themes/bootstrap/easyui.css">
 <link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simplegallery/js/easy-ui/themes/icon.css">
-<script type="text/javascript" src="[+site_url+]assets/plugins/simplegallery/js/easy-ui/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="[+site_url+]assets/plugins/simplegallery/js/easy-ui/locale/easyui-lang-ru.js"></script>
-<script type="text/javascript" src="[+site_url+]assets/plugins/simplegallery/js/fileapi/FileAPI.min.js"></script>
-<script type="text/javascript" src="[+site_url+]assets/plugins/simplegallery/js/fileapi/jquery.fileapi.min.js"></script>
-<script type="text/javascript" src="[+site_url+]assets/plugins/simplegallery/js/sortable/Sortable.js"></script>
 <style type="text/css">
 #SimpleGallery .pagination select, #SimpleGallery .pagination input {
     width:auto;

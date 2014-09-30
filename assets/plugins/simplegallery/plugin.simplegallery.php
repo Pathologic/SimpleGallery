@@ -3,7 +3,8 @@ if (IN_MANAGER_MODE != 'true') die();
 $e = &$modx->event;
 if ($e->name == 'OnDocFormRender' && !!$id) {
 	include_once (MODX_BASE_PATH.'assets/plugins/simplegallery/lib/plugin.class.php');
-	$simpleGallery = new \SimpleGallery\sgPlugin($modx);
+	global $modx_lang_attribute;
+	$simpleGallery = new \SimpleGallery\sgPlugin($modx,$modx_lang_attribute);
 	$output = $simpleGallery->render();
 	if ($output) $e->output($output);
 }
