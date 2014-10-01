@@ -22,7 +22,8 @@ var rid = [+id+],
     sgTotal = [+total+],
     sgSort = null,
     sgFileId = 0,
-    sgLastChecked = null;
+    sgLastChecked = null,
+    sgBeforeDragState = null;
 (function($){
 
 	$.fn.pagination.defaults.pageList = [50,100,150,200];
@@ -45,6 +46,7 @@ var rid = [+id+],
             		return /jpeg|gif|png$/.test(file.type) 
             	},
             	onBeforeUpload: function(e,uiE) {
+	            	var total = uiE.files.length;
 	            	var uploadStateForm = $('<div id="sgUploadState"><div id="sgProgress"><span></span><div></div></div><table><thead><tr><th class="sgrow1">'+_sgLang['file']+'</th><th class="sgrow2">'+_sgLang['size']+'</th><th class="sgrow3">'+_sgLang['progress']+'</th></tr></thead></table><div id="sgFilesList"><table><tbody></tbody></table></div><div style="clear:both;padding:10px;float:right;"><div id="sgUploadCancel" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/stop.png"><span>'+_sgLang['cancel']+'</span></div></div></div></div>');
 	            	$.each(uiE.files,function(i,file){
 	            		$('tbody',uploadStateForm).append('<tr id="sgFilesListRow'+(i+1)+'"><td class="sgrow1">'+file.name+'</td><td class="sgrow2">'+sgHelper.bytesToSize(file.size)+'</td><td class="sgrow3 progress"></td></tr>')
@@ -60,6 +62,7 @@ var rid = [+id+],
 		    			resizable:false,
 		    			onOpen: function() {
 	            			$('body').css('overflow','hidden');
+	            			$('#sgProgress > span').html(_sgLang['uploaded']+' <span>'+sgFileId+'</span> '+_sgLang['from']+' '+total);
 	            			$('#sgUploadCancel').click(function(e){
 	            				$('#sgUploadState').window('close');
 	            			})
@@ -74,9 +77,7 @@ var rid = [+id+],
             	},
             	onProgress: function (e, uiE){
     				var part = uiE.loaded / uiE.total;
-    				var total = uiE.files.length;
     				$('#sgProgress > div').css('width',100*part+'%');
-    				$('#sgProgress > span').text(_sgLang['uploaded']+' '+Math.floor(total * part)+' '+_sgLang['from']+' '+total);
 				},
 				onFilePrepare: function (e,uiE) {
 					sgFileId++;
@@ -86,6 +87,7 @@ var rid = [+id+],
 					$('.progress','#sgFilesListRow'+sgFileId).text(Math.floor(100*part)+'%');
 				},
             	onFileComplete: function(e,uiE) {
+    				$('#sgProgress > span > span').text(sgFileId);
             	},
             	onComplete: function(e,uiE) {
             		sgFileId = 0;
@@ -153,7 +155,58 @@ var rid = [+id+],
 		    });
 		    $('body').attr('ondragstart','');
 		    if (sgSort !== null) sgSort.destroy();
-		    sgSort = new Sortable(sg_images);
+		    sgSort = new Sortable(sg_images,{
+		    	draggable: '.sg_image',
+		    	onStart: function (e) {
+		    		sgBeforeDragState = {
+		    			prev: e.item.previousSibling != null ? $(e.item.previousSibling).data('properties').sg_index : -1,
+		    			next: e.item.nextSibling != null ? $(e.item.nextSibling).data('properties').sg_index : -1
+		    		};
+		    	},
+		    	onEnd: function (e) {
+					var sgAfterDragState = {
+						prev: e.item.previousSibling != null ? $(e.item.previousSibling).data('properties').sg_index : -1,
+		    			next: e.item.nextSibling != null ? $(e.item.nextSibling).data('properties').sg_index : -1
+					}
+					if (sgAfterDragState.prev == sgBeforeDragState.prev && sgAfterDragState.next == sgBeforeDragState.next) return;
+					var source = $(e.item).data('properties');
+					sourceIndex = parseInt(source.sg_index); 
+					sourceId = source.sg_id;
+					var target = e.item.nextSibling == null ? $(e.item.previousSibling).data('properties') : $(e.item.nextSibling).data('properties');
+					targetIndex = parseInt(target.sg_index);
+					if (targetIndex < sourceIndex && sgAfterDragState.next != -1) targetIndex++;
+
+					if (sourceIndex < targetIndex) {
+						var tempIndex = targetIndex,
+							item = e.item;
+						while(tempIndex >= sourceIndex) {
+							$(item).data('properties').sg_index = tempIndex--;
+							item = item.nextSibling == null ? item : item.nextSibling;
+						}
+					} else {
+						var tempIndex = targetIndex,
+							item = e.item;
+						while(tempIndex <= sourceIndex) {
+							$(item).data('properties').sg_index = tempIndex++;
+							item = item.previousSibling == null ? item : item.previousSibling;;
+						}
+					}
+					$.post(
+						"[+url+]?mode=reorder", {
+							sg_rid: [+id+], 
+							sourceId: sourceId, 
+							sourceIndex: sourceIndex, 
+							targetIndex: targetIndex 
+						},
+						function(data) {
+							data = $.parseJSON(data);
+							if(!data.success) {
+								$('#sg_pages').pagination('select');
+							} 
+						}
+					);
+		    	}
+		    });
 		},
 		unselect: function() {
 		    if (document.selection && document.selection.empty)

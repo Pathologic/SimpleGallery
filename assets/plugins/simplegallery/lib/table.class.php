@@ -73,16 +73,17 @@ class sgData extends \autoTable {
 		if (file_exists($this->modx->config['base_path'].$thumb)) $this->deleteThumb($thumb, true);
 	}
 
-	public function reorder($source, $target, $point, $rid, $orderDir) {
+	public function reorder($sourceIndex, $targetIndex, $sourceId, $rid) {
 		$rid = (int)$rid;
-		$point = strtolower($point);
-		$orderDir = strtolower($orderDir);
-		$sourceIndex = (int)$source['st_index'];
-		$targetIndex = (int)$target['st_index'];
-		$sourceId = (int)$source['st_id'];
 		/* more refactoring  needed */
-		
-		return true;
+		if ($sourceIndex < $targetIndex) {
+			$rows = $this->modx->db->update('`sg_index`=`sg_index`-1',$this->_table,'`sg_index`<='.$targetIndex.' AND `sg_index`>='.$sourceIndex.' AND `sg_rid`='.$rid);		
+		} else {
+			$rows = $this->modx->db->update('`sg_index`=`sg_index`+1',$this->_table,'`sg_index`<'.$sourceIndex.' AND `sg_index`>='.$targetIndex.' AND `sg_rid`='.$rid);
+		}
+		$rows = $this->modx->db->update('`sg_index`='.$targetIndex,$this->_table,'`sg_id`='.$sourceId);				
+
+		return $rows;
 	}
 
 	public function getInexistantFilename($file) {

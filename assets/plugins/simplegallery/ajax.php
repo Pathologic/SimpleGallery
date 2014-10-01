@@ -50,7 +50,7 @@ switch ($mode) {
         		$ext = strtolower(end(explode('.',$name)));
         		if (in_array($ext,array('png', 'jpg', 'gif', 'jpeg' ))) {
         			if (@move_uploaded_file($tmp_name, "$uploadDir/$name")) {
-        				if ($data->makeThumb('',$dir.$name,"w={$modx->config['maxImageWidth']}&h={$modx->config['maxImageHeight']}")) {
+        				if ($data->makeThumb('',$dir.$name,"w={$modx->config['maxImageWidth']}&h={$modx->config['maxImageHeight']}&q=96&f={$ext}")) {
 	        				$info = getimagesize("$uploadDir/$name");
         					$properties = array (
 	        					'width'=>$info[0],
@@ -92,22 +92,18 @@ switch ($mode) {
 	case 'remove':
 		$id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 		$out['success'] = false;
-		$out['message'] = "Не удалось удалить.";
 		if ($id) {
 			if ($data->delete($id)) {
 				$out['success'] = true;
-				unset($out['message']);
 			}
 		}
 		break;
 	case 'removeAll':
 		$ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
 		$out['success'] = false;
-		$out['message'] = "Не удалось удалить.";
 		if (!empty($ids)) {
 			if ($data->delete($ids)) {
 				$out['success'] = true;
-				unset($out['message']);
 			}
 		}
 		break;
@@ -124,23 +120,16 @@ switch ($mode) {
 			$out['success'] = true;
 		} else {
 			$out['success'] = false;
-			$out['message'] = "Не удалось сохранить.";
 		}
 		break;
 	case 'reorder' :
 		if (!$rid) die();
-		$source = $_REQUEST['source'];
-		$target = $_REQUEST['target'];
-		$point = $_REQUEST['point'];
-		$orderDir = $_REQUEST['orderDir'];
-		$rows = $data->reorder($source,$target,$point,$rid,$orderDir);
-		
-		if ($rows) {
-			$out['success'] = true;
-		} else {
-			$out['success'] = false;
-			$out['message'] = "Не удалось сохранить данные.";
-		}
+		$sourceIndex = (int)$_REQUEST['sourceIndex'];
+		$targetIndex = (int)$_REQUEST['targetIndex'];
+		$sourceId = (int)$_REQUEST['sourceId'];
+		$rows = $data->reorder($sourceIndex,$targetIndex,$sourceId,$rid);
+
+		$out['success'] = $rows;
 
 		break;
 	case 'thumb':
