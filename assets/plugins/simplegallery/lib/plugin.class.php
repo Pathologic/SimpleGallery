@@ -74,7 +74,7 @@ class sgPlugin {
 			'w' 			=> 	$w,
 			'h' 			=> 	$h,
 			'total'			=> 	$total,
-			'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">Обновить превью</div></div>' : ''
+			'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">\'+_sgLang[\'refresh_previews\']+\'</div></div>' : ''
 			);
 		$scripts = MODX_BASE_PATH.'assets/plugins/simplegallery/js/scripts.json';
 		if(file_exists($scripts)) {
@@ -96,6 +96,14 @@ class sgPlugin {
 			}
 		}
 
+		$pluginLangJs = 'assets/plugins/simplegallery/js/lang/'.$this->lang_attribute.'.js';
+		if(file_exists(MODX_BASE_PATH.$pluginLangJs)) {
+			if (!isset($this->modx->loadedjscripts['sg-lang-'.$this->lang_attribute])) {
+				$this->modx->loadedjscripts['sg-lang-'.$this->lang_attribute] = array('version'=>'1.0');
+				$js .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].$pluginLangJs.'"></script>';
+			}
+		}
+		
 		$output = $this->DLTemplate->parseChunk('@CODE:'.$js.$tpl,$ph);
 		return $output; 
     }

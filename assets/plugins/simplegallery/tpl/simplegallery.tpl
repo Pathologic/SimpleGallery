@@ -28,7 +28,7 @@ var rid = [+id+],
 	$.fn.pagination.defaults.pageList = [50,100,150,200];
 	var sgHelper = {
 		init: function() {
-			$('#SimpleGallery').append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/folder_page_add.png">Загрузить</div><input id="sg_files" name="sg_files" class="btn-input" type="file" multiple /></div>[+refreshBtn+]<div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
+			$('#SimpleGallery').append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/folder_page_add.png">'+_sgLang['upload']+'</div><input id="sg_files" name="sg_files" class="btn-input" type="file" multiple /></div>[+refreshBtn+]<div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
 			$('#sg_refresh').click(function(){
 		    	sgHelper.refresh();
 		    });
@@ -45,14 +45,14 @@ var rid = [+id+],
             		return /jpeg|gif|png$/.test(file.type) 
             	},
             	onBeforeUpload: function(e,uiE) {
-	            	var uploadStateForm = $('<div id="sgUploadState"><div id="sgProgress"><span></span><div></div></div><table><thead><tr><th class="sgrow1">Файл</th><th class="sgrow2">Размер</th><th class="sgrow3">Прогресс</th></tr></thead></table><div id="sgFilesList"><table><tbody></tbody></table></div><div style="clear:both;padding:10px;float:right;"><div id="sgUploadCancel" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/stop.png"><span>Отменить</span></div></div></div></div>');
+	            	var uploadStateForm = $('<div id="sgUploadState"><div id="sgProgress"><span></span><div></div></div><table><thead><tr><th class="sgrow1">'+_sgLang['file']+'</th><th class="sgrow2">'+_sgLang['size']+'</th><th class="sgrow3">'+_sgLang['progress']+'</th></tr></thead></table><div id="sgFilesList"><table><tbody></tbody></table></div><div style="clear:both;padding:10px;float:right;"><div id="sgUploadCancel" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/stop.png"><span>'+_sgLang['cancel']+'</span></div></div></div></div>');
 	            	$.each(uiE.files,function(i,file){
 	            		$('tbody',uploadStateForm).append('<tr id="sgFilesListRow'+(i+1)+'"><td class="sgrow1">'+file.name+'</td><td class="sgrow2">'+sgHelper.bytesToSize(file.size)+'</td><td class="sgrow3 progress"></td></tr>')
 	            	});
 	            	uploadStateForm.window({
 	    				width:450,
 	    				modal:true,
-	    				title:'Загрузка файлов',
+	    				title:_sgLang['files_upload'],
 	    				doSize:true,
 		    			collapsible:false,
 		    			minimizable:false,
@@ -76,7 +76,7 @@ var rid = [+id+],
     				var part = uiE.loaded / uiE.total;
     				var total = uiE.files.length;
     				$('#sgProgress > div').css('width',100*part+'%');
-    				$('#sgProgress > span').text('Загружено '+Math.floor(total * part)+' из '+total);
+    				$('#sgProgress > span').text(_sgLang['uploaded']+' '+Math.floor(total * part)+' '+_sgLang['from']+' '+total);
 				},
 				onFilePrepare: function (e,uiE) {
 					sgFileId++;
@@ -94,7 +94,7 @@ var rid = [+id+],
             		e.widget.files = [];
             		e.widget.uploaded = [];
             		$('#sg_pages').pagination('select');
-            		$('#sgUploadCancel span').text('Закрыть');
+            		$('#sgUploadCancel span').text(_sgLang['close']);
             	},
             	elements: {
           			dnd: {
@@ -204,7 +204,7 @@ var rid = [+id+],
 		},
 		delete: function(image) {
 			var id = image.data('properties').sg_id;
-			$.messager.confirm('Удаление','Вы точно хотите удалить картинку?',function(r){
+			$.messager.confirm(_sgLang['delete'],_sgLang['are_you_sure_to_delete'],function(r){
     			if (r){
         			$.post(
 						"[+url+]?mode=remove", 
@@ -214,7 +214,7 @@ var rid = [+id+],
 							if(data.success) {
 								$('#sg_pages').pagination('select');
 							} else {
-								$.messager.alert('Ошибка','Не удалось удалить картинку');
+								$.messager.alert(_sgLang['error'],_sgLang['delete_fail']);
 							}
 						}
 					);
@@ -230,7 +230,7 @@ var rid = [+id+],
 			    });
 		    }
 		    ids = ids.join();
-		    $.messager.confirm('Удаление','Вы точно хотите удалить выделенные картинки?',function(r){
+		    $.messager.confirm(_sgLang['delete'],_sgLang['are_you_sure_to_delete_many'],function(r){
     			if (r){
         			$.post(
 						"[+url+]?mode=removeAll", 
@@ -241,7 +241,7 @@ var rid = [+id+],
 								$('#sg_pages').pagination('select');
 								$('.btn-deleteAll').parent().parent().hide();
 							} else {
-								$.messager.alert('Ошибка','Не удалось удалить');
+								$.messager.alert(_sgLang['error'],_sgLang['delete_fail']);
 							}
 						}
 					);
@@ -250,7 +250,7 @@ var rid = [+id+],
 		},
 		edit: function(image) {
 			var data = image.data('properties');
-			var editForm = $('<div id="sgEdit"><div class="sgRow"><div style="font-size:0;text-align:center;"><img src="[+site_url+]'+data.sg_image+'"></div><div><table><tr><td class="rowTitle">ID</td><td>'+data.sg_id+'</td></tr><tr><td class="rowTitle">Файл</td><td>'+data.sg_image+'</td></tr><tr><td class="rowTitle">Размер</td><td>'+data.sg_properties.width+'x'+data.sg_properties.height+', '+this.bytesToSize(data.sg_properties.size)+'</td></tr><tr><td class="rowTitle">Добавлен</td><td>'+data.sg_createdon+'</td></tr></table></div></div><div class="sgRow"><div><form id="sgForm"><input type="hidden" name="sg_id" value="'+data.sg_id+'"><label>Название</label><input name="sg_title" maxlength="255" type="text" value="'+this.escape(data.sg_title)+'"><label>Описание</label><textarea name="sg_description">'+this.escape(data.sg_description)+'</textarea><label>Дополнительно</label><input name="sg_add" type="text" value="'+this.escape(data.sg_add)+'"><label>Показывать</label><input type="checkbox" name="sg_isactive" value="1" '+ (parseInt(data.sg_isactive) ? 'checked' : '')+'>Да</form></div></div><div style="clear:both;padding:10px;float:right;"><div id="sgEditSave" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/save.png">Сохранить</div></div><div id="sgEditCancel" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/stop.png">Отменить</div></div></div></div>');
+			var editForm = $('<div id="sgEdit"><div class="sgRow"><div style="font-size:0;text-align:center;"><img src="[+site_url+]'+data.sg_image+'"></div><div><table><tr><td class="rowTitle">ID</td><td>'+data.sg_id+'</td></tr><tr><td class="rowTitle">'+_sgLang['file']+'</td><td>'+data.sg_image+'</td></tr><tr><td class="rowTitle">'+_sgLang['size']+'</td><td>'+data.sg_properties.width+'x'+data.sg_properties.height+', '+this.bytesToSize(data.sg_properties.size)+'</td></tr><tr><td class="rowTitle">'+_sgLang['createdon']+'</td><td>'+data.sg_createdon+'</td></tr></table></div></div><div class="sgRow"><div><form id="sgForm"><input type="hidden" name="sg_id" value="'+data.sg_id+'"><label>'+_sgLang['title']+'</label><input name="sg_title" maxlength="255" type="text" value="'+this.escape(data.sg_title)+'"><label>'+_sgLang['description']+'</label><textarea name="sg_description">'+this.escape(data.sg_description)+'</textarea><label>'+_sgLang['add']+'</label><input name="sg_add" type="text" value="'+this.escape(data.sg_add)+'"><label>'+_sgLang['show']+'</label><input type="checkbox" name="sg_isactive" value="1" '+ (parseInt(data.sg_isactive) ? 'checked' : '')+'>'+_sgLang['yes']+'</form></div></div><div style="clear:both;padding:10px;float:right;"><div id="sgEditSave" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/save.png">'+_sgLang['save']+'</div></div><div id="sgEditCancel" class="btn btn-right"><div class="btn-text"><img src="[+manager_url+]media/style/[+theme+]/images/icons/stop.png">'+_sgLang['cancel']+'</div></div></div></div>');
 			editForm.window({
     			modal:true,
     			title:sgHelper.escape(this.stripText(data.sg_title,80)),
@@ -273,7 +273,7 @@ var rid = [+id+],
 								$('#sgEdit').window('close',true);
 								$('#sg_pages').pagination('select');
 							} else {
-								$.messager.alert('Ошибка','Не удалось сохранить данные.');
+								$.messager.alert(_sgLang['error'],_sgLang['save_fail']);
 							}
 						})
     				})
@@ -304,7 +304,7 @@ var rid = [+id+],
 			    .replace(/"/g, '&quot;');
 		},
 		refresh: function() {
-			$.messager.confirm('Обновление превью','Эта операция может занять много времени. Вы точно хотите продолжить?',function(r){
+			$.messager.confirm(_sgLang['refresh_previews'],_sgLang['are_you_sure_to_refresh'],function(r){
     			if (r){
         			$.post(
 						"[+url+]?mode=refresh", 

@@ -166,6 +166,9 @@ switch ($mode) {
 		header('Content-Type: image/jpeg');
 		readfile($file);
 		break;
+	case 'refresh':
+		$out['success'] = true;
+		break;
 	default:
 		if (!$rid) die();
 		$fields = "id,image,title,description,isactive,properties,createdon,index,add";

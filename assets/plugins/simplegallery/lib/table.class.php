@@ -118,6 +118,9 @@ class sgData extends \autoTable {
 		}
 	}
 
+	public function refresh() {
+		$this->invokeEvent('OnSimpleGalleryRefresh',$this->field,true);
+	}
 	public function makeThumb($folder,$url,$options) {
 		if (empty($url)) return false;
 		include_once($this->modx->config['base_path'].'assets/snippets/phpthumb/phpthumb.class.php');
