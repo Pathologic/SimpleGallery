@@ -115,9 +115,11 @@ var rid = [+id+],
 			    onSelectPage:function(pageNumber, pageSize){
 					$(this).pagination('loading');
 						$.post("[+url+]", { rows: pageSize, page: pageNumber, sg_rid: [+id+] }, function(data) {
-							var result = $.parseJSON(data);
-							$('#sg_pages').pagination('refresh',{total: result.total});
-							sgHelper.renderImages(result.rows);
+							if (sgHelper.isValidJSON(data)) {
+								var result = $.parseJSON(data);
+								$('#sg_pages').pagination('refresh',{total: result.total});
+								sgHelper.renderImages(result.rows);
+							}
 						});
 					$(this).pagination('loaded');
 				}
@@ -199,7 +201,13 @@ var rid = [+id+],
 							targetIndex: targetIndex 
 						},
 						function(data) {
-							data = $.parseJSON(data);
+							if (sgHelper.isValidJSON(data)) {
+								data = $.parseJSON(data);
+							} else {
+								data = {
+									success:false
+								}
+							}
 							if(!data.success) {
 								$('#sg_pages').pagination('select');
 							} 
@@ -263,7 +271,13 @@ var rid = [+id+],
 						"[+url+]?mode=remove", 
 						{id:id},
 						function(data) {
-							data = $.parseJSON(data);
+							if (sgHelper.isValidJSON(data)) {
+								data = $.parseJSON(data);
+							} else {
+								data = {
+									success:false
+								}
+							}
 							if(data.success) {
 								$('#sg_pages').pagination('select');
 							} else {
@@ -289,7 +303,13 @@ var rid = [+id+],
 						"[+url+]?mode=removeAll", 
 						{ids:ids},
 						function(data) {
-							data = $.parseJSON(data);
+							if (sgHelper.isValidJSON(data)) {
+								data = $.parseJSON(data);
+							} else {
+								data = {
+									success:false
+								}
+							}
 							if(data.success) {
 								$('#sg_pages').pagination('select');
 								$('.btn-deleteAll').parent().parent().hide();
@@ -321,7 +341,13 @@ var rid = [+id+],
 						"[+url+]?mode=edit", 
 						$('#sgForm').serialize(),
 						function(data) {
-							data = $.parseJSON(data);
+							if (sgHelper.isValidJSON(data)) {
+								data = $.parseJSON(data);
+							} else {
+								data = {
+									success:false
+								}
+							}
 							if(data.success) {
 								$('#sgEdit').window('close',true);
 								$('#sg_pages').pagination('select');
@@ -355,6 +381,13 @@ var rid = [+id+],
 			    .replace(/>/g, '&gt;')
 			    .replace(/</g, '&lt;')
 			    .replace(/"/g, '&quot;');
+		},
+		isValidJSON: function(src) {
+		    var filtered = src;
+		    filtered = filtered.replace(/\\["\\\/bfnrtu]/g, '@');
+		    filtered = filtered.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
+		    filtered = filtered.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
+		    return (/^[\],:{}\s]*$/.test(filtered));
 		},
 		refresh: function() {
 			$.messager.confirm(_sgLang['refresh_previews'],_sgLang['are_you_sure_to_refresh'],function(r){
