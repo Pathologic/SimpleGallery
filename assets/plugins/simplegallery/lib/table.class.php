@@ -24,7 +24,7 @@ class sgData extends \autoTable {
 
 	public function __construct($modx, $debug = false) {
 		parent::__construct($modx, $debug);
-        $this->_table = $this->makeTable($this->table);
+        $this->_table['sg_images'] = $this->makeTable($this->table);
         $this->modx = $modx;
         $this->params = $modx->event->params;
 	}
@@ -37,7 +37,7 @@ class sgData extends \autoTable {
 		$fields = $this->edit($min)->toArray();
 
 		$ids = implode(',',$ids);
-		$images = $this->modx->db->select('`sg_id`,`sg_image`',$this->_table,"`sg_id` IN ($ids)");
+		$images = $this->modx->db->select('`sg_id`,`sg_image`',$this->_table['sg_images'],"`sg_id` IN ($ids)");
 		$out = parent::delete($ids);
 		while ($row = $this->modx->db->getRow($images)) {
 			$this->deleteThumb($row['sg_image']);
@@ -49,7 +49,7 @@ class sgData extends \autoTable {
 				'filename'	=>	$filename
 				),true);
 		}
-		$rows = $this->modx->db->update( "`sg_index`=`sg_index`-$count", $this->_table, '`sg_rid`='.($fields['sg_rid'] ? $fields['sg_rid'] : 0).' AND `sg_id` > ' . $min);
+		$rows = $this->modx->db->update( "`sg_index`=`sg_index`-$count", $this->_table['sg_images'], '`sg_rid`='.($fields['sg_rid'] ? $fields['sg_rid'] : 0).' AND `sg_id` > ' . $min);
 		return $out;
 	}
 	
@@ -77,11 +77,11 @@ class sgData extends \autoTable {
 		$rid = (int)$rid;
 		/* more refactoring  needed */
 		if ($sourceIndex < $targetIndex) {
-			$rows = $this->modx->db->update('`sg_index`=`sg_index`-1',$this->_table,'`sg_index`<='.$targetIndex.' AND `sg_index`>='.$sourceIndex.' AND `sg_rid`='.$rid);		
+			$rows = $this->modx->db->update('`sg_index`=`sg_index`-1',$this->_table['sg_images'],'`sg_index`<='.$targetIndex.' AND `sg_index`>='.$sourceIndex.' AND `sg_rid`='.$rid);		
 		} else {
-			$rows = $this->modx->db->update('`sg_index`=`sg_index`+1',$this->_table,'`sg_index`<'.$sourceIndex.' AND `sg_index`>='.$targetIndex.' AND `sg_rid`='.$rid);
+			$rows = $this->modx->db->update('`sg_index`=`sg_index`+1',$this->_table['sg_images'],'`sg_index`<'.$sourceIndex.' AND `sg_index`>='.$targetIndex.' AND `sg_rid`='.$rid);
 		}
-		$rows = $this->modx->db->update('`sg_index`='.$targetIndex,$this->_table,'`sg_id`='.$sourceId);				
+		$rows = $this->modx->db->update('`sg_index`='.$targetIndex,$this->_table['sg_images'],'`sg_id`='.$sourceId);				
 
 		return $rows;
 	}
@@ -102,7 +102,7 @@ class sgData extends \autoTable {
 
 	public function save($fire_events = null, $clearCache = false) {
 		if ($this->newDoc) {
-			$rows = $this->modx->db->select('`sg_id`', $this->_table, '`sg_rid`='.$this->field['sg_rid']);
+			$rows = $this->modx->db->select('`sg_id`', $this->_table['sg_images'], '`sg_rid`='.$this->field['sg_rid']);
 			$this->field['sg_index'] = $this->modx->db->getRecordCount($rows);
 			$this->field['sg_createdon'] = date('Y-m-d H:i:s');
 		}
