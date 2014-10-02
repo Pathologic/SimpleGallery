@@ -15,6 +15,18 @@
 		"Sortable":{
 			"version":"0.5.1",
 			"src":"assets/plugins/simplegallery/js/sortable/Sortable.min.js"
+		},
+		"SimpleGallery":{
+			"version":"0.9",
+			"src":"assets/plugins/simplegallery/js/plugin/simplegallery.js"
+		},
+		"easyui-lang-[+lang+]":{
+			"version":"0.9",
+			"src":"assets/plugins/simplegallery/js/easy-ui/locale/easyui-lang-[+lang+].js"
+		},
+		"sg-lang-[+lang+]":{
+			"version":"0.9",
+			"src":"assets/plugins/simplegallery/js/lang/[+lang+].js"
 		}
 	}
 }

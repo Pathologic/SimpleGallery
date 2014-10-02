@@ -27,15 +27,14 @@ class sgPlugin {
 		}
 		rmdir($dirPath);
     }
-	    
-    public function render() {
+
+    public function prerender() {
+    	$output = '';
     	$templates = isset($this->params['templates']) ? explode(',',$this->params['templates']) : false;
 		$roles = isset($this->params['roles']) ? explode(',',$this->params['roles']) : false;
 		if (($templates && !in_array($this->params['template'],$templates)) || ($roles && !in_array($_SESSION['mgrRole'],$roles))) return false;
 		
 		$createTable = isset($this->params['createTable']) ? $this->params['createTable'] : 'No';
-		$w = isset($this->params['w']) ? $this->params['w'] : '200';
-		$h = isset($this->params['h']) ? $this->params['h'] : '150';
 		if ($createTable == 'Yes') {
 			$output = '<script type="text/javascript">alert("';
 			if ($this->createTable()) {
@@ -46,23 +45,39 @@ class sgPlugin {
 			$output .= '");</script>';
 			return $output;
 		}
-		
 		$plugins = $this->modx->pluginEvent;
-		$js = '';
 		if(array_search('ManagerManager',$plugins['OnDocFormRender']) === false) {
-			$js = '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/js/jquery.min.js"></script>';
+			$output .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/js/jquery.min.js"></script>';
 		}
-
-		$sql = "SELECT * FROM {$this->modx->getFullTableName('sg_images')} WHERE `sg_rid` = {$this->params['id']}";
-		$result = $this->modx->db->query($sql);
-		$total  = $this->modx->db->getRecordCount($result);
 		$tpl = MODX_BASE_PATH.'assets/plugins/simplegallery/tpl/simplegallery.tpl';
 		if(file_exists($tpl)) {
-			$tpl = file_get_contents($tpl);
-		} else {
-			return false;
+			$output .= '[+js+]'.file_get_contents($tpl);
 		}
+		return $output;
+    }
+
+    public function renderJS($list,$ph = array()) {
+    	$js = '';
+    	$scripts = MODX_BASE_PATH.'assets/plugins/simplegallery/js/'.$list;
+		if(file_exists($scripts)) {
+			$scripts = @file_get_contents($scripts);
+			$scripts = $this->DLTemplate->parseChunk('@CODE:'.$scripts,$ph);
+			$scripts = json_decode($scripts,true);
+			foreach ($scripts['scripts'] as $name => $params) {
+				if (!isset($this->modx->loadedjscripts[$name]) && file_exists(MODX_BASE_PATH.$params['src'])) {
+					$this->modx->loadedjscripts[$name] = array('version'=>$params['version']);
+					$js .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].$params['src'].'"></script>';
+				};
+			}
+		}
+		return $js;
+    }
+	    
+    public function render() {
+		$output = $this->prerender();
+
 		$ph = array(
+			'lang'			=> 	$this->lang_attribute,
 			'id'			=>	$this->params['id'],
 			'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php',
 			'theme'			=>  $this->modx->config['manager_theme'],
@@ -71,40 +86,12 @@ class sgPlugin {
 			'manager_url'	=>	MODX_MANAGER_URL,
 			'thumb_prefix' 	=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php?mode=thumb&url=',
 			'kcfinder_url'	=> 	MODX_MANAGER_URL."media/browser/mcpuk/browse.php?type=images",
-			'w' 			=> 	$w,
-			'h' 			=> 	$h,
-			'total'			=> 	$total,
+			'w' 			=> 	isset($this->params['w']) ? $this->params['w'] : '200',
+			'h' 			=> 	isset($this->params['h']) ? $this->params['h'] : '150',
 			'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">\'+_sgLang[\'refresh_previews\']+\'</div></div>' : ''
 			);
-		$scripts = MODX_BASE_PATH.'assets/plugins/simplegallery/js/scripts.json';
-		if(file_exists($scripts)) {
-			$scripts = @file_get_contents($scripts);
-			$scripts = json_decode($scripts,true);
-			foreach ($scripts['scripts'] as $name => $params) {
-				if (!isset($this->modx->loadedjscripts[$name])) {
-					$this->modx->loadedjscripts[$name] = array('version'=>$params['version']);
-					$js .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].$params['src'].'"></script>';
-				};
-			}
-		}
-
-		$easyuiLangJs = 'assets/plugins/simplegallery/js/easy-ui/locale/easyui-lang-'.$this->lang_attribute.'.js';
-		if(file_exists(MODX_BASE_PATH.$easyuiLangJs)) {
-			if (!isset($this->modx->loadedjscripts['easyui-lang-'.$this->lang_attribute])) {
-				$this->modx->loadedjscripts['easyui-lang-'.$this->lang_attribute] = array('version'=>'1.4');
-				$js .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].$easyuiLangJs.'"></script>';
-			}
-		}
-
-		$pluginLangJs = 'assets/plugins/simplegallery/js/lang/'.$this->lang_attribute.'.js';
-		if(file_exists(MODX_BASE_PATH.$pluginLangJs)) {
-			if (!isset($this->modx->loadedjscripts['sg-lang-'.$this->lang_attribute])) {
-				$this->modx->loadedjscripts['sg-lang-'.$this->lang_attribute] = array('version'=>'1.0');
-				$js .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].$pluginLangJs.'"></script>';
-			}
-		}
-		
-		$output = $this->DLTemplate->parseChunk('@CODE:'.$js.$tpl,$ph);
+		$ph['js'] = $this->renderJS('scripts.json',$ph) . $this->renderJS('custom.json',$ph);
+		$output = $this->DLTemplate->parseChunk('@CODE:'.$output,$ph);
 		return $output; 
     }
     public function createTable() {
