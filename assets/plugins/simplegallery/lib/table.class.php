@@ -52,7 +52,7 @@ class sgData extends \autoTable {
 		$index = $fields['sg_index'] - 1;
 		$sql = "SET @index := $index";
 		$rows = $this->modx->db->query($sql);
-		$sql = "UPDATE {$this->_table['sg_images']} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id`>$min AND `sg_rid`={$fields['sg_rid']}) ORDER BY `sg_id` ASC";
+		$sql = "UPDATE {$this->_table['sg_images']} SET `sg_index` = (@index := @index + 1) WHERE (`sg_index`>$index AND `sg_rid`={$fields['sg_rid']}) ORDER BY `sg_index` ASC";
 		$rows = $this->modx->db->query($sql);
 		return $out;
 	}
