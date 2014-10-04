@@ -61,6 +61,10 @@ var sgHelper = {};
 					$('.progress','#sgFilesListRow'+sgFileId).text(Math.floor(100*part)+'%');
 				},
             	onFileComplete: function(e,uiE) {
+            		var errorCode = parseInt(uiE.result.data._FILES.sg_files.error);
+            		if (errorCode) {
+            			$('.progress','#sgFilesListRow'+sgFileId).html('<img src="'+_modxManagerUrl+'media/style/'+_modxTheme+'/images/icons/error.png'+'" title="'+_sgUploadResult[errorCode]+'">');
+            		}
     				$('#sgProgress > span > span').text(sgFileId);
             	},
             	onComplete: function(e,uiE) {

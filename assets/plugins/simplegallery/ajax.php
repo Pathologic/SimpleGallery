@@ -65,13 +65,14 @@ switch ($mode) {
 	        				))->save();
         				} else {
         					@unlink($uploadDir.$name);
+        					$files['sg_files']['error'] = 100;
         				}
     				}
     			} else {
-    				$files['sg_files']['error'] = UPLOAD_ERR_NO_FILE;
+    				$files['sg_files']['error'] = 101;
     			}
-    		}
-				// Fetch all image-info from files list
+    		} 
+
 			//fetchImages($files, $images);
     		$json	= array(
 				'data'	=> array('_REQUEST' => $_REQUEST, '_FILES' => $files)

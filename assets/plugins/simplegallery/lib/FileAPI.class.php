@@ -9,7 +9,6 @@
 		private static function init(){
 			if( is_null(self::$_files) ){
 				self::$_files = array();
-
 				// http://www.php.net/manual/ru/reserved.variables.files.php#106558
 				foreach( $_FILES as $firstNameKey => $arFileDescriptions ){
 					foreach( $arFileDescriptions as $fileDescriptionParam => $mixedValue ){
