@@ -35,7 +35,6 @@ class sgData extends \autoTable {
 		if (!$min) return false;
 		$count = count($ids);
 		$fields = $this->edit($min)->toArray();
-
 		$ids = implode(',',$ids);
 		$images = $this->modx->db->select('`sg_id`,`sg_image`',$this->_table['sg_images'],"`sg_id` IN ($ids)");
 		$out = parent::delete($ids);
@@ -49,7 +48,12 @@ class sgData extends \autoTable {
 				'filename'	=>	$filename
 				),true);
 		}
-		$rows = $this->modx->db->update( "`sg_index`=`sg_index`-$count", $this->_table['sg_images'], '`sg_rid`='.($fields['sg_rid'] ? $fields['sg_rid'] : 0).' AND `sg_id` > ' . $min);
+
+		$index = $fields['sg_index'] - 1;
+		$sql = "SET @index := $index";
+		$rows = $this->modx->db->query($sql);
+		$sql = "UPDATE {$this->_table['sg_images']} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id`>$min AND `sg_rid`={$fields['sg_rid']}) ORDER BY `sg_id` ASC";
+		$rows = $this->modx->db->query($sql);
 		return $out;
 	}
 	
