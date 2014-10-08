@@ -22,10 +22,12 @@ class sgPlugin {
     }
 
     public function rmDir($dirPath) {
-    	foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dirPath, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
-    		$path->isDir() ? rmdir($path->getPathname()) : unlink($path->getPathname());
+    	if (is_dir($dirPath)) {
+    		foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dirPath, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
+    			$path->isDir() ? rmdir($path->getPathname()) : unlink($path->getPathname());
+			}
+			rmdir($dirPath);
 		}
-		rmdir($dirPath);
     }
 
     public function prerender() {
