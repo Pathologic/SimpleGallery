@@ -94,7 +94,7 @@ user-select: none;
 	color:red;
 	font-style: italic;
 }
-.sg_image .del {
+.sg_image .del, .sg_image .edit {
 	width:16px;
 	height:16px;
 	display: block;

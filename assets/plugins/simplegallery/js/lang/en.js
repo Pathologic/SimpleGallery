@@ -23,6 +23,7 @@ _sgLang['save'] = 'Save';
 _sgLang['save_fail'] = 'Failed to save.';
 _sgLang['refresh_previews'] = 'Refresh previews';
 _sgLang['are_you_sure_to_refresh'] = 'This process can take a lot of time. Are you sure to continue?';
+_sgLang['emptydesc'] = 'Image description is empty. Click to edit.';
 _sgUploadResult = [];
 _sgUploadResult[0] = 'File uploaded successfully';
 _sgUploadResult[1] = 'File size is greater than upload_max_filesize';

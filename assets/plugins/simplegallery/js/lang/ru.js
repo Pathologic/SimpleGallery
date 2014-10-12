@@ -23,6 +23,7 @@ _sgLang['save'] = 'Сохранить';
 _sgLang['save_fail'] = 'Не удалось сохранить';
 _sgLang['refresh_previews'] = 'Обновить превью';
 _sgLang['are_you_sure_to_refresh'] = 'Обновление может занять много времени. Вы уверены, что хотите продолжить?';
+_sgLang['emptydesc'] = 'Описание картинки не заполнено. Нажмите для редактирования.';
 _sgUploadResult = [];
 _sgUploadResult[0] = 'Файл успешно загружен';
 _sgUploadResult[1] = 'Размер файла превысил значение upload_max_filesize';

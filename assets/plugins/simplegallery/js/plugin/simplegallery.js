@@ -109,7 +109,8 @@ var sgHelper = {};
 			var placeholder = $('#sg_images');
 			placeholder.html('');
 			for (i = 0; i < len; i++) {
- 				var image = $('<div class="sg_image"><a href="javascript:void(0)" class="del"></a><img title="'+this.escape(this.stripText(rows[i].sg_description,100))+'" src="'+_xtThumbPrefix+rows[i].sg_image+'"><div class="name'+(parseInt(rows[i].sg_isactive) ? '' : ' notactive')+'">'+rows[i].sg_title+'</div></div>');
+ 				var image = $('<div class="sg_image"><a href="javascript:void(0)" class="del" title="'+_sgLang['delete']+'"></a><img title="'+this.escape(this.stripText(rows[i].sg_description,100))+'" src="'+_xtThumbPrefix+rows[i].sg_image+'"><div class="name'+(parseInt(rows[i].sg_isactive) ? '' : ' notactive')+'">'+rows[i].sg_title+'</div></div>');
+ 				if (!rows[i].sg_description.length) image.append('<a href="javascript:void(0)" class="edit" title="'+_sgLang['emptydesc']+'"></a>');
  				rows[i].sg_properties = $.parseJSON(rows[i].sg_properties);
  				image.data('properties',rows[i]);
  				placeholder.append(image);
@@ -123,6 +124,9 @@ var sgHelper = {};
     		});
     		$('.del','.sg_image').click(function(e) {
     			_this.delete($(this).parent());
+    		});
+    		$('.edit','.sg_image').click(function(e) {
+    			_this.edit($(this).parent());
     		});
 			$('.sg_image').unbind();
     		$('.sg_image').click(function(e) {

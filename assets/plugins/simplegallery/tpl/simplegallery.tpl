@@ -12,6 +12,11 @@
 .sg_image .del {
 	background: url([+manager_url+]media/style/[+theme+]/images/icons/delete.png) 0 0 no-repeat;
 }
+.sg_image .edit {
+	background: url([+manager_url+]media/style/[+theme+]/images/icons/error.png) 0 0 no-repeat;
+	left:10px;
+	top:10px;
+}
 .btn-deleteAll {
 	background: url([+manager_url+]media/style/[+theme+]/images/icons/trash.png) -2px center no-repeat;
 }
