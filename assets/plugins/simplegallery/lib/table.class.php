@@ -54,6 +54,8 @@ class sgData extends \autoTable {
 		$rows = $this->modx->db->query($sql);
 		$sql = "UPDATE {$this->_table['sg_images']} SET `sg_index` = (@index := @index + 1) WHERE (`sg_index`>$index AND `sg_rid`={$fields['sg_rid']}) ORDER BY `sg_index` ASC";
 		$rows = $this->modx->db->query($sql);
+		$sql = "ALTER TABLE {$this->_table['sg_images']} AUTO_INCREMENT = 1";
+		$rows = $this->modx->db->query($sql);
 		return $out;
 	}
 	

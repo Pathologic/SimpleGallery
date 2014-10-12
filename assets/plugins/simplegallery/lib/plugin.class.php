@@ -17,7 +17,7 @@ class sgPlugin {
         
     }
 
-    public function clearFolders($ids, $folder) {
+    public function clearFolders($ids = array(), $folder) {
 		foreach ($ids as $id) $this->rmDir($folder.$id.'/');
     }
 

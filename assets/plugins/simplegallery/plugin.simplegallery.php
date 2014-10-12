@@ -15,4 +15,7 @@ if ($e->name == 'OnEmptyTrash') {
 	$simpleGallery = new \SimpleGallery\sgPlugin($modx);
 	$simpleGallery->clearFolders($ids,MODX_BASE_PATH.$e->params['thumbsCache'].$e->params['folder']);
 	$simpleGallery->clearFolders($ids,MODX_BASE_PATH.$e->params['folder']);
+	$sql = "ALTER TABLE {$modx->getFullTableName('sg_images')} AUTO_INCREMENT = 1";
+	$rows = $modx->db->query($sql);
+
 }
