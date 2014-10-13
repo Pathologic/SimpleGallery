@@ -50,7 +50,7 @@ switch ($mode) {
         		$ext = strtolower(end(explode('.',$name)));
         		if (in_array($ext,array('png', 'jpg', 'gif', 'jpeg' ))) {
         			if (@move_uploaded_file($tmp_name, "$uploadDir/$name")) {
-        				if ($data->makeThumb('',$dir.$name,"w={$modx->config['maxImageWidth']}&h={$modx->config['maxImageHeight']}&q=96&f={$ext}")) {
+        				if (@$data->makeThumb('',$dir.$name,"w={$modx->config['maxImageWidth']}&h={$modx->config['maxImageHeight']}&q=96&f={$ext}")) {
 	        				$info = getimagesize("$uploadDir/$name");
         					$properties = array (
 	        					'width'=>$info[0],
@@ -148,10 +148,10 @@ switch ($mode) {
 		if (file_exists($file)) {
 			$info = getimagesize($file);
 			if ($w != $info[0] || $h != $info[1]) {
-				$data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
+				@$data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
 			}
 		} else {
-			$data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
+			@$data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
 		}
 		header('Content-Type: image/jpeg');
 		readfile($file);
