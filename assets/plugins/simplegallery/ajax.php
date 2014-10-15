@@ -153,7 +153,16 @@ switch ($mode) {
 		} else {
 			@$data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
 		}
-		header('Content-Type: image/jpeg');
+		session_start(); 
+		header("Cache-Control: private, max-age=10800, pre-check=10800");
+		header("Pragma: private");
+		header("Expires: " . date(DATE_RFC822,strtotime(" 360 day")));
+		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == filemtime($file))) {
+			header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($file)).' GMT', true, 304);
+  			exit;
+		}
+		header("Content-type: image/jpeg");
+		header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
 		readfile($file);
 		break;
 	case 'refresh':
