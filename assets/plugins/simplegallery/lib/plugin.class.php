@@ -34,8 +34,7 @@ class sgPlugin {
     	$output = '';
     	$templates = isset($this->params['templates']) ? explode(',',$this->params['templates']) : false;
 		$roles = isset($this->params['roles']) ? explode(',',$this->params['roles']) : false;
-		if (($templates && !in_array($this->params['template'],$templates)) || ($roles && !in_array($_SESSION['mgrRole'],$roles))) return false;
-		
+		if (!$templates || ($templates && !in_array($this->params['template'],$templates)) || ($roles && !in_array($_SESSION['mgrRole'],$roles))) return false;
 		$createTable = isset($this->params['createTable']) ? $this->params['createTable'] : 'No';
 		if ($createTable == 'Yes') {
 			$output = '<script type="text/javascript">alert("';
@@ -77,23 +76,29 @@ class sgPlugin {
 	    
     public function render() {
 		$output = $this->prerender();
-
-		$ph = array(
-			'lang'			=> 	$this->lang_attribute,
-			'id'			=>	$this->params['id'],
-			'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php',
-			'theme'			=>  $this->modx->config['manager_theme'],
-			'tabName'		=>	$this->params['tabName'],
-			'site_url'		=>	$this->modx->config['site_url'],
-			'manager_url'	=>	MODX_MANAGER_URL,
-			'thumb_prefix' 	=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php?mode=thumb&url=',
-			'kcfinder_url'	=> 	MODX_MANAGER_URL."media/browser/mcpuk/browse.php?type=images",
-			'w' 			=> 	isset($this->params['w']) ? $this->params['w'] : '200',
-			'h' 			=> 	isset($this->params['h']) ? $this->params['h'] : '150',
-			'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">\'+_sgLang[\'refresh_previews\']+\'</div></div>' : ''
-			);
-		$ph['js'] = $this->renderJS('scripts.json',$ph) . $this->renderJS('custom.json',$ph);
-		$output = $this->DLTemplate->parseChunk('@CODE:'.$output,$ph);
+		if ($output !== false) {
+			$templates = preg_replace('/[^0-9,]+/', '', $this->params['templates']);
+			$table = $this->modx->getFullTableName('site_templates');
+			$sql = "SELECT id,templatename FROM $table WHERE id IN ($templates) ORDER BY templatename ASC";
+			$tpls = json_encode($this->modx->db->makeArray($this->modx->db->query($sql)));
+			$ph = array(
+				'lang'			=> 	$this->lang_attribute,
+				'id'			=>	$this->params['id'],
+				'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php',
+				'theme'			=>  MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'],
+				'tabName'		=>	$this->params['tabName'],
+				'site_url'		=>	$this->modx->config['site_url'],
+				'manager_url'	=>	MODX_MANAGER_URL,
+				'thumb_prefix' 	=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php?mode=thumb&url=',
+				'kcfinder_url'	=> 	MODX_MANAGER_URL."media/browser/mcpuk/browse.php?type=images",
+				'w' 			=> 	isset($this->params['w']) ? $this->params['w'] : '200',
+				'h' 			=> 	isset($this->params['h']) ? $this->params['h'] : '150',
+				'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">\'+_sgLang[\'refresh_previews\']+\'</div></div>' : '',
+				'tpls'			=>	$tpls
+				);
+			$ph['js'] = $this->renderJS('scripts.json',$ph) . $this->renderJS('custom.json',$ph);
+			$output = $this->DLTemplate->parseChunk('@CODE:'.$output,$ph);
+		}
 		return $output; 
     }
     public function createTable() {

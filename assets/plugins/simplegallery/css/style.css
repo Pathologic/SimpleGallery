@@ -147,7 +147,7 @@ user-select: none;
 #sgProgress {
 	padding:10px;
 }
-#sgProgress div {
+#sgProgress div, #sgRefreshProgress div {
 	width:0;
 	height:10px;
 	background: green;
@@ -179,4 +179,14 @@ user-select: none;
 }
 #sgFilesList table tbody tr:nth-child(odd) {
 	background-color: #fff;
+}
+#sgRefreshTpls, #sgRefreshProgress {
+	padding:10px;
+}
+#sgRefreshTpls label {
+	display: inline-block;
+	width:200px;
+}
+#sgRefreshTpls input[type="checkbox"] {
+	vertical-align: bottom;
 }
