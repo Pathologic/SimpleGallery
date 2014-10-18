@@ -77,10 +77,13 @@ class sgPlugin {
     public function render() {
 		$output = $this->prerender();
 		if ($output !== false) {
-			$templates = preg_replace('/[^0-9,]+/', '', $this->params['templates']);
-			$table = $this->modx->getFullTableName('site_templates');
-			$sql = "SELECT id,templatename FROM $table WHERE id IN ($templates) ORDER BY templatename ASC";
-			$tpls = json_encode($this->modx->db->makeArray($this->modx->db->query($sql)));
+			$templates = trim(preg_replace('/,,+/',',',preg_replace('/[^0-9,]+/', '', $this->params['templates'])),',');
+			$tpls = '[]';
+			if (!empty($templates)) {
+				$table = $this->modx->getFullTableName('site_templates');
+				$sql = "SELECT id,templatename FROM $table WHERE id IN ($templates) ORDER BY templatename ASC";
+				$tpls = json_encode($this->modx->db->makeArray($this->modx->db->query($sql)));
+			}
 			$ph = array(
 				'lang'			=> 	$this->lang_attribute,
 				'id'			=>	$this->params['id'],
