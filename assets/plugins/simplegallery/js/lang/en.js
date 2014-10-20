@@ -26,6 +26,7 @@ _sgLang['are_you_sure_to_refresh'] = 'This process can take a lot of time. Are y
 _sgLang['emptydesc'] = 'Image description is empty. Click to edit.';
 _sgLang['coninue'] = 'Continue';
 _sgLang['select_tpls'] = 'Select templates:';
+_sgLang['save_fail'] = 'Failed to refresh previews';
 _sgUploadResult = [];
 _sgUploadResult[0] = 'File uploaded successfully';
 _sgUploadResult[1] = 'File size is greater than upload_max_filesize';

@@ -26,6 +26,7 @@ _sgLang['are_you_sure_to_refresh'] = 'Обновление может занят
 _sgLang['emptydesc'] = 'Описание картинки не заполнено. Нажмите для редактирования.';
 _sgLang['continue'] = 'Продолжить';
 _sgLang['select_tpls'] = 'Выберите шаблоны:';
+_sgLang['save_fail'] = 'Не удалось обновить превью.';
 _sgUploadResult = [];
 _sgUploadResult[0] = 'Файл успешно загружен';
 _sgUploadResult[1] = 'Размер файла превысил значение upload_max_filesize';
