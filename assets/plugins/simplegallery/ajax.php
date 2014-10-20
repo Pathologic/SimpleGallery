@@ -165,7 +165,56 @@ switch ($mode) {
 		header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
 		readfile($file);
 		break;
-	case 'refresh':
+	case 'initRefresh':
+		unset($_SESSION['refresh']);
+		$out['success'] = false;
+		if (isset($_REQUEST['template'])) {
+			$templates = array();
+			foreach ($_REQUEST['template'] as $template) {
+				$templates[] = (int)$template['value'];
+			}
+			$templates = implode(',',$templates);
+			$templates = $_SESSION['request']['templates'] = trim(preg_replace('/,,+/',',',preg_replace('/[^0-9,]+/', '', $templates)),',');
+			if (!empty($templates)) {
+				$table = $modx->getFullTableName('site_content');
+				$sql = "SELECT id FROM $table WHERE template IN ($templates)";
+				$rows = $modx->db->makeArray($modx->db->query($sql));
+				$ids = array();
+				foreach ($rows as $row) {
+					$ids[] = $row['id'];
+				}
+				$ids = $_SESSION['refresh']['ids'] = implode(',',$ids);
+				$table = $modx->getFullTableName('sg_images');
+				$sql = "SELECT sg_id FROM $table WHERE sg_rid IN ($ids) ORDER BY sg_id ASC";
+				$rows = $modx->db->query($sql);
+				$total = $modx->db->getRecordCount($rows);
+				$row = $modx->db->getRow($rows);
+				$_SESSION['refresh']['minId'] = $row['sg_id'];
+				$out['success'] = true;
+				$out['total'] = (int)$_SESSION['refresh']['total'] = $total;
+			}
+		}
+		break;
+	case 'getRefreshStatus':
+		$out['success'] = true;
+		if (!isset($_SESSION['refresh']['processed'])) {
+			$out['processed'] = 0;
+		} else {
+		 	$out['processed'] = $_SESSION['refresh']['processed'] < $_SESSION['refresh']['total'] ? $_SESSION['refresh']['processed'] : $_SESSION['refresh']['total'];
+		}
+		break;
+	case 'processRefresh':
+		$ids = trim(preg_replace('/,,+/',',',preg_replace('/[^0-9,]+/', '', $_SESSION['refresh']['ids'])),',');
+		$table = $modx->getFullTableName('sg_images');
+		$minId = (int)$_SESSION['refresh']['minId'];
+		$sql = "SELECT sg_id FROM $table WHERE sg_rid IN ($ids) AND sg_id >= $minId ORDER BY sg_id ASC";
+		$rows = $modx->db->query($sql);
+		while ($image = $modx->db->getRow($rows)) {
+			$data->edit($image['sg_id']);
+			$result = $data->refresh();
+			$_SESSION['refresh']['minId'] = $image['sg_id'];
+			$_SESSION['refresh']['processed'] ++;
+		}
 		$out['success'] = true;
 		break;
 	default:

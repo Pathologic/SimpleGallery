@@ -372,6 +372,69 @@ var sgHelper = {};
 		    return (/^[\],:{}\s]*$/.test(filtered));
 		},
 		refresh: function() {
+			var templates = [],
+				total = 0;
+			function processRefresh() {
+			    $.ajax({
+		            url: _xtAjaxUrl+'?mode=processRefresh',
+		            type: 'POST',
+		            timeout: 25000,
+		            data: {
+		            	template:templates
+		            },
+		            success: function(data, textStatus){
+		                if (sgHelper.isValidJSON(data)) {
+							data = $.parseJSON(data);
+						} else {
+							data = {
+								success:false
+							}
+						}
+						if(data.success) {
+							refreshStatus();
+						} else {
+							$.messager.alert(_sgLang['error'],_sgLang['refresh_fail']);
+						}
+		            },
+		            complete: function(xhr, textStatus){
+		                if (textStatus != "success") {
+                            refreshStatus();		
+                        }
+		            }
+			    });
+			}
+			function refreshStatus() {
+				$.post(
+					_xtAjaxUrl+'?mode=getRefreshStatus', 
+					{
+						template:templates
+					},
+					function(data) {
+						if (sgHelper.isValidJSON(data)) {
+							data = $.parseJSON(data);
+						} else {
+							data = {
+								success:false
+							}
+						}
+						if(data.success) {
+							$('#sgRefreshProgress > span').text(data.processed+' '+_sgLang['from']+' '+total);
+							var part = data.processed / total;
+    						$('#sgRefreshProgress > div').css('width',100*part+'%');
+    						if (data.processed < total) {
+    							processRefresh();
+    						} else {
+    							$('#sgRefreshStart > div').html('<img src="'+_modxTheme+'/images/icons/delete.png"><span>'+_sgLang['close']+'</span>');
+    							$('#sgRefreshStart').unbind('click').click(function(e) {
+    								$('#sgRefresh').window('close');
+    							})
+    						}
+						} else {
+							$.messager.alert(_sgLang['error'],_sgLang['refresh_fail']);
+						}
+					}
+				);
+			}
 			$.messager.confirm(_sgLang['refresh_previews'],_sgLang['are_you_sure_to_refresh'],function(r){
     			if (r){
     				var tpls = $.parseJSON(_xtTpls),
@@ -392,11 +455,26 @@ var sgHelper = {};
 		    			onOpen: function() {
 	            			$('body').css('overflow','hidden');
 	            			$('#sgRefreshStart').click(function(e){
-	            				$.post(
-									_xtAjaxUrl+'?mode=refresh', 
-									{},
+	            				templates = $('#sgRefreshTpls > form').serializeArray();
+					            $.post(
+									_xtAjaxUrl+'?mode=initRefresh', 
+									{
+										template:templates
+									},
 									function(data) {
-										data = $.parseJSON(data);
+										if (sgHelper.isValidJSON(data)) {
+											data = $.parseJSON(data);
+										} else {
+											data = {
+												success:false
+											}
+										}
+										if(data.success) {
+											total = data.total;
+											refreshStatus();
+										} else {
+											$.messager.alert(_sgLang['error'],_sgLang['refresh_fail']);
+										}
 									}
 								);
 	            			})
@@ -409,6 +487,6 @@ var sgHelper = {};
 		    		});
     			}
 			});
-		}
+		},
 	}
 })(jQuery);
