@@ -112,22 +112,32 @@ class sgData extends \autoTable {
 			$this->field['sg_index'] = $this->modx->db->getRecordCount($rows);
 			$this->field['sg_createdon'] = date('Y-m-d H:i:s');
 		}
+		$rows = $this->modx->db->select('template', $this->modx->getFullTableName('site_content'), 'id='.$this->field['sg_rid']);
+		$row = $this->modx->db->getRow($rows);
+		$template = $row['template'];
 		if (parent::save()) {
 			if ($this->newDoc) {
 				$filename = end(explode('/',$this->field['sg_image']));
 				$filepath = MODX_BASE_PATH.str_replace('/'.$filename, '', $this->field['sg_image']);
 				$this->invokeEvent('OnFileBrowserUpload',array(
 					'filepath' => $filepath,
-					'filename' => $filename
+					'filename' => $filename,
+					'template' => $template
 					),true);
 			} 
-			$this->invokeEvent('OnSimpleGallerySave',$this->field,true);
+			$fields = $this->field;
+			$fields['template'] = $template;
+			$this->invokeEvent('OnSimpleGallerySave',$fields,true);
 		}
 	}
 
-	public function refresh() {
-		$this->invokeEvent('OnSimpleGalleryRefresh',$this->field,true);
+	public function refresh($id,$template) {
+		$this->edit($id);
+		$fields = $this->field;
+		$fields['template'] = $template;
+		$this->invokeEvent('OnSimpleGalleryRefresh',$fields,true);
 	}
+
 	public function makeThumb($folder,$url,$options) {
 		if (empty($url)) return false;
 		include_once($this->modx->config['base_path'].'assets/snippets/phpthumb/phpthumb.class.php');
