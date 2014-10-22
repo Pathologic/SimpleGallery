@@ -48,7 +48,6 @@ class sgData extends \autoTable {
 				'filename'	=>	$filename
 				),true);
 		}
-		$fields['sg_rid'] = (int)$fields['sg_rid'];
 		$index = $fields['sg_index'] - 1;
 		$sql = "SET @index := $index";
 		$rows = $this->modx->db->query($sql);
