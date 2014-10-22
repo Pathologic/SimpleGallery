@@ -210,8 +210,7 @@ switch ($mode) {
 		$sql = "SELECT sg_id FROM $table WHERE sg_rid IN ($ids) AND sg_id >= $minId ORDER BY sg_id ASC";
 		$rows = $modx->db->query($sql);
 		while ($image = $modx->db->getRow($rows)) {
-			$data->edit($image['sg_id']);
-			$result = $data->refresh();
+			$result = $data->refresh($image['sg_id']);
 			$_SESSION['refresh']['minId'] = $image['sg_id'];
 			$_SESSION['refresh']['processed'] ++;
 		}
