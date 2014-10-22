@@ -36,6 +36,9 @@ class sgData extends \autoTable {
 		$count = count($ids);
 		$fields = $this->edit($min)->toArray();
 		$ids = implode(',',$ids);
+		$rows = $this->modx->db->select('template', $this->modx->getFullTableName('site_content'), 'id='.$fields['sg_rid']);
+		$row = $this->modx->db->getRow($rows);
+		$template = $row['template'];
 		$images = $this->modx->db->select('`sg_id`,`sg_image`',$this->_table['sg_images'],"`sg_id` IN ($ids)");
 		$out = parent::delete($ids);
 		while ($row = $this->modx->db->getRow($images)) {
@@ -45,7 +48,8 @@ class sgData extends \autoTable {
 			$this->invokeEvent('OnSimpleGalleryDelete',array(
 				'id'		=>	$row['sg_id'],
 				'filepath'	=>	$filepath,
-				'filename'	=>	$filename
+				'filename'	=>	$filename,
+				'template'	=>	$template
 				),true);
 		}
 		$index = $fields['sg_index'] - 1;
@@ -131,12 +135,10 @@ class sgData extends \autoTable {
 	}
 
 	public function refresh($id) {
-		$this->edit($id);
-		$fields = $this->field;
-		$rows = $this->modx->db->select('template', $this->modx->getFullTableName('site_content'), 'id='.$this->field['sg_rid']);
+		$fields = $this->edit($id)->toArray();
+		$rows = $this->modx->db->select('template', $this->modx->getFullTableName('site_content'), 'id='.$fields['sg_rid']);
 		$row = $this->modx->db->getRow($rows);
-		$template = $row['template'];
-		$fields['template'] = $template;
+		$fields['template'] = $row['template'];
 		$this->invokeEvent('OnSimpleGalleryRefresh',$fields,true);
 	}
 
