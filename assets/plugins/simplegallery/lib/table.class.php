@@ -131,9 +131,12 @@ class sgData extends \autoTable {
 		}
 	}
 
-	public function refresh($id,$template) {
+	public function refresh($id) {
 		$this->edit($id);
 		$fields = $this->field;
+		$rows = $this->modx->db->select('template', $this->modx->getFullTableName('site_content'), 'id='.$this->field['sg_rid']);
+		$row = $this->modx->db->getRow($rows);
+		$template = $row['template'];
 		$fields['template'] = $template;
 		$this->invokeEvent('OnSimpleGalleryRefresh',$fields,true);
 	}
