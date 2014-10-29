@@ -13,6 +13,7 @@ class sgPlugin {
         $this->modx = $modx;
         $this->lang_attribute = $lang_attribute;
         $this->params = $modx->event->params;
+        if (!isset($this->params['template'])) $this->params['template'] = array_pop($modx->getDocument($this->params['id'],'template'));
         $this->DLTemplate = \DLTemplate::getInstance($this->modx);
         
     }
