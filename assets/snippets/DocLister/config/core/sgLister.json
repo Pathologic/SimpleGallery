@@ -2,7 +2,7 @@
 	"table": "sg_images",
 	"idField": "sg_id",
 	"parentField" : "sg_rid",
-	"idType": "documents",
+	"idType": "parents",
 	"ignoreEmpty": "1",
 	"orderBy": "sg_index DESC",
 	"prepare": "",
