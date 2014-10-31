@@ -30,11 +30,14 @@ if(!class_exists("DLsgLister", false)){
 	class DLsgLister{
 		public static function prepare(array $data = array(), DocumentParser $modx, $_DL, prepare_DL_Extender $_extDocLister){
 			$imageField = $_DL->getCfgDef('imageField');
-			$data['thumb.'.$imageField] = $modx->runSnippet('phpthumb', array(
-				'input' => $data[$imageField],
-				'options' => $_DL->getCfgDef('thumbOptions')
-			));
-			
+			$thumbOptions = $_DL->getCfgDef('thumbOptions');
+			$thumbSnippet = $_DL->getCfgDef('thumbSnippet');
+			if(!empty($thumbOptions) && !empty($thumbSnippet)){
+				$data['thumb.'.$imageField] = $modx->runSnippet($thumbSnippet, array(
+					'input' => $data[$imageField],
+					'options' => $thumbOptions
+				));
+			}
 			$titleField = $_DL->getCfgDef('titleField');
 			$data['e.'.$titleField] = htmlentities($data[$titleField], ENT_COMPAT, 'UTF-8', false);
 			
