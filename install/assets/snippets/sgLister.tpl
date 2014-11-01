@@ -21,7 +21,8 @@ $prepare[] = \APIhelpers::getkey($modx->event->params, 'AfterPrepare', '');
 $modx->event->params['prepare'] = trim(implode(",", $prepare), ',');
 
 $params = array_merge(array(
-	"controller" 	=> 	"onetable"
+	"controller" 	=> 	"onetable",
+	"config"		=>	"sgLister:core"
 ), $modx->event->params, array(
 	'depth' => '0'
 ));
@@ -42,7 +43,7 @@ if(!class_exists("DLsgLister", false)){
 			$data['e.'.$titleField] = htmlentities($data[$titleField], ENT_COMPAT, 'UTF-8', false);
 			
 			$descField = $_DL->getCfgDef('descField');
-			$data['e.sg_description'] = htmlentities($data[$descField], ENT_COMPAT, 'UTF-8', false);
+			$data['e.'.$descField] = htmlentities($data[$descField], ENT_COMPAT, 'UTF-8', false);
             return $data;
 		}
 	}
