@@ -24,7 +24,8 @@ $params = array_merge(array(
 	"controller" 	=> 	"onetable",
 	"config"		=>	"sgLister:core"
 ), $modx->event->params, array(
-	'depth' => '0'
+	'depth' => '0',
+	'showParent' => '1'
 ));
 
 if(!class_exists("DLsgLister", false)){
