@@ -22,13 +22,23 @@ class sgData extends \autoTable {
 		'sg_createdon' => '',
 	);
 
-	public function __construct($modx, $debug = false) {
+    /**
+     * @param $modx
+     * @param bool $debug
+     */
+    public function __construct($modx, $debug = false) {
 		parent::__construct($modx, $debug);
         $this->_table['sg_images'] = $this->makeTable($this->table);
         $this->modx = $modx;
         $this->params = $modx->event->params;
 	}
-	public function delete($ids, $fire_events = NULL) {
+
+    /**
+     * @param $ids
+     * @param null $fire_events
+     * @return mixed
+     */
+    public function delete($ids, $fire_events = NULL) {
 		$ids = explode(',',$ids);
 		foreach ($ids as &$id) $id = (int)$id;
 		$min = min ($ids);
@@ -61,8 +71,12 @@ class sgData extends \autoTable {
 		$rows = $this->modx->db->query($sql);
 		return $out;
 	}
-	
-	public function deleteThumb($url, $cache = false) {
+
+    /**
+     * @param $url
+     * @param bool $cache
+     */
+    public function deleteThumb($url, $cache = false) {
 		if (empty($url)) return;
 		$thumb = $this->modx->config['base_path'].$url;
 		if (file_exists($thumb)) {
@@ -82,7 +96,14 @@ class sgData extends \autoTable {
 		if (file_exists($this->modx->config['base_path'].$thumb)) $this->deleteThumb($thumb, true);
 	}
 
-	public function reorder($sourceIndex, $targetIndex, $sourceId, $rid) {
+    /**
+     * @param $sourceIndex
+     * @param $targetIndex
+     * @param $sourceId
+     * @param $rid
+     * @return mixed
+     */
+    public function reorder($sourceIndex, $targetIndex, $sourceId, $rid) {
 		$rid = (int)$rid;
 		/* more refactoring  needed */
 		if ($sourceIndex < $targetIndex) {
@@ -95,7 +116,11 @@ class sgData extends \autoTable {
 		return $rows;
 	}
 
-	public function getInexistantFilename($file) {
+    /**
+     * @param $file
+     * @return string
+     */
+    public function getInexistantFilename($file) {
 		$path_parts = pathinfo($file);
 		$filename = $path_parts['filename'];
 		$fileext = $path_parts['extension'];
@@ -109,7 +134,11 @@ class sgData extends \autoTable {
 		return $file;
 	}
 
-	public function save($fire_events = null, $clearCache = false) {
+    /**
+     * @param null $fire_events
+     * @param bool $clearCache
+     */
+    public function save($fire_events = null, $clearCache = false) {
 		if ($this->newDoc) {
 			$rows = $this->modx->db->select('`sg_id`', $this->_table['sg_images'], '`sg_rid`='.$this->field['sg_rid']);
 			$this->field['sg_index'] = $this->modx->db->getRecordCount($rows);
@@ -134,7 +163,10 @@ class sgData extends \autoTable {
 		}
 	}
 
-	public function refresh($id) {
+    /**
+     * @param $id
+     */
+    public function refresh($id) {
 		$fields = $this->edit($id)->toArray();
 		$rows = $this->modx->db->select('template', $this->modx->getFullTableName('site_content'), 'id='.$fields['sg_rid']);
 		$row = $this->modx->db->getRow($rows);
@@ -142,7 +174,13 @@ class sgData extends \autoTable {
 		$this->invokeEvent('OnSimpleGalleryRefresh',$fields,true);
 	}
 
-	public function makeThumb($folder,$url,$options) {
+    /**
+     * @param $folder
+     * @param $url
+     * @param $options
+     * @return bool
+     */
+    public function makeThumb($folder,$url,$options) {
 		if (empty($url)) return false;
 		include_once($this->modx->config['base_path'].'assets/snippets/phpthumb/phpthumb.class.php');
 		$thumb = new \phpthumb();

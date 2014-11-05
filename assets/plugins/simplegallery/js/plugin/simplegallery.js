@@ -128,12 +128,13 @@ var sgHelper = {};
     		$('.edit','.sg_image').click(function(e) {
     			_this.edit($(this).parent());
     		});
-			$('.sg_image').unbind();
-    		$('.sg_image').click(function(e) {
+            var _image = $('.sg_image');
+			_image.unbind();
+    		_image.click(function(e) {
         		_this.unselect();
         		_this.select($(this), e);
     		});
-    		$('.sg_image').dblclick(function() {
+    		_image.dblclick(function() {
 		        _this.unselect();
 		        _this.edit($(this));
 		    });
@@ -487,6 +488,6 @@ var sgHelper = {};
 		    		});
     			}
 			});
-		},
+		}
 	}
 })(jQuery);

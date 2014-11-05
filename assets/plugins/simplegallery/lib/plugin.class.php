@@ -8,8 +8,13 @@ class sgPlugin {
 	public $params = array();
 	public $DLTemplate = null;
 	public $lang_attribute = '';
-	
-	public function __construct($modx, $lang_attribute = 'en', $debug = false) {
+
+    /**
+     * @param $modx
+     * @param string $lang_attribute
+     * @param bool $debug
+     */
+    public function __construct($modx, $lang_attribute = 'en', $debug = false) {
         $this->modx = $modx;
         $this->lang_attribute = $lang_attribute;
         $this->params = $modx->event->params;
@@ -18,10 +23,17 @@ class sgPlugin {
         
     }
 
+    /**
+     * @param array $ids
+     * @param $folder
+     */
     public function clearFolders($ids = array(), $folder) {
 		foreach ($ids as $id) $this->rmDir($folder.$id.'/');
     }
 
+    /**
+     * @param $dirPath
+     */
     public function rmDir($dirPath) {
     	if (is_dir($dirPath)) {
     		foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dirPath, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
@@ -31,6 +43,9 @@ class sgPlugin {
 		}
     }
 
+    /**
+     * @return string
+     */
     public function prerender() {
     	$output = '';
     	$templates = isset($this->params['templates']) ? explode(',',$this->params['templates']) : false;
@@ -58,6 +73,11 @@ class sgPlugin {
 		return $output;
     }
 
+    /**
+     * @param $list
+     * @param array $ph
+     * @return string
+     */
     public function renderJS($list,$ph = array()) {
     	$js = '';
     	$scripts = MODX_BASE_PATH.'assets/plugins/simplegallery/js/'.$list;
@@ -74,7 +94,10 @@ class sgPlugin {
 		}
 		return $js;
     }
-	    
+
+    /**
+     * @return string
+     */
     public function render() {
 		$output = $this->prerender();
 		if ($output !== false) {
@@ -105,6 +128,10 @@ class sgPlugin {
 		}
 		return $output; 
     }
+
+    /**
+     * @return bool
+     */
     public function createTable() {
     	$table = $this->modx->db->config['table_prefix'];
     	$sql = <<< OUT
