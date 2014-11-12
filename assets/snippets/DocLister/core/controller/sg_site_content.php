@@ -35,7 +35,7 @@ class sg_site_contentDocLister extends site_contentDocLister
                     $sql = "SELECT * FROM {$table} WHERE `sg_rid` IN ({$rid}) {$sgAddWhereList} ORDER BY {$sgOrderBy}";
                     break;
                 case '1':
-                    $sql = "SELECT * FROM (SELECT * FROM {$table} WHERE `sg_rid` IN ({$rid}) {$sgAddWhereList} ORDER BY {$sgOrderBy}) sg GROUP BY {$sg_rid}";
+                    $sql = "SELECT * FROM (SELECT * FROM {$table} WHERE `sg_rid` IN ({$rid}) {$sgAddWhereList} ORDER BY {$sgOrderBy}) sg GROUP BY sg_rid";
                     break;
                 default:
                     $sql = "SELECT * FROM (SELECT *, @rn := IF(@prev = `sg_rid`, @rn + 1, 1) AS rn, @prev := `sg_rid` FROM {$table} JOIN (SELECT @prev := NULL, @rn := 0) AS vars WHERE `sg_rid` IN ({$rid}) ORDER BY sg_rid, {$sgOrderBy}) AS sg WHERE rn <= {$sgDisplay}";
