@@ -137,7 +137,7 @@ switch ($mode) {
 		$w = 200;
 		$h = 150;
 		$url = $_REQUEST['url'];
-		$thumbsCache = 'assets/.sgThumbs/';
+		$thumbsCache = $data->thumbsCache;
 		if (isset($modx->pluginCache['SimpleGalleryProps'])) {
 			$pluginParams = $modx->parseProperties($modx->pluginCache['SimpleGalleryProps']);
 			if (isset($pluginParams['thumbsCache'])) $thumbsCache = $pluginParams['thumbsCache'];
@@ -218,12 +218,11 @@ switch ($mode) {
 		break;
 	default:
 		if (!$rid) die();
-		$fields = "id,image,title,description,isactive,properties,createdon,index,add";
 		$param = array(
             "controller" 	=> 	"onetable",
             "table" 		=> 	"sg_images",
             'idField' 		=> 	"sg_id",
-            "api" 			=> 	"sg_".str_replace(',',',sg_',$fields),
+            "api" 			=> 	array_keys($data->default_field),
             "idType"		=>	"documents",
             'ignoreEmpty' 	=> 	"1",
             'JSONformat' 	=> 	"new"
