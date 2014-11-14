@@ -38,9 +38,9 @@ class sgData extends \autoTable {
      * @return mixed
      */
     public function delete($ids, $fire_events = NULL) {
-		$ids = $this->cleanIDs(',', $ids, array(0));
+		$ids = $this->cleanIDs($ids, ',', array(0));
 		if(empty($ids) || is_scalar($ids) || !min($ids)) return false;
-		$fields = $this->edit($min)->toArray();
+		$fields = $this->edit(min($ids))->toArray();
 		$ids = implode(',',$ids);
 		$rows = $this->query('SELECT `template` FROM '.$this->makeTable('site_content').' WHERE id='.$fields['sg_rid']);
 		$template = $this->modx->db->getValue($rows);
