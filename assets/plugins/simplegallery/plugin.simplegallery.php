@@ -10,6 +10,7 @@ if ($e->name == 'OnDocFormRender' && !!$id) {
 }
 if ($e->name == 'OnEmptyTrash') {
 	$where = implode(',',$ids);
+	if ($where == '') return;
 	$modx->db->delete($modx->getFullTableName("sg_images"), "`sg_rid` IN ($where)");
 	include_once (MODX_BASE_PATH.'assets/plugins/simplegallery/lib/plugin.class.php');
 	$simpleGallery = new \SimpleGallery\sgPlugin($modx);
