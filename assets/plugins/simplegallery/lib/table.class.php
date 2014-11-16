@@ -103,19 +103,6 @@ class sgData extends \autoTable {
 		return $this->query('UPDATE '.$this->makeTable($this->table).' SET `sg_index`='.(int)$targetIndex.' WHERE `sg_id`='.(int)$sourceId);		
 	}
 
-    /**
-     * @param $file
-     * @return string
-     */
-    public function getInexistantFilename($file) {
-		list($dir, $file, $fileext, $filename) = array_values(pathinfo($file));
-		$i = 1;
-		while (file_exists("{$dir}/{$file}")) {
-			$i++;
-			$file = "{$filename}({$i}).{$fileext}";
-		}
-		return $file;
-	}
 	public function get($key){
 		switch($key){
 			case 'filepath':{

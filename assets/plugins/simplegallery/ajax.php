@@ -22,6 +22,7 @@ $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : null;
 $rid = isset($_REQUEST['sg_rid']) ? (int)$_REQUEST['sg_rid'] : 0;
 
 include_once(MODX_BASE_PATH.'assets/plugins/simplegallery/lib/table.class.php');
+include_once MODX_BASE_PATH.'assets/plugins/simplegallery/lib/fileHelper.class.php';
 $data = new \SimpleGallery\sgData($modx);
 switch ($mode) {
 	case 'upload' : 
@@ -46,7 +47,7 @@ switch ($mode) {
 			if ($files['sg_files']['error'] == UPLOAD_ERR_OK) {
         		$tmp_name = $files["sg_files"]["tmp_name"];
         		$name = $modx->stripAlias($_FILES["sg_files"]["name"]);
-        		$name = $data->getInexistantFilename("$uploadDir/$name");
+        		$name = \fileHelper::getInexistantFilename("$uploadDir/$name");
         		$ext = strtolower(end(explode('.',$name)));
         		if (in_array($ext,array('png', 'jpg', 'gif', 'jpeg' ))) {
         			if (@move_uploaded_file($tmp_name, "$uploadDir/$name")) {
