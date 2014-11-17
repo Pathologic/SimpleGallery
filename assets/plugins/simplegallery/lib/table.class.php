@@ -138,6 +138,7 @@ class sgData extends \autoTable {
      * @param bool $clearCache
      */
     public function save($fire_events = null, $clearCache = false) {
+		if (empty($this->field['sg_image'])) return false;
 		if ($this->newDoc) {
 			$q = $this->query('SELECT count(`sg_id`) FROM '.$this->makeTable($this->table).' WHERE `sg_rid`='.$this->field['sg_rid']);
 			$this->field['sg_index'] = $this->modx->db->getValue($q);
