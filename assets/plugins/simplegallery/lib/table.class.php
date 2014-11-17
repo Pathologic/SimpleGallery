@@ -120,11 +120,25 @@ class sgData extends \autoTable {
 		}
 		return $out;
 	}
+
+	public function set($key, $value)
+    {
+    	if ($key == 'sg_image') {
+    		if (!file_exists(MODX_BASE_PATH.$value) || !is_readable(MODX_BASE_PATH.$value)) {
+				$this->modx->logEvent(0, 3, 'File '.$value.' does not exist or is not readable', 'SimpleGallery');
+    			$value = '';
+    		}
+    	} 
+        parent::set($key, $value);
+        return $this;
+    }
+
     /**
      * @param null $fire_events
      * @param bool $clearCache
      */
     public function save($fire_events = null, $clearCache = false) {
+		if (empty($this->field['sg_image'])) return;
 		if ($this->newDoc) {
 			$q = $this->query('SELECT count(`sg_id`) FROM '.$this->makeTable($this->table).' WHERE `sg_rid`='.$this->field['sg_rid']);
 			$this->field['sg_index'] = $this->modx->db->getValue($q);
