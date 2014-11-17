@@ -9,7 +9,6 @@ class sgData extends \autoTable {
 	/* @var autoTable $_table */
 
 	public $default_field = array(
-		'sg_id' => 0,
 		'sg_image' => '',
 		'sg_title' => '',
 		'sg_description' => '',
@@ -106,6 +105,7 @@ class sgData extends \autoTable {
 	public function get($key){
 		switch($key){
 			case 'filepath':{
+				$image = $this->get('sg_image');
 				$out = MODX_BASE_PATH.str_replace('/'.$this->get('filename'), '', $image);
 				break;
 			}
@@ -120,14 +120,39 @@ class sgData extends \autoTable {
 		}
 		return $out;
 	}
-
+	public function touch(){
+		$this->set('sg_createdon', date('Y-m-d H:i:s', time() + $this->modx->config['server_offset_time']));
+		return $this;
+	}
+	
 	public function set($key, $value)
     {
-    	if ($key == 'sg_image') {
-    		if (!file_exists(MODX_BASE_PATH.$value) || !is_readable(MODX_BASE_PATH.$value)) {
-				$this->modx->logEvent(0, 3, 'File '.$value.' does not exist or is not readable', 'SimpleGallery');
-    			$value = '';
-    		}
+    	switch($key) {
+			case 'sg_image':{
+				if (empty($value) || !is_scalar($value) || !file_exists(MODX_BASE_PATH.$value) || !is_readable(MODX_BASE_PATH.$value)) {
+					$value = '';
+				}
+				break;
+			}
+			case 'sg_isactive':
+			case 'sg_rid':
+			case 'sg_index':{
+				$value = (int)$value;
+				if($value < 0){
+					$value = 0;
+				}
+				break;
+			}
+			case 'sg_createdon':
+			case 'sg_add':
+			case 'sg_properties':
+			case 'sg_description':
+			case 'sg_title':{
+				if(!is_scalar($value)){
+					$value = '';
+				}
+				break;
+			}
     	} 
         parent::set($key, $value);
         return $this;
@@ -138,7 +163,18 @@ class sgData extends \autoTable {
      * @param bool $clearCache
      */
     public function save($fire_events = null, $clearCache = false) {
-		if (empty($this->field['sg_image'])) return false;
+		$out = $this->_save($fire_events, $clearCache);
+		if($out === false){
+			$this->modx->logEvent(0, 3, implode("<br />", $this->getLog()), 'SimpleGallery');
+			$this->clearLog();
+		}
+		return $out;
+	}
+	protected function _save($fire_events = null, $clearCache = false) {
+		if (empty($this->field['sg_image'])){
+			$this->log['emptyImage'] = 'Image is empty in <pre>' . print_r($this->field, true) . '</pre>';
+			return false;
+		}
 		if ($this->newDoc) {
 			$q = $this->query('SELECT count(`sg_id`) FROM '.$this->makeTable($this->table).' WHERE `sg_rid`='.$this->field['sg_rid']);
 			$this->field['sg_index'] = $this->modx->db->getValue($q);
@@ -146,7 +182,7 @@ class sgData extends \autoTable {
 		}
 		$q = $this->query('SELECT `template` FROM '.$this->makeTable('site_content').' WHERE id='.$this->field['sg_rid']);
 		$template = $this->modx->db->getValue($q);
-		if (parent::save($fire_events, $clearCache)) {
+		if ($out = parent::save($fire_events, $clearCache)) {
 			if ($this->newDoc) {
 				$this->invokeEvent('OnFileBrowserUpload',array(
 					'filepath' => $this->get('filepath'),
@@ -158,6 +194,7 @@ class sgData extends \autoTable {
 			$fields['template'] = $template;
 			$this->invokeEvent('OnSimpleGallerySave',$fields,true);
 		}
+		return $out;
 	}
 
     /**
