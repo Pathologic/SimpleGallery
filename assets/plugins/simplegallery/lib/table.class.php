@@ -30,7 +30,13 @@ class sgData extends \autoTable {
         $this->modx = $modx;
         $this->params = $modx->event->params;
 	}
-
+	
+	public function fieldNames(){
+		$fields = array_keys($this->getDefaultFields());
+		$fields[] = $this->fieldPKName();
+		return $fields;
+	}
+	
     /**
      * @param $ids
      * @param null $fire_events
