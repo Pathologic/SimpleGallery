@@ -223,7 +223,7 @@ switch ($mode) {
             "controller" 	=> 	"onetable",
             "table" 		=> 	"sg_images",
             'idField' 		=> 	"sg_id",
-            "api" 			=> 	array_keys($data->default_field),
+            "api" 			=> 	$data->fieldNames(),
             "idType"		=>	"documents",
             'ignoreEmpty' 	=> 	"1",
             'JSONformat' 	=> 	"new"
