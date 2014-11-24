@@ -17,15 +17,19 @@ if (isset($modx->pluginCache['SimpleGalleryProps'])) {
 
 $roles = isset($params['role']) ? explode(',',$params['role']) : false;
 if ($roles && !in_array($_SESSION['mgrRole'], $roles)) die();
-	
+
 $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : null;
 $rid = isset($_REQUEST['sg_rid']) ? (int)$_REQUEST['sg_rid'] : 0;
 
 include_once(MODX_BASE_PATH.'assets/plugins/simplegallery/lib/table.class.php');
 include_once MODX_BASE_PATH.'assets/plugins/simplegallery/lib/fileHelper.class.php';
+require_once (MODX_BASE_PATH . 'assets/lib/Helpers/HDD.php');
+
+$HDD = \Helpers\HDD::getInstance();
 $data = new \SimpleGallery\sgData($modx);
+
 switch ($mode) {
-	case 'upload' : 
+	case 'upload' :
 		include_once MODX_BASE_PATH.'assets/plugins/simplegallery/lib/FileAPI.class.php';
 
 		if( !empty($_SERVER['HTTP_ORIGIN']) ){
@@ -42,37 +46,38 @@ switch ($mode) {
 		if( strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ){
 			$files	= \FileAPI::getFiles(); // Retrieve File List
 			$dir = $params['folder'].$rid."/";
-			$uploadDir = MODX_BASE_PATH.$dir;
-			if (!is_dir($uploadDir)) mkdir($uploadDir,intval($modx->config['new_folder_permissions'],8),true);
+			$flag = $HDD->makeDir($dir, $modx->config['new_folder_permissions']);
 			if ($files['sg_files']['error'] == UPLOAD_ERR_OK) {
         		$tmp_name = $files["sg_files"]["tmp_name"];
         		$name = $modx->stripAlias($_FILES["sg_files"]["name"]);
-        		$name = \fileHelper::getInexistantFilename("$uploadDir/$name");
-        		$ext = strtolower(end(explode('.',$name)));
-        		if (in_array($ext,array('png', 'jpg', 'gif', 'jpeg' ))) {
-        			if (@move_uploaded_file($tmp_name, "$uploadDir/$name")) {
-        				if (@$data->makeThumb('',$dir.$name,"w={$modx->config['maxImageWidth']}&h={$modx->config['maxImageHeight']}&q=96&f={$ext}")) {
-	        				$info = getimagesize("$uploadDir/$name");
+        		$name = $HDD->getInexistantFilename($dir.$name, true);
+        		$ext = $HDD->takeFileExt($name);
+        		$modx->logEvent(1,1,$name, 'ext - '.$ext);
+        		if (in_array($ext, array('png', 'jpg', 'gif', 'jpeg' ))) {
+        			if (@move_uploaded_file($tmp_name, $name)) {
+        				$options = "w={$modx->config['maxImageWidth']}&h={$modx->config['maxImageHeight']}&q=96&f={$ext}";
+        				if (@$data->makeThumb('',$HDD->relativePath($name),$options)) {
+	        				$info = getimagesize($name);
         					$properties = array (
 	        					'width'=>$info[0],
 	        					'height'=>$info[1],
-	        					'size'=>filesize("$uploadDir/$name")
+	        					'size'=>filesize($name)
         					);
 	        				$data->create(array(
-		        				'sg_image' => $dir.$name,
+		        				'sg_image' => $HDD->relativePath($name),
 		        				'sg_rid' => $rid,
 		        				'sg_title' => preg_replace('/\\.[^.\\s]{2,4}$/', '', $_FILES["sg_files"]["name"]),
 		        				'sg_properties' => json_encode($properties)
 	        				))->save();
         				} else {
-        					@unlink($uploadDir.$name);
+        					@unlink($name);
         					$files['sg_files']['error'] = 100;
         				}
     				}
     			} else {
     				$files['sg_files']['error'] = 101;
     			}
-    		} 
+    		}
 
 			//fetchImages($files, $images);
     		$json	= array(
@@ -146,7 +151,7 @@ switch ($mode) {
 			if (isset($pluginParams['h'])) $h = $pluginParams['h'];
 		}
 		$file = MODX_BASE_PATH.$thumbsCache.$url;
-		if (file_exists($file)) {
+		if ($HDD->checkFile($file)) {
 			$info = getimagesize($file);
 			if ($w != $info[0] || $h != $info[1]) {
 				@$data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
@@ -154,7 +159,7 @@ switch ($mode) {
 		} else {
 			@$data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
 		}
-		session_start(); 
+		session_start();
 		header("Cache-Control: private, max-age=10800, pre-check=10800");
 		header("Pragma: private");
 		header("Expires: " . date(DATE_RFC822,strtotime(" 360 day")));

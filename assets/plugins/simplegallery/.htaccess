@@ -1,0 +1,8 @@
+IndexIgnore */*
+<Files *.php>
+    Order Deny,Allow
+    Deny from all
+</Files>
+<Files ajax.php>
+	Allow from All
+</Files>

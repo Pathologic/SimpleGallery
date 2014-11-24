@@ -13,10 +13,9 @@ if ($e->name == 'OnEmptyTrash') {
     $where = implode(',', $ids);
     $modx->db->delete($modx->getFullTableName("sg_images"), "`sg_rid` IN ($where)");
     include_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/plugin.class.php');
-    include_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/fileHelper.class.php');
     $simpleGallery = new \SimpleGallery\sgPlugin($modx);
-    \fileHelper::clearFolders($ids, MODX_BASE_PATH . $e->params['thumbsCache'] . $e->params['folder']);
-    \fileHelper::clearFolders($ids, MODX_BASE_PATH . $e->params['folder']);
+    $simpleGallery->clearFolders($ids, MODX_BASE_PATH . $e->params['thumbsCache'] . $e->params['folder']);
+    $simpleGallery->clearFolders($ids, MODX_BASE_PATH . $e->params['folder']);
     $sql = "ALTER TABLE {$modx->getFullTableName('sg_images')} AUTO_INCREMENT = 1";
     $rows = $modx->db->query($sql);
 
