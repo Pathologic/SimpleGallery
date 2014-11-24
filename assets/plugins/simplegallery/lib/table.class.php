@@ -1,12 +1,15 @@
 <?php
 namespace SimpleGallery;
 require_once (MODX_BASE_PATH . 'assets/lib/MODxAPI/autoTable.abstract.php');
+require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
 
 class sgData extends \autoTable {
 	/* @var autoTable $table */
 	protected $table = 'sg_images';
 	protected $pkName = 'sg_id';
 	/* @var autoTable $_table */
+
+	protected $file = null;
 
 	public $default_field = array(
 		'sg_image' => '',
@@ -20,6 +23,8 @@ class sgData extends \autoTable {
 		'sg_createdon' => '',
 	);
 	public $thumbsCache = 'assets/.sgThumbs/';
+	protected $params = array();
+	protected $fs = null;
 	
     /**
      * @param $modx
@@ -29,14 +34,15 @@ class sgData extends \autoTable {
 		parent::__construct($modx, $debug);
         $this->modx = $modx;
         $this->params = $modx->event->params;
+        $this->fs = \Helpers\FS::getInstance();
 	}
-	
+
 	public function fieldNames(){
 		$fields = array_keys($this->getDefaultFields());
 		$fields[] = $this->fieldPKName();
 		return $fields;
 	}
-	
+
     /**
      * @param $ids
      * @param null $fire_events
@@ -46,6 +52,8 @@ class sgData extends \autoTable {
 		$ids = $this->cleanIDs($ids, ',', array(0));
 		if(empty($ids) || is_scalar($ids) || !min($ids)) return false;
 		$fields = $this->edit(min($ids))->toArray();
+		if(!$this->getID()) return false;
+
 		$ids = implode(',',$ids);
 		$rows = $this->query('SELECT `template` FROM '.$this->makeTable('site_content').' WHERE id='.$fields['sg_rid']);
 		$template = $this->modx->db->getValue($rows);
@@ -55,8 +63,11 @@ class sgData extends \autoTable {
 			$this->deleteThumb($row['sg_image']);
 			$this->invokeEvent('OnSimpleGalleryDelete',array(
 				'id'		=>	$row['sg_id'],
-				'filepath' => $this->get('filepath'),
-				'filename' => $this->get('filename'),
+				'filepath' => $this->fs->takeFileDir($row['sg_image']),
+				'name' => $this->fs->takeFileName($row['sg_image']),
+				'filename' => $this->fs->takeFileBasename($row['sg_image']),
+				'ext' => $this->fs->takeFileExt($row['sg_image']),
+				'mime' => $this->fs->takeFileMIME($row['sg_image']),
 				'template'	=>	$template
 				),true);
 		}
@@ -72,12 +83,11 @@ class sgData extends \autoTable {
      * @param bool $cache
      */
     public function deleteThumb($url, $cache = false) {
+    	$url = $this->fs->relativePath($url);
 		if (empty($url)) return;
-		$thumb = MODX_BASE_PATH.$url;
-		if (file_exists($thumb) && is_readable($thumb)) {
-			$dir = pathinfo($thumb);
-			$dir = $dir['dirname'];
-			unlink($thumb);
+		if ($this->fs->checkFile($url)) {
+			$dir = $this->fs->takeFileDir($url);
+			unlink(MODX_BASE_PATH . $url);
 			$iterator = new \FilesystemIterator($dir);
 			if (!$iterator->valid()) rmdir($dir);
 		}
@@ -88,7 +98,7 @@ class sgData extends \autoTable {
 			if (isset($pluginParams['thumbsCache'])) $thumbsCache = $pluginParams['thumbsCache'];
 		}
 		$thumb = $thumbsCache.$url;
-		if (file_exists(MODX_BASE_PATH.$thumb)) $this->deleteThumb($thumb, true);
+		if ($this->fs->checkFile($thumb)) $this->deleteThumb($thumb, true);
 	}
 
     /**
@@ -101,23 +111,33 @@ class sgData extends \autoTable {
     public function reorder($sourceIndex, $targetIndex, $sourceId, $rid) {
 		/* more refactoring  needed */
 		if ($sourceIndex < $targetIndex) {
-			$rows = $this->query('UPDATE '.$this->makeTable($this->table).' SET `sg_index`=`sg_index`-1 WHERE `sg_index`<='.(int)$targetIndex.' AND `sg_index`>='.(int)$sourceIndex.' AND `sg_rid`='.(int)$rid);		
+			$rows = $this->query('UPDATE '.$this->makeTable($this->table).' SET `sg_index`=`sg_index`-1 WHERE `sg_index`<='.(int)$targetIndex.' AND `sg_index`>='.(int)$sourceIndex.' AND `sg_rid`='.(int)$rid);
 		} else {
 			$rows = $this->query('UPDATE '.$this->makeTable($this->table).' SET `sg_index`=`sg_index`+1 WHERE `sg_index`<'.(int)$sourceIndex.' AND `sg_index`>='.$targetIndex.' AND `sg_rid`='.(int)$rid);
 		}
-		return $this->query('UPDATE '.$this->makeTable($this->table).' SET `sg_index`='.(int)$targetIndex.' WHERE `sg_id`='.(int)$sourceId);		
+		return $this->query('UPDATE '.$this->makeTable($this->table).' SET `sg_index`='.(int)$targetIndex.' WHERE `sg_id`='.(int)$sourceId);
 	}
 
 	public function get($key){
 		switch($key){
 			case 'filepath':{
 				$image = $this->get('sg_image');
-				$out = MODX_BASE_PATH.str_replace('/'.$this->get('filename'), '', $image);
+				$out = $this->fs->takeFileDir($image);
 				break;
 			}
 			case 'filename':{
 				$image = $this->get('sg_image');
-				$out = end(explode('/', $image));
+				$out = $this->fs->takeFileBasename($image);
+				break;
+			}
+			case 'ext':{
+				$image = $this->get('sg_image');
+				$out = $this->fs->takeFileExt($image);
+				break;
+			}
+			case 'mime':{
+				$image = $this->get('sg_image');
+				$out = $this->fs->takeFileMIME($image);
 				break;
 			}
 			default:{
@@ -130,12 +150,12 @@ class sgData extends \autoTable {
 		$this->set('sg_createdon', date('Y-m-d H:i:s', time() + $this->modx->config['server_offset_time']));
 		return $this;
 	}
-	
+
 	public function set($key, $value)
     {
     	switch($key) {
 			case 'sg_image':{
-				if (empty($value) || !is_scalar($value) || !file_exists(MODX_BASE_PATH.$value) || !is_readable(MODX_BASE_PATH.$value)) {
+				if (empty($value) || !is_scalar($value) || !$this->fs->checkFile($value)) {
 					$value = '';
 				}
 				break;
@@ -159,7 +179,7 @@ class sgData extends \autoTable {
 				}
 				break;
 			}
-    	} 
+    	}
         parent::set($key, $value);
         return $this;
     }
@@ -195,7 +215,7 @@ class sgData extends \autoTable {
 					'filename' => $this->get('filename'),
 					'template' => $template
 					),true);
-			} 
+			}
 			$fields = $this->field;
 			$fields['template'] = $template;
 			$this->invokeEvent('OnSimpleGallerySave',$fields,true);
@@ -225,15 +245,15 @@ class sgData extends \autoTable {
 			include_once(MODX_BASE_PATH.'assets/snippets/phpthumb/phpthumb.class.php');
 		}
 		$thumb = new \phpthumb();
-		$thumb->sourceFilename = MODX_BASE_PATH.$url;
+		$thumb->sourceFilename = MODX_BASE_PATH . $this->fs->relativePath($url);
 		$options = strtr($options, Array("," => "&", "_" => "=", '{' => '[', '}' => ']'));
 		parse_str($options, $params);
 		foreach ($params as $key => $value) {
         	$thumb->setParameter($key, $value);
     	}
-  		$outputFilename = MODX_BASE_PATH.$folder.$url;
-  		$dir = pathinfo($outputFilename, PATHINFO_DIRNAME);
-  		if (!is_dir($dir)) mkdir($dir,intval($this->modx->config['new_folder_permissions'],8),true);
+  		$outputFilename = MODX_BASE_PATH. $this->fs->relativePath($folder). '/' . $this->fs->relativePath($url);
+  		$dir = $this->fs->takeFileDir($outputFilename);
+  		$this->fs->makeDir($dir, $this->modx->config['new_folder_permissions']);
 		if ($thumb->GenerateThumbnail() && $thumb->RenderToFile($outputFilename)) {
         	return true;
 		} else {

@@ -2,10 +2,14 @@
 namespace SimpleGallery;
 include_once (MODX_BASE_PATH . 'assets/snippets/DocLister/lib/DLTemplate.class.php');
 include_once (MODX_BASE_PATH . 'assets/lib/APIHelpers.class.php');
+require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
 
 class sgPlugin {
 	public $modx = null;
 	public $params = array();
+	
+	protected $fs = null;
+	
 	public $DLTemplate = null;
 	public $lang_attribute = '';
 
@@ -22,27 +26,11 @@ class sgPlugin {
             $this->params['template'] = array_pop($modx->getDocument($this->params['id'],'template','all','all'));
         }
         $this->DLTemplate = \DLTemplate::getInstance($this->modx);
-        
+        $this->fs = \Helpers\FS::getInstance();
     }
 
-    /**
-     * @param array $ids
-     * @param $folder
-     */
-    public function clearFolders($ids = array(), $folder) {
-		foreach ($ids as $id) $this->rmDir($folder.$id.'/');
-    }
-
-    /**
-     * @param $dirPath
-     */
-    public function rmDir($dirPath) {
-    	if (is_dir($dirPath)) {
-    		foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dirPath, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
-    			$path->isDir() ? rmdir($path->getPathname()) : unlink($path->getPathname());
-			}
-			rmdir($dirPath);
-		}
+	public function clearFolders($ids = array(), $folder) {
+        foreach ($ids as $id) $this->fs->rmDir($folder.$id.'/');
     }
 
     /**
@@ -69,7 +57,7 @@ class sgPlugin {
 			$output .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/js/jquery.min.js"></script>';
 		}
 		$tpl = MODX_BASE_PATH.'assets/plugins/simplegallery/tpl/simplegallery.tpl';
-		if(file_exists($tpl)) {
+		if($this->fs->checkFile($tpl)) {
 			$output .= '[+js+]'.file_get_contents($tpl);
 		}
 		return $output;
@@ -83,7 +71,7 @@ class sgPlugin {
     public function renderJS($list,$ph = array()) {
     	$js = '';
     	$scripts = MODX_BASE_PATH.'assets/plugins/simplegallery/js/'.$list;
-		if(file_exists($scripts)) {
+		if($this->fs->checkFile($scripts)) {
 			$scripts = @file_get_contents($scripts);
 			$scripts = $this->DLTemplate->parseChunk('@CODE:'.$scripts,$ph);
 			$scripts = json_decode($scripts,true);
@@ -128,7 +116,7 @@ class sgPlugin {
 			$ph['js'] = $this->renderJS('scripts.json',$ph) . $this->renderJS('custom.json',$ph);
 			$output = $this->DLTemplate->parseChunk('@CODE:'.$output,$ph);
 		}
-		return $output; 
+		return $output;
     }
 
     /**
@@ -147,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `{$table}sg_images` (
 `sg_isactive` int(1) NOT NULL default '1',
 `sg_rid` int(10) default NULL,
 `sg_index` int(10) NOT NULL default '0',
-`sg_createdon` datetime NOT NULL, 
+`sg_createdon` datetime NOT NULL,
 PRIMARY KEY  (`sg_id`)
 ) ENGINE=MyISAM COMMENT='Datatable for SimpleGallery plugin.';
 OUT;
