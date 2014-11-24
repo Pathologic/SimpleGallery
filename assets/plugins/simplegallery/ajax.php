@@ -23,9 +23,9 @@ $rid = isset($_REQUEST['sg_rid']) ? (int)$_REQUEST['sg_rid'] : 0;
 
 include_once(MODX_BASE_PATH.'assets/plugins/simplegallery/lib/table.class.php');
 include_once MODX_BASE_PATH.'assets/plugins/simplegallery/lib/fileHelper.class.php';
-require_once (MODX_BASE_PATH . 'assets/lib/Helpers/HDD.php');
+require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
 
-$HDD = \Helpers\HDD::getInstance();
+$FS = \Helpers\FS::getInstance();
 $data = new \SimpleGallery\sgData($modx);
 
 switch ($mode) {
@@ -46,17 +46,17 @@ switch ($mode) {
 		if( strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ){
 			$files	= \FileAPI::getFiles(); // Retrieve File List
 			$dir = $params['folder'].$rid."/";
-			$flag = $HDD->makeDir($dir, $modx->config['new_folder_permissions']);
+			$flag = $FS->makeDir($dir, $modx->config['new_folder_permissions']);
 			if ($files['sg_files']['error'] == UPLOAD_ERR_OK) {
         		$tmp_name = $files["sg_files"]["tmp_name"];
         		$name = $modx->stripAlias($_FILES["sg_files"]["name"]);
-        		$name = $HDD->getInexistantFilename($dir.$name, true);
-        		$ext = $HDD->takeFileExt($name);
+        		$name = $FS->getInexistantFilename($dir.$name, true);
+        		$ext = $FS->takeFileExt($name);
         		$modx->logEvent(1,1,$name, 'ext - '.$ext);
         		if (in_array($ext, array('png', 'jpg', 'gif', 'jpeg' ))) {
         			if (@move_uploaded_file($tmp_name, $name)) {
         				$options = "w={$modx->config['maxImageWidth']}&h={$modx->config['maxImageHeight']}&q=96&f={$ext}";
-        				if (@$data->makeThumb('',$HDD->relativePath($name),$options)) {
+        				if (@$data->makeThumb('',$FS->relativePath($name),$options)) {
 	        				$info = getimagesize($name);
         					$properties = array (
 	        					'width'=>$info[0],
@@ -64,7 +64,7 @@ switch ($mode) {
 	        					'size'=>filesize($name)
         					);
 	        				$data->create(array(
-		        				'sg_image' => $HDD->relativePath($name),
+		        				'sg_image' => $FS->relativePath($name),
 		        				'sg_rid' => $rid,
 		        				'sg_title' => preg_replace('/\\.[^.\\s]{2,4}$/', '', $_FILES["sg_files"]["name"]),
 		        				'sg_properties' => json_encode($properties)
@@ -151,7 +151,7 @@ switch ($mode) {
 			if (isset($pluginParams['h'])) $h = $pluginParams['h'];
 		}
 		$file = MODX_BASE_PATH.$thumbsCache.$url;
-		if ($HDD->checkFile($file)) {
+		if ($FS->checkFile($file)) {
 			$info = getimagesize($file);
 			if ($w != $info[0] || $h != $info[1]) {
 				@$data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");

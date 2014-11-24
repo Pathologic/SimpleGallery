@@ -2,11 +2,14 @@
 namespace SimpleGallery;
 include_once (MODX_BASE_PATH . 'assets/snippets/DocLister/lib/DLTemplate.class.php');
 include_once (MODX_BASE_PATH . 'assets/lib/APIHelpers.class.php');
-require_once (MODX_BASE_PATH . 'assets/lib/Helpers/HDD.php');
+require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
 
 class sgPlugin {
 	public $modx = null;
 	public $params = array();
+	
+	protected $fs = null;
+	
 	public $DLTemplate = null;
 	public $lang_attribute = '';
 
@@ -23,11 +26,11 @@ class sgPlugin {
             $this->params['template'] = array_pop($modx->getDocument($this->params['id'],'template','all','all'));
         }
         $this->DLTemplate = \DLTemplate::getInstance($this->modx);
-        $this->hdd = \Helpers\HDD::getInstance();
+        $this->fs = \Helpers\FS::getInstance();
     }
 
 	public function clearFolders($ids = array(), $folder) {
-        foreach ($ids as $id) $this->hdd->rmDir($folder.$id.'/');
+        foreach ($ids as $id) $this->fs->rmDir($folder.$id.'/');
     }
 
     /**
@@ -54,7 +57,7 @@ class sgPlugin {
 			$output .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/js/jquery.min.js"></script>';
 		}
 		$tpl = MODX_BASE_PATH.'assets/plugins/simplegallery/tpl/simplegallery.tpl';
-		if($this->hdd->checkFile($tpl)) {
+		if($this->fs->checkFile($tpl)) {
 			$output .= '[+js+]'.file_get_contents($tpl);
 		}
 		return $output;
@@ -68,7 +71,7 @@ class sgPlugin {
     public function renderJS($list,$ph = array()) {
     	$js = '';
     	$scripts = MODX_BASE_PATH.'assets/plugins/simplegallery/js/'.$list;
-		if($this->hdd->checkFile($scripts)) {
+		if($this->fs->checkFile($scripts)) {
 			$scripts = @file_get_contents($scripts);
 			$scripts = $this->DLTemplate->parseChunk('@CODE:'.$scripts,$ph);
 			$scripts = json_decode($scripts,true);

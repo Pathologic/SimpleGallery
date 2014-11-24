@@ -1,7 +1,7 @@
 <?php
 namespace SimpleGallery;
 require_once (MODX_BASE_PATH . 'assets/lib/MODxAPI/autoTable.abstract.php');
-require_once (MODX_BASE_PATH . 'assets/lib/Helpers/HDD.php');
+require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
 
 class sgData extends \autoTable {
 	/* @var autoTable $table */
@@ -23,7 +23,9 @@ class sgData extends \autoTable {
 		'sg_createdon' => '',
 	);
 	public $thumbsCache = 'assets/.sgThumbs/';
-
+	protected $params = array();
+	protected $fs = null;
+	
     /**
      * @param $modx
      * @param bool $debug
@@ -32,7 +34,7 @@ class sgData extends \autoTable {
 		parent::__construct($modx, $debug);
         $this->modx = $modx;
         $this->params = $modx->event->params;
-        $this->hdd = \Helpers\HDD::getInstance();
+        $this->fs = \Helpers\FS::getInstance();
 	}
 
 	public function fieldNames(){
@@ -61,11 +63,11 @@ class sgData extends \autoTable {
 			$this->deleteThumb($row['sg_image']);
 			$this->invokeEvent('OnSimpleGalleryDelete',array(
 				'id'		=>	$row['sg_id'],
-				'filepath' => $this->hdd->takeFileDir($row['sg_image']),
-				'name' => $this->hdd->takeFileName($row['sg_image']),
-				'filename' => $this->hdd->takeFileBasename($row['sg_image']),
-				'ext' => $this->hdd->takeFileExt($row['sg_image']),
-				'mime' => $this->hdd->takeFileMIME($row['sg_image']),
+				'filepath' => $this->fs->takeFileDir($row['sg_image']),
+				'name' => $this->fs->takeFileName($row['sg_image']),
+				'filename' => $this->fs->takeFileBasename($row['sg_image']),
+				'ext' => $this->fs->takeFileExt($row['sg_image']),
+				'mime' => $this->fs->takeFileMIME($row['sg_image']),
 				'template'	=>	$template
 				),true);
 		}
@@ -81,10 +83,10 @@ class sgData extends \autoTable {
      * @param bool $cache
      */
     public function deleteThumb($url, $cache = false) {
-    	$url = $this->hdd->relativePath($url);
+    	$url = $this->fs->relativePath($url);
 		if (empty($url)) return;
-		if ($this->hdd->checkFile($url)) {
-			$dir = $this->hdd->takeFileDir($url);
+		if ($this->fs->checkFile($url)) {
+			$dir = $this->fs->takeFileDir($url);
 			unlink(MODX_BASE_PATH . $url);
 			$iterator = new \FilesystemIterator($dir);
 			if (!$iterator->valid()) rmdir($dir);
@@ -96,7 +98,7 @@ class sgData extends \autoTable {
 			if (isset($pluginParams['thumbsCache'])) $thumbsCache = $pluginParams['thumbsCache'];
 		}
 		$thumb = $thumbsCache.$url;
-		if ($this->hdd->checkFile($thumb)) $this->deleteThumb($thumb, true);
+		if ($this->fs->checkFile($thumb)) $this->deleteThumb($thumb, true);
 	}
 
     /**
@@ -120,22 +122,22 @@ class sgData extends \autoTable {
 		switch($key){
 			case 'filepath':{
 				$image = $this->get('sg_image');
-				$out = $this->hdd->takeFileDir($image);
+				$out = $this->fs->takeFileDir($image);
 				break;
 			}
 			case 'filename':{
 				$image = $this->get('sg_image');
-				$out = $this->hdd->takeFileBasename($image);
+				$out = $this->fs->takeFileBasename($image);
 				break;
 			}
 			case 'ext':{
 				$image = $this->get('sg_image');
-				$out = $this->hdd->takeFileExt($image);
+				$out = $this->fs->takeFileExt($image);
 				break;
 			}
 			case 'mime':{
 				$image = $this->get('sg_image');
-				$out = $this->hdd->takeFileMIME($image);
+				$out = $this->fs->takeFileMIME($image);
 				break;
 			}
 			default:{
@@ -153,7 +155,7 @@ class sgData extends \autoTable {
     {
     	switch($key) {
 			case 'sg_image':{
-				if (empty($value) || !is_scalar($value) || !$this->hdd->checkFile($value)) {
+				if (empty($value) || !is_scalar($value) || !$this->fs->checkFile($value)) {
 					$value = '';
 				}
 				break;
@@ -243,15 +245,15 @@ class sgData extends \autoTable {
 			include_once(MODX_BASE_PATH.'assets/snippets/phpthumb/phpthumb.class.php');
 		}
 		$thumb = new \phpthumb();
-		$thumb->sourceFilename = MODX_BASE_PATH . $this->hdd->relativePath($url);
+		$thumb->sourceFilename = MODX_BASE_PATH . $this->fs->relativePath($url);
 		$options = strtr($options, Array("," => "&", "_" => "=", '{' => '[', '}' => ']'));
 		parse_str($options, $params);
 		foreach ($params as $key => $value) {
         	$thumb->setParameter($key, $value);
     	}
-  		$outputFilename = MODX_BASE_PATH. $this->hdd->relativePath($folder). '/' . $this->hdd->relativePath($url);
-  		$dir = $this->hdd->takeFileDir($outputFilename);
-  		$this->hdd->makeDir($dir, $this->modx->config['new_folder_permissions']);
+  		$outputFilename = MODX_BASE_PATH. $this->fs->relativePath($folder). '/' . $this->fs->relativePath($url);
+  		$dir = $this->fs->takeFileDir($outputFilename);
+  		$this->fs->makeDir($dir, $this->modx->config['new_folder_permissions']);
 		if ($thumb->GenerateThumbnail() && $thumb->RenderToFile($outputFilename)) {
         	return true;
 		} else {
