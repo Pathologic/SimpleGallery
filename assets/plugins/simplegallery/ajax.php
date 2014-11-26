@@ -22,7 +22,6 @@ $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : null;
 $rid = isset($_REQUEST['sg_rid']) ? (int)$_REQUEST['sg_rid'] : 0;
 
 include_once(MODX_BASE_PATH.'assets/plugins/simplegallery/lib/table.class.php');
-include_once MODX_BASE_PATH.'assets/plugins/simplegallery/lib/fileHelper.class.php';
 require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
 
 $FS = \Helpers\FS::getInstance();
