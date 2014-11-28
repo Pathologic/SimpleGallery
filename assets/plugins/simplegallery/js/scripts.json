@@ -1,7 +1,7 @@
 {
 	"scripts": {
 		"EasyUI" : {
-			"version":"1.4",
+			"version":"1.4.1",
 			"src":"assets/plugins/simplegallery/js/easy-ui/jquery.easyui.min.js"
 		},
 		"FileAPI": {
@@ -21,7 +21,7 @@
 			"src":"assets/plugins/simplegallery/js/plugin/simplegallery.js"
 		},
 		"easyui-lang-[+lang+]":{
-			"version":"0.9",
+			"version":"1.4.1",
 			"src":"assets/plugins/simplegallery/js/easy-ui/locale/easyui-lang-[+lang+].js"
 		},
 		"sg-lang-[+lang+]":{
