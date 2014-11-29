@@ -458,6 +458,7 @@ var sgHelper = {};
 	            			$('body').css('overflow','hidden');
 	            			$('#sgRefreshStart').click(function(e){
 	            				templates = $('#sgRefreshTpls > form').serializeArray();
+                                if (templates.length === 0) return;
 					            $.post(
 									_xtAjaxUrl+'?mode=initRefresh', 
 									{
