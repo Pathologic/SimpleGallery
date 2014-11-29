@@ -66,10 +66,10 @@
 				foreach( $httpHeaders as $header => $value ){
 					header("$header: $value");
 				}
-				echo $json;
+				$out = $json;
 			}
 			else {
-				echo "<script>"
+				$out = "<script>"
 					. "  (function (ctx, jsonp){"
 					. "     'use strict';"
 					. "     if( ctx && ctx[jsonp] ){"
@@ -78,6 +78,7 @@
 					. "  })(window.parent, '$jsonp');"
 					. "</script>";
 			}
+			return $out;
 		}
 
 	}
