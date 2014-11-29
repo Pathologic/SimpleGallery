@@ -2,12 +2,13 @@ var sgHelper = {};
 (function($){
 	$.fn.pagination.defaults.pageList = [50,100,150,200];
 	sgHelper = {
-		init: function() {
-			$('#SimpleGallery').append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="'+_modxTheme+'/images/icons/folder_page_add.png">'+_sgLang['upload']+'</div><input id="sg_files" name="sg_files" class="btn-input" type="file" multiple /></div>'+_xtRefreshBtn+'<div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
+        init: function() {
+            var workspace = $('#SimpleGallery');
+            workspace.append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="'+_modxTheme+'/images/icons/folder_page_add.png">'+_sgLang['upload']+'</div><input id="sg_files" name="sg_files" class="btn-input" type="file" multiple /></div>'+_xtRefreshBtn+'<div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
 			$('#sg_refresh').click(function(){
 		    	sgHelper.refresh();
 		    });
-			$('#SimpleGallery').fileapi({
+            workspace.fileapi({
             	url: _xtAjaxUrl+'?mode=upload',
             	autoUpload: true,
             	accept: 'image/*',
@@ -42,10 +43,11 @@ var sgHelper = {};
 	            			})
 		    			},
 		    			onClose: function() {
-		    				$('#SimpleGallery').fileapi('abort');
+                            workspace.fileapi('abort');
 		    				uploadStateForm.window('destroy',true);
 		    				$('.window-shadow,.window-mask').remove();
 		    				$('body').css('overflow','auto');
+                            sgHelper.update();
 		    			}
 		    		});
             	},
@@ -61,6 +63,7 @@ var sgHelper = {};
 					$('.progress','#sgFilesListRow'+sgFileId).text(Math.floor(100*part)+'%');
 				},
             	onFileComplete: function(e,uiE) {
+                    if (uiE.result === undefined) return;
             		var errorCode = parseInt(uiE.result.data._FILES.sg_files.error);
             		if (errorCode) {
             			$('.progress','#sgFilesListRow'+sgFileId).html('<img src="'+_modxTheme+'/images/icons/error.png'+'" title="'+_sgUploadResult[errorCode]+'">');
@@ -73,7 +76,7 @@ var sgHelper = {};
             		btn.replaceWith(btn.val('').clone(true));
             		e.widget.files = [];
             		e.widget.uploaded = [];
-            		$('#sg_pages').pagination('select');
+            		sgHelper.update();
             		$('#sgUploadCancel span').text(_sgLang['close']);
                     if (!uiE.error) $('#sgUploadCancel').trigger('click');
             	},
@@ -84,7 +87,7 @@ var sgHelper = {};
       				}
             	}
         	});
-        	$('#sg_pages').pagination({
+            $('#sg_pages').pagination({
 			    total:0,
 			    pageSize:10,
 	    		buttons: [{
@@ -96,7 +99,7 @@ var sgHelper = {};
 						$.post(_xtAjaxUrl, { rows: pageSize, page: pageNumber, sg_rid: rid }, function(data) {
 							if (sgHelper.isValidJSON(data)) {
 								var result = $.parseJSON(data);
-								$('#sg_pages').pagination('refresh',{total: result.total});
+                                $('#sg_pages').pagination('refresh',{total: result.total});
 								sgHelper.renderImages(result.rows);
 							}
 						});
@@ -105,6 +108,9 @@ var sgHelper = {};
 			});
 			$('.btn-deleteAll').parent().parent().hide();
 		},
+        update: function() {
+            $('#sg_pages').pagination('select');
+        },
 		renderImages: function(rows) {
 			var len = rows.length;
 			var placeholder = $('#sg_images');
@@ -162,19 +168,17 @@ var sgHelper = {};
 					targetIndex = parseInt(target.sg_index);
 					if (targetIndex < sourceIndex && sgAfterDragState.next != -1) targetIndex++;
 
+                    var tempIndex = targetIndex,
+                        item = e.item;
 					if (sourceIndex < targetIndex) {
-						var tempIndex = targetIndex,
-							item = e.item;
 						while(tempIndex >= sourceIndex) {
 							$(item).data('properties').sg_index = tempIndex--;
 							item = item.nextSibling == null ? item : item.nextSibling;
 						}
 					} else {
-						var tempIndex = targetIndex,
-							item = e.item;
 						while(tempIndex <= sourceIndex) {
 							$(item).data('properties').sg_index = tempIndex++;
-							item = item.previousSibling == null ? item : item.previousSibling;;
+							item = item.previousSibling == null ? item : item.previousSibling;
 						}
 					}
 					$.post(
@@ -193,7 +197,7 @@ var sgHelper = {};
 								}
 							}
 							if(!data.success) {
-								$('#sg_pages').pagination('select');
+                                sgHelper.update();
 							} 
 						}
 					);
@@ -210,7 +214,8 @@ var sgHelper = {};
     		}
 		},
 		select: function(image,e) {
-			if(!sgLastChecked)
+			var _image = $('.sg_image');
+            if(!sgLastChecked)
                     sgLastChecked = image;
 		    if (e.ctrlKey || e.metaKey) {
 		        if (image.hasClass('selected'))
@@ -218,12 +223,12 @@ var sgHelper = {};
 		        else
 		            image.addClass('selected');
 		    } else if (e.shiftKey) {
-		    	var start = $('.sg_image').index(image);
-                var end = $('.sg_image').index(sgLastChecked);
-                $('.sg_image').slice(Math.min(start,end), Math.max(start,end)+ 1).addClass('selected');
+		    	var start = _image.index(image);
+                var end = _image.index(sgLastChecked);
+                _image.slice(Math.min(start,end), Math.max(start,end)+ 1).addClass('selected');
 
 		    } else {
-		        $('.sg_image').removeClass('selected');
+		        _image.removeClass('selected');
 		        image.addClass('selected');
 		        sgLastChecked=image;
 		    }
@@ -263,7 +268,7 @@ var sgHelper = {};
 								}
 							}
 							if(data.success) {
-								$('#sg_pages').pagination('select');
+								sgHelper.update();
 							} else {
 								$.messager.alert(_sgLang['error'],_sgLang['delete_fail']);
 							}
@@ -295,7 +300,7 @@ var sgHelper = {};
 								}
 							}
 							if(data.success) {
-								$('#sg_pages').pagination('select');
+								sgHelper.update();
 								$('.btn-deleteAll').parent().parent().hide();
 							} else {
 								$.messager.alert(_sgLang['error'],_sgLang['delete_fail']);
@@ -334,7 +339,7 @@ var sgHelper = {};
 							}
 							if(data.success) {
 								editForm.window('close',true);
-								$('#sg_pages').pagination('select');
+								sgHelper.update();
 							} else {
 								$.messager.alert(_sgLang['error'],_sgLang['save_fail']);
 							}
