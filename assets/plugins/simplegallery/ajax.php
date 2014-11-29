@@ -65,7 +65,7 @@ switch ($mode) {
 		        				'sg_image' => $FS->relativePath($name),
 		        				'sg_rid' => $rid,
 		        				'sg_title' => preg_replace('/\\.[^.\\s]{2,4}$/', '', $_FILES["sg_files"]["name"]),
-		        				'sg_properties' => json_encode($properties)
+		        				'sg_properties' => $properties
 	        				))->save();
         				} else {
         					@unlink($name);

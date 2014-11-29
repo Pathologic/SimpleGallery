@@ -7,11 +7,14 @@ class sgData extends \autoTable {
 	/* @var autoTable $table */
 	protected $table = 'sg_images';
 	protected $pkName = 'sg_id';
-	/* @var autoTable $_table */
-
+	
+	protected $jsonFields = array(
+		'sg_properties'
+	);
+	
 	protected $file = null;
 
-	public $default_field = array(
+	protected $default_field = array(
 		'sg_image' => '',
 		'sg_title' => '',
 		'sg_description' => '',
@@ -33,7 +36,7 @@ class sgData extends \autoTable {
     public function __construct($modx, $debug = false) {
 		parent::__construct($modx, $debug);
         $this->modx = $modx;
-        $this->params = $modx->event->params;
+        $this->params = (isset($modx->event->params) && is_array($modx->event->params)) ? $modx->event->params : array();
         $this->fs = \Helpers\FS::getInstance();
 	}
 
@@ -171,7 +174,6 @@ class sgData extends \autoTable {
 			}
 			case 'sg_createdon':
 			case 'sg_add':
-			case 'sg_properties':
 			case 'sg_description':
 			case 'sg_title':{
 				if(!is_scalar($value)){
@@ -201,12 +203,17 @@ class sgData extends \autoTable {
 			$this->log['emptyImage'] = 'Image is empty in <pre>' . print_r($this->field, true) . '</pre>';
 			return false;
 		}
-		if ($this->newDoc) {
-			$q = $this->query('SELECT count(`sg_id`) FROM '.$this->makeTable($this->table).' WHERE `sg_rid`='.$this->field['sg_rid']);
+		$rid = $this->get('sg_rid');
+		if(empty($rid)){
+			$rid = $this->default_field['sg_rid'];
+		}
+		$rid = (int)$rid;
+		if ($this->newDoc) {	
+			$q = $this->query('SELECT count(`sg_id`) FROM '.$this->makeTable($this->table).' WHERE `sg_rid`='.$rid);
 			$this->field['sg_index'] = $this->modx->db->getValue($q);
 			$this->field['sg_createdon'] = date('Y-m-d H:i:s', time() + $this->modx->config['server_offset_time']);
 		}
-		$q = $this->query('SELECT `template` FROM '.$this->makeTable('site_content').' WHERE id='.$this->field['sg_rid']);
+		$q = $this->query('SELECT `template` FROM '.$this->makeTable('site_content').' WHERE id='.$rid);
 		$template = $this->modx->db->getValue($q);
 		if ($out = parent::save($fire_events, $clearCache)) {
 			if ($this->newDoc) {
