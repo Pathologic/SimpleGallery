@@ -56,6 +56,7 @@ class sgPlugin {
 		if(array_search('ManagerManager',$plugins['OnDocFormRender']) === false) {
 			$output .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/plugins/simplegallery/js/jquery/jquery-1.9.1.min.js"></script>';
             $this->modx->loadedjscripts['jQuery'] = array('version'=>'1.9.1');
+            $output .='<script type="text/javascript">var jQuery = jQuery.noConflict(true);</script>';
 		}
 		$tpl = MODX_BASE_PATH.'assets/plugins/simplegallery/tpl/simplegallery.tpl';
 		if($this->fs->checkFile($tpl)) {
