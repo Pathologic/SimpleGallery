@@ -78,7 +78,7 @@ class sgPlugin {
 			$scripts = $this->DLTemplate->parseChunk('@CODE:'.$scripts,$ph);
 			$scripts = json_decode($scripts,true);
 			foreach ($scripts['scripts'] as $name => $params) {
-				if (!isset($this->modx->loadedjscripts[$name]) && file_exists(MODX_BASE_PATH.$params['src'])) {
+				if (!isset($this->modx->loadedjscripts[$name]) && $this->fs->checkFile($params['src'])) {
 					$this->modx->loadedjscripts[$name] = array('version'=>$params['version']);
 					$js .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].$params['src'].'"></script>';
 				} else {
