@@ -22,7 +22,7 @@ $modx->event->params['prepare'] = trim(implode(",", $prepare), ',');
 
 $params = array_merge(array(
 	"controller" 	=> 	"onetable",
-	"config"		=>	"sgLister:assets/plugins/simplegallery/DocLister/config/"
+	"config"		=>	"sgLister:assets/snippets/simplegallery/config/"
 ), $modx->event->params, array(
 	'depth' => '0',
 	'showParent' => '1'
