@@ -81,7 +81,9 @@ class sgPlugin {
 				if (!isset($this->modx->loadedjscripts[$name]) && file_exists(MODX_BASE_PATH.$params['src'])) {
 					$this->modx->loadedjscripts[$name] = array('version'=>$params['version']);
 					$js .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].$params['src'].'"></script>';
-				};
+				} else {
+                    $this->modx->logEvent(0, 3, 'Cannot load '.$params['src'], 'SimpleGallery');
+                }
 			}
 		}
 		return $js;
