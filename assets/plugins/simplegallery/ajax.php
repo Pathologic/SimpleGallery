@@ -51,7 +51,6 @@ switch ($mode) {
         		$name = $modx->stripAlias($_FILES["sg_files"]["name"]);
         		$name = $FS->getInexistantFilename($dir.$name, true);
         		$ext = $FS->takeFileExt($name);
-        		$modx->logEvent(1,1,$name, 'ext - '.$ext);
         		if (in_array($ext, array('png', 'jpg', 'gif', 'jpeg' ))) {
         			if (@move_uploaded_file($tmp_name, $name)) {
         				$options = "w={$modx->config['maxImageWidth']}&h={$modx->config['maxImageHeight']}&q=96&f={$ext}";
