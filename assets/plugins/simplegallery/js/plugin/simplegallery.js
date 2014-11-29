@@ -68,13 +68,14 @@ var sgHelper = {};
     				$('#sgProgress > span > span').text(sgFileId);
             	},
             	onComplete: function(e,uiE) {
-            		sgFileId = 0;
+                    sgFileId = 0;
             		var btn = $('#sg_files');
             		btn.replaceWith(btn.val('').clone(true));
             		e.widget.files = [];
             		e.widget.uploaded = [];
             		$('#sg_pages').pagination('select');
             		$('#sgUploadCancel span').text(_sgLang['close']);
+                    if (!uiE.error) $('#sgUploadCancel').trigger('click');
             	},
             	elements: {
           			dnd: {
