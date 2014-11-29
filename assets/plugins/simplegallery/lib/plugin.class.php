@@ -53,7 +53,7 @@ class sgPlugin {
 			return $output;
 		}
 		$plugins = $this->modx->pluginEvent;
-		if(array_search('ManagerManager',$plugins['OnDocFormRender']) === false) {
+		if(array_search('ManagerManager',$plugins['OnDocFormRender']) === false && !isset($this->modx->loadedjscripts['jQuery'])) {
 			$output .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/plugins/simplegallery/js/jquery/jquery-1.9.1.min.js"></script>';
             $this->modx->loadedjscripts['jQuery'] = array('version'=>'1.9.1');
             $output .='<script type="text/javascript">var jQuery = jQuery.noConflict(true);</script>';
