@@ -14,20 +14,20 @@ if (!defined('MODX_BASE_PATH')) {
  * @TODO add parameter showFolder - include document container in result data whithout children document if you set depth parameter.
  * @TODO st placeholder [+dl.title+] if menutitle not empty
  */
-include_once('site_content.php');
+include_once(MODX_BASE_PATH . 'assets/snippets/DocLister/core/controller/site_content.php');
 class sg_site_contentDocLister extends site_contentDocLister
 {
     public function getDocs($tvlist = '')
     {
         $docs = parent::getDocs($tvlist);
-		
+
         $table = $this->getTable('sg_images');
         $rid = $this->modx->db->escape(implode(',',array_keys($docs)));
         $sgOrderBy = $this->modx->db->escape($this->getCFGDef('sgOrderBy','sg_index ASC'));
-		
+
         $sgDisplay = $this->getCFGDef('sgDisplay','all');
         $sgAddWhereList = $this->modx->db->escape($this->getCFGDef('sgAddWhereList',''));
-		
+
         if (!empty($sgAddWhereList)) $sgAddWhereList = ' AND ('.$sgAddWhereList.')';
         if (!empty($rid) && ($sgDisplay == 'all' || is_numeric($sgDisplay))) {
             switch ($sgDisplay) {
