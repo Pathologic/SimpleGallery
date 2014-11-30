@@ -1,5 +1,6 @@
 <div class="sg_image">
     <a href="javascript:void(0)" class="del" title="{{sgLang.delete}}"></a>
-    <img title="{{data.sg_description}}" src="{{thumbPrefix}}{{data.sg_image}}">
-    <div class="name{{data.sg_isactive}}">{{data.sg_title}}</div>
+    <img title="{{stripText data.sg_description 100}}" src="{{thumbPrefix}}{{data.sg_image}}">
+    <div class="name{{#ifCond data.sg_isactive "0"}} notactive{{/ifCond}}">{{data.sg_title}}</div>
+    {{#ifCond data.sg_description ""}}<a href="javascript:void(0)" class="edit" title="{{sgLang.emptydesc}}"></a>{{/ifCond}}
 </div>

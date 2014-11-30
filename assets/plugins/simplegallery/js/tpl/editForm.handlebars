@@ -33,7 +33,7 @@
                 <label>{{sgLang.add}}</label>
                 <input name="sg_add" type="text" value="{{data.sg_add}}">
                 <label>{{sgLang.show}}</label>
-                <input type="checkbox" name="sg_isactive" value="1" {{data.sg_isactive}}>{{sgLang.yes}}
+                <input type="checkbox" name="sg_isactive" value="1"{{#ifCond data.sg_isactive "1"}} checked{{/ifCond}}>{{sgLang.yes}}
             </form>
         </div>
     </div>

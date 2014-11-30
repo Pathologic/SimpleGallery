@@ -3,6 +3,18 @@ var sgHelper = {};
 	$.fn.pagination.defaults.pageList = [50,100,150,200];
 	sgHelper = {
         init: function() {
+            Handlebars.registerHelper('stripText', function(str, len){
+                return sgHelper.stripText(str, len);
+            });
+            Handlebars.registerHelper('bytesToSize', function(bytes){
+                return sgHelper.bytesToSize(bytes);
+            });
+            Handlebars.registerHelper('ifCond', function(v1, v2, options) {
+                if(v1 === v2) {
+                    return options.fn(this);
+                }
+                return options.inverse(this);
+            });
             var workspace = $('#SimpleGallery');
             workspace.append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="'+_modxTheme+'/images/icons/folder_page_add.png">'+_sgLang['upload']+'</div><input id="sg_files" name="sg_files" class="btn-input" type="file" multiple /></div>'+_xtRefreshBtn+'<div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
 			$('#sg_refresh').click(function(){
@@ -18,14 +30,16 @@ var sgHelper = {};
             		'sg_rid': rid
             	},
             	filterFn: function (file, info) {
-            		return /jpeg|gif|png$/.test(file.type) 
+            		return /jpeg|gif|png$/.test(file.type);
             	},
             	onBeforeUpload: function(e,uiE) {
 	            	var total = uiE.files.length;
-	            	var uploadStateForm = $('<div id="sgUploadState"><div id="sgProgress"><span></span><div></div></div><table><thead><tr><th class="sgrow1">'+_sgLang['file']+'</th><th class="sgrow2">'+_sgLang['size']+'</th><th class="sgrow3">'+_sgLang['progress']+'</th></tr></thead></table><div id="sgFilesList"><table><tbody></tbody></table></div><div style="clear:both;padding:10px;float:right;"><div id="sgUploadCancel" class="btn btn-right"><div class="btn-text"><img src="'+_modxTheme+'/images/icons/stop.png"><span>'+_sgLang['cancel']+'</span></div></div></div></div>');
-	            	$.each(uiE.files,function(i,file){
-	            		$('tbody',uploadStateForm).append('<tr id="sgFilesListRow'+(i+1)+'"><td class="sgrow1">'+file.name+'</td><td class="sgrow2">'+sgHelper.bytesToSize(file.size)+'</td><td class="sgrow3 progress"></td></tr>')
-	            	});
+                    var context = {
+                        files: uiE.files,
+                        sgLang: _sgLang,
+                        modxTheme: _modxTheme
+                    };
+	            	var uploadStateForm = $(Handlebars.templates.uploadForm(context));
 	            	uploadStateForm.window({
 	    				width:450,
 	    				modal:true,
@@ -58,13 +72,13 @@ var sgHelper = {};
 				},
 				onFileProgress: function (e,uiE) {
 					var part = uiE.loaded / uiE.total;
-					$('.progress','#sgFilesListRow'+sgFileId).text(Math.floor(100*part)+'%');
+					$('.progress','#sgFilesListRow'+(sgFileId-1)).text(Math.floor(100*part)+'%');
 				},
             	onFileComplete: function(e,uiE) {
                     if (uiE.result === undefined) return;
             		var errorCode = parseInt(uiE.result.data._FILES.sg_files.error);
             		if (errorCode) {
-            			$('.progress','#sgFilesListRow'+sgFileId).html('<img src="'+_modxTheme+'/images/icons/error.png'+'" title="'+_sgUploadResult[errorCode]+'">');
+            			$('.progress','#sgFilesListRow'+(sgFileId-1)).html('<img src="'+_modxTheme+'/images/icons/error.png'+'" title="'+_sgUploadResult[errorCode]+'">');
             		}
     				$('#sgProgress > span > span').text(sgFileId);
             	},
@@ -126,13 +140,17 @@ var sgHelper = {};
             return data;
         },
 		renderImages: function(rows) {
-			var len = rows.length;
+            var len = rows.length;
 			var placeholder = $('#sg_images');
 			placeholder.html('');
 			for (i = 0; i < len; i++) {
- 				var image = $('<div class="sg_image"><a href="javascript:void(0)" class="del" title="'+_sgLang['delete']+'"></a><img title="'+this.escape(this.stripText(rows[i].sg_description,100))+'" src="'+_xtThumbPrefix+rows[i].sg_image+'"><div class="name'+(parseInt(rows[i].sg_isactive) ? '' : ' notactive')+'">'+rows[i].sg_title+'</div></div>');
- 				if (!rows[i].sg_description.length) image.append('<a href="javascript:void(0)" class="edit" title="'+_sgLang['emptydesc']+'"></a>');
- 				rows[i].sg_properties = $.parseJSON(rows[i].sg_properties);
+                rows[i].sg_properties = $.parseJSON(rows[i].sg_properties);
+                var context = {
+                    data: rows[i],
+                    sgLang: _sgLang,
+                    thumbPrefix: _xtThumbPrefix
+                };
+ 				var image = $(Handlebars.templates.preview(context));
  				image.data('properties',rows[i]);
  				placeholder.append(image);
 			}
@@ -314,8 +332,6 @@ var sgHelper = {};
                 modxSiteUrl: _modxSiteUrl,
                 sgLang: _sgLang
             };
-            context.data.sg_properties.size = this.bytesToSize(data.sg_properties.size);
-            context.data.sg_isactive = parseInt(data.sg_isactive) ? 'checked' : '';
 			var editForm = $(Handlebars.templates.editForm(context));
 			editForm.window({
     			modal:true,
