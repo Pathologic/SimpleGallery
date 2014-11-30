@@ -1,0 +1,21 @@
+<div id="sgRefresh">
+    <div id="sgRefreshTpls">
+        <p>{{sgLang.select_tpls}}</p>
+        <form>{{#each tpls}}
+            <label><input type="checkbox" value="{{this.id}}" name="template[]">{{this.templatename}}</label>
+        {{/each}}
+        </form>
+    </div>
+    <div id="sgRefreshProgress">
+        <span></span>
+        <div></div>
+    </div>
+    <div style="clear:both;padding:10px;float:right;">
+        <div id="sgRefreshStart" class="btn btn-right">
+            <div class="btn-text">
+                <img src="{{modxTheme}}/images/icons/save.png">
+                <span>{{sgLang.continue}}</span>
+            </div>
+        </div>
+    </div>
+</div>

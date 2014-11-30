@@ -95,10 +95,10 @@ var sgHelper = {};
 			    onSelectPage:function(pageNumber, pageSize){
 					$(this).pagination('loading');
 						$.post(_xtAjaxUrl, { rows: pageSize, page: pageNumber, sg_rid: rid }, function(data) {
-							if (sgHelper.isValidJSON(data)) {
-								var result = $.parseJSON(data);
-                                $('#sg_pages').pagination('refresh',{total: result.total});
-								sgHelper.renderImages(result.rows);
+                            data = sgHelper.getData(data);
+                            if (data.success) {
+                                $('#sg_pages').pagination('refresh',{total: data.total});
+								sgHelper.renderImages(data.rows);
 							}
 						});
 					$(this).pagination('loaded');
@@ -113,6 +113,17 @@ var sgHelper = {};
             wnd.window('destroy',true);
             $('.window-shadow,.window-mask').remove();
             $('body').css('overflow','auto');
+        },
+        getData: function(data) {
+            if (sgHelper.isValidJSON(data)) {
+                data = $.parseJSON(data);
+                data.success = true;
+            } else {
+                data = {
+                    success:false
+                }
+            }
+            return data;
         },
 		renderImages: function(rows) {
 			var len = rows.length;
@@ -192,13 +203,7 @@ var sgHelper = {};
 							targetIndex: targetIndex 
 						},
 						function(data) {
-							if (sgHelper.isValidJSON(data)) {
-								data = $.parseJSON(data);
-							} else {
-								data = {
-									success:false
-								}
-							}
+							data = sgHelper.getData(data);
 							if(!data.success) {
                                 sgHelper.update();
 							} 
@@ -263,13 +268,7 @@ var sgHelper = {};
 						_xtAjaxUrl+'?mode=remove', 
 						{id:id},
 						function(data) {
-							if (sgHelper.isValidJSON(data)) {
-								data = $.parseJSON(data);
-							} else {
-								data = {
-									success:false
-								}
-							}
+                            data = sgHelper.getData(data);
 							if(data.success) {
 								sgHelper.update();
 							} else {
@@ -295,13 +294,7 @@ var sgHelper = {};
 						_xtAjaxUrl+'?mode=removeAll', 
 						{ids:ids},
 						function(data) {
-							if (sgHelper.isValidJSON(data)) {
-								data = $.parseJSON(data);
-							} else {
-								data = {
-									success:false
-								}
-							}
+                            data = sgHelper.getData(data);
 							if(data.success) {
 								sgHelper.update();
 								$('.btn-deleteAll').parent().parent().hide();
@@ -341,13 +334,7 @@ var sgHelper = {};
 						_xtAjaxUrl+'?mode=edit', 
 						$('#sgForm').serialize(),
 						function(data) {
-							if (sgHelper.isValidJSON(data)) {
-								data = $.parseJSON(data);
-							} else {
-								data = {
-									success:false
-								}
-							}
+                            data = sgHelper.getData(data);
 							if(data.success) {
 								editForm.window('close',true);
 								sgHelper.update();
@@ -400,13 +387,7 @@ var sgHelper = {};
 		            	template:templates
 		            },
 		            success: function(data, textStatus){
-		                if (sgHelper.isValidJSON(data)) {
-							data = $.parseJSON(data);
-						} else {
-							data = {
-								success:false
-							}
-						}
+                        data = sgHelper.getData(data);
 						if(data.success) {
 							refreshStatus();
 						} else {
@@ -427,13 +408,7 @@ var sgHelper = {};
 						template:templates
 					},
 					function(data) {
-						if (sgHelper.isValidJSON(data)) {
-							data = $.parseJSON(data);
-						} else {
-							data = {
-								success:false
-							}
-						}
+                        data = sgHelper.getData(data);
 						if(data.success) {
 							$('#sgRefreshProgress > span').text(data.processed+' '+_sgLang['from']+' '+total);
 							var part = data.processed / total;
@@ -454,12 +429,16 @@ var sgHelper = {};
 			}
 			$.messager.confirm(_sgLang['refresh_previews'],_sgLang['are_you_sure_to_refresh'],function(r){
     			if (r){
-    				var tpls = $.parseJSON(_xtTpls),
-    					_tpls = '';
+    				var tpls = $.parseJSON(_xtTpls);
 	            	$.each(tpls,function(i,tpl) {
-	            		_tpls += '<label><input type="checkbox" value="'+tpl.id+'" name="template[]">'+sgHelper.stripText(tpl.templatename,21)+'</label>';
+	            		tpl.templatename = sgHelper.stripText(tpl.templatename,21);
 	            	});
-    				var refreshForm = $('<div id="sgRefresh"><div id="sgRefreshTpls"><p>'+_sgLang['select_tpls']+'</p><form>'+_tpls+'</form></div><div id="sgRefreshProgress"><span></span><div></div></div><div style="clear:both;padding:10px;float:right;"><div id="sgRefreshStart" class="btn btn-right"><div class="btn-text"><img src="'+_modxTheme+'/images/icons/save.png"><span>'+_sgLang['continue']+'</span></div></div></div></div>');
+                    var context = {
+                        tpls: tpls,
+                        sgLang: _sgLang,
+                        modxTheme: _modxTheme
+                    };
+    				var refreshForm = $(Handlebars.templates.refreshForm(context));
 	            	refreshForm.window({
 	    				width:450,
 	    				modal:true,
@@ -480,13 +459,7 @@ var sgHelper = {};
 										template:templates
 									},
 									function(data) {
-										if (sgHelper.isValidJSON(data)) {
-											data = $.parseJSON(data);
-										} else {
-											data = {
-												success:false
-											}
-										}
+                                        data = sgHelper.getData(data);
 										if(data.success) {
 											total = data.total;
 											refreshStatus();
