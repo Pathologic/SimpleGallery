@@ -16,6 +16,14 @@
 			"version":"0.5.1",
 			"src":"assets/plugins/simplegallery/js/sortable/Sortable.min.js"
 		},
+        "handlebars":{
+            "version":"2.0.0",
+            "src":"assets/plugins/simplegallery/js/handlebars/handlebars.runtime.min.js"
+        },
+        "templates":{
+            "version":"1.0.0",
+            "src":"assets/plugins/simplegallery/js/tpl/edit.js"
+        },
 		"SimpleGallery":{
 			"version":"0.9",
 			"src":"assets/plugins/simplegallery/js/plugin/simplegallery.js"
