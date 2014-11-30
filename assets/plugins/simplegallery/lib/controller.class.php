@@ -110,8 +110,7 @@ class sgController extends sgAbstractController{
 				'sg_add'		 => $_REQUEST['sg_add']
 			);
 			$fields['sg_isactive'] = isset($_REQUEST['sg_isactive']) ? 1 : 0;
-			$this->data->edit($id)->fromArray($fields)->save();
-			$out['success'] = true;
+			$out['success'] = $this->data->edit($id)->fromArray($fields)->save();
 		} else {
 			$out['success'] = false;
 		}

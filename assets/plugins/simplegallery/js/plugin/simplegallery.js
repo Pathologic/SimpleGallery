@@ -131,7 +131,7 @@ var sgHelper = {};
         getData: function(data) {
             if (sgHelper.isValidJSON(data)) {
                 data = $.parseJSON(data);
-                data.success = true;
+                if (data.rows !== undefined) data.success = true;
             } else {
                 data = {
                     success:false
