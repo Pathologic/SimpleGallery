@@ -323,7 +323,7 @@ var sgHelper = {};
             };
             context.data.sg_properties.size = this.bytesToSize(data.sg_properties.size);
             context.data.sg_isactive = parseInt(data.sg_isactive) ? 'checked' : '';
-			var editForm = $(Handlebars.templates.edit(context));
+			var editForm = $(Handlebars.templates.editForm(context));
 			editForm.window({
     			modal:true,
     			title:sgHelper.escape(this.stripText(data.sg_title,80)),

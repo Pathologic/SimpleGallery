@@ -22,7 +22,7 @@
         },
         "templates":{
             "version":"1.0.0",
-            "src":"assets/plugins/simplegallery/js/tpl/edit.js"
+            "src":"assets/plugins/simplegallery/js/tpl/templates.js"
         },
 		"SimpleGallery":{
 			"version":"0.9",
