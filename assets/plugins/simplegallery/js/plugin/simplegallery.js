@@ -44,9 +44,7 @@ var sgHelper = {};
 		    			},
 		    			onClose: function() {
                             workspace.fileapi('abort');
-		    				uploadStateForm.window('destroy',true);
-		    				$('.window-shadow,.window-mask').remove();
-		    				$('body').css('overflow','auto');
+		    				sgHelper.destroyWindow(uploadStateForm);
                             sgHelper.update();
 		    			}
 		    		});
@@ -111,6 +109,11 @@ var sgHelper = {};
         update: function() {
             $('#sg_pages').pagination('select');
         },
+        destroyWindow: function(wnd) {
+            wnd.window('destroy',true);
+            $('.window-shadow,.window-mask').remove();
+            $('body').css('overflow','auto');
+        },
 		renderImages: function(rows) {
 			var len = rows.length;
 			var placeholder = $('#sg_images');
@@ -159,7 +162,7 @@ var sgHelper = {};
 					var sgAfterDragState = {
 						prev: e.item.previousSibling != null ? $(e.item.previousSibling).data('properties').sg_index : -1,
 		    			next: e.item.nextSibling != null ? $(e.item.nextSibling).data('properties').sg_index : -1
-					}
+					};
 					if (sgAfterDragState.prev == sgBeforeDragState.prev && sgAfterDragState.next == sgBeforeDragState.next) return;
 					var source = $(e.item).data('properties');
 					sourceIndex = parseInt(source.sg_index); 
@@ -312,7 +315,15 @@ var sgHelper = {};
 		},
 		edit: function(image) {
 			var data = image.data('properties');
-			var editForm = $('<div id="sgEdit"><div class="sgRow"><div style="font-size:0;text-align:center;"><img src="'+_modxSiteUrl+data.sg_image+'"></div><div><table><tr><td class="rowTitle">ID</td><td>'+data.sg_id+'</td></tr><tr><td class="rowTitle">'+_sgLang['file']+'</td><td>'+data.sg_image+'</td></tr><tr><td class="rowTitle">'+_sgLang['size']+'</td><td>'+data.sg_properties.width+'x'+data.sg_properties.height+', '+this.bytesToSize(data.sg_properties.size)+'</td></tr><tr><td class="rowTitle">'+_sgLang['createdon']+'</td><td>'+data.sg_createdon+'</td></tr></table></div></div><div class="sgRow"><div><form id="sgForm"><input type="hidden" name="sg_id" value="'+data.sg_id+'"><label>'+_sgLang['title']+'</label><input name="sg_title" maxlength="255" type="text" value="'+this.escape(data.sg_title)+'"><label>'+_sgLang['description']+'</label><textarea name="sg_description">'+this.escape(data.sg_description)+'</textarea><label>'+_sgLang['add']+'</label><input name="sg_add" type="text" value="'+this.escape(data.sg_add)+'"><label>'+_sgLang['show']+'</label><input type="checkbox" name="sg_isactive" value="1" '+ (parseInt(data.sg_isactive) ? 'checked' : '')+'>'+_sgLang['yes']+'</form></div></div><div style="clear:both;padding:10px;float:right;"><div id="sgEditSave" class="btn btn-right"><div class="btn-text"><img src="'+_modxTheme+'/images/icons/save.png">'+_sgLang['save']+'</div></div><div id="sgEditCancel" class="btn btn-right"><div class="btn-text"><img src="'+_modxTheme+'/images/icons/stop.png">'+_sgLang['cancel']+'</div></div></div></div>');
+            var context = {
+                data: data,
+                modxTheme: _modxTheme,
+                modxSiteUrl: _modxSiteUrl,
+                sgLang: _sgLang
+            };
+            context.data.sg_properties.size = this.bytesToSize(data.sg_properties.size);
+            context.data.sg_isactive = parseInt(data.sg_isactive) ? 'checked' : '';
+			var editForm = $(Handlebars.templates.edit(context));
 			editForm.window({
     			modal:true,
     			title:sgHelper.escape(this.stripText(data.sg_title,80)),
@@ -347,8 +358,7 @@ var sgHelper = {};
     				})
     			},
     			onClose: function() {
-    				editForm.window('destroy',true);
-    				$('.window-shadow,.window-mask').remove();
+                    sgHelper.destroyWindow(editForm);
     			}
     		});
 		},
@@ -462,7 +472,7 @@ var sgHelper = {};
 		    			onOpen: function() {
 	            			$('body').css('overflow','hidden');
 	            			$('#sgRefreshStart').click(function(e){
-	            				templates = $('#sgRefreshTpls > form').serializeArray();
+	            				templates = $('form','#sgRefreshTpls').serializeArray();
                                 if (templates.length === 0) return;
 					            $.post(
 									_xtAjaxUrl+'?mode=initRefresh', 
@@ -488,9 +498,7 @@ var sgHelper = {};
 	            			})
 		    			},
 		    			onClose: function() {
-		    				refreshForm.window('destroy',true);
-		    				$('.window-shadow,.window-mask').remove();
-		    				$('body').css('overflow','auto');
+		    				sgHelper.destroyWindow(refreshForm);
 		    			}
 		    		});
     			}
