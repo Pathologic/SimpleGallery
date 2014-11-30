@@ -27,7 +27,7 @@ class sgController extends sgAbstractController{
 
 		if( strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ){
 			$files	= \FileAPI::getFiles(); // Retrieve File List
-			$dir = $params['folder'].$this->rid."/";
+			$dir = $this->params['folder'].$this->rid."/";
 			$flag = $this->FS->makeDir($dir, $this->modx->config['new_folder_permissions']);
 			if ($files['sg_files']['error'] == UPLOAD_ERR_OK) {
         		$tmp_name = $files["sg_files"]["tmp_name"];
@@ -137,11 +137,10 @@ class sgController extends sgAbstractController{
 		$h = 150;
 		$url = $_REQUEST['url'];
 		$thumbsCache = $this->data->thumbsCache;
-		if (isset($this->modx->pluginCache['SimpleGalleryProps'])) {
-			$pluginParams = $this->modx->parseProperties($this->modx->pluginCache['SimpleGalleryProps']);
-			if (isset($pluginParams['thumbsCache'])) $thumbsCache = $pluginParams['thumbsCache'];
-			if (isset($pluginParams['w'])) $w = $pluginParams['w'];
-			if (isset($pluginParams['h'])) $h = $pluginParams['h'];
+		if (isset($this->params)) {
+			if (isset($this->params['thumbsCache'])) $thumbsCache = $this->params['thumbsCache'];
+			if (isset($this->params['w'])) $w = $this->params['w'];
+			if (isset($this->params['h'])) $h = $this->params['h'];
 		}
 		$file = MODX_BASE_PATH.$thumbsCache.$url;
 		if ($this->FS->checkFile($file)) {

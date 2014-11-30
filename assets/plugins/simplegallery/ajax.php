@@ -5,12 +5,12 @@ $modx->db->connect();
 if (empty ($modx->config)) {
     $modx->getSettings();
 }
-
 if(!isset($_SESSION['mgrValidated'])){
     die();
 }
+$modx->invokeEvent('OnManagerPageInit');
 if (isset($modx->pluginCache['SimpleGalleryProps'])) {
-	$params = $modx->parseProperties($modx->pluginCache['SimpleGalleryProps']);
+	$modx->event->params = $modx->parseProperties($modx->pluginCache['SimpleGalleryProps']);
 } else {
 	die();
 }

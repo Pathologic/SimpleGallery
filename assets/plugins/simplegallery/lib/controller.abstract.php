@@ -8,6 +8,7 @@ abstract class sgAbstractController {
 	public $FS = null;
 	public $isExit = false;
 	public $output = null;
+    public $params = null;
 	
 	protected $modx = null;
 	
@@ -15,6 +16,7 @@ abstract class sgAbstractController {
 		$this->rid = isset($_REQUEST['sg_rid']) ? (int)$_REQUEST['sg_rid'] : 0;
 		$this->FS = \Helpers\FS::getInstance();
 		$this->modx = $modx;
+        $this->params = $modx->event->params;
 	}
 	
 	public function callExit(){

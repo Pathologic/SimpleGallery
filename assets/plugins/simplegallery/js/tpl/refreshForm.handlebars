@@ -2,7 +2,7 @@
     <div id="sgRefreshTpls">
         <p>{{sgLang.select_tpls}}</p>
         <form>{{#each tpls}}
-            <label><input type="checkbox" value="{{this.id}}" name="template[]">{{this.templatename}}</label>
+            <label><input type="checkbox" value="{{this.id}}" name="template[]">{{stripText this.templatename 21}}</label>
         {{/each}}
         </form>
     </div>
