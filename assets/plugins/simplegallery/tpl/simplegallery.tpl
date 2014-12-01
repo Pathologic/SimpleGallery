@@ -20,6 +20,15 @@
 .btn-deleteAll {
 	background: url([+theme+]/images/icons/trash.png) -2px center no-repeat;
 }
+.btn-move {
+    background: url([+theme+]/images/icons/layout_go.png) center center no-repeat;
+}
+.btn-placeTop {
+    background: url([+theme+]/images/icons/arrow_up.png) center center no-repeat;
+}
+.btn-placeBottom {
+    background: url([+theme+]/images/icons/arrow_down.png) center center no-repeat;
+}
 </style>
 <script type="text/javascript">
 var rid = [+id+],

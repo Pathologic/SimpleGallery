@@ -83,7 +83,7 @@ class sgController extends sgAbstractController{
 		$id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 		$out['success'] = false;
 		if ($id) {
-			if ($this->data->delete($id)) {
+			if ($this->data->delete($id, $this->rid)) {
 				$out['success'] = true;
 			}
 		}
@@ -94,12 +94,36 @@ class sgController extends sgAbstractController{
 		$ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
 		$out['success'] = false;
 		if (!empty($ids)) {
-			if ($this->data->delete($ids)) {
+			if ($this->data->deleteAll($ids, $this->rid)) {
 				$out['success'] = true;
 			}
 		}
 		return $out;
 	}
+    public function move() {
+        $out = array();
+        $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
+        $to =  isset($_REQUEST['to']) ? (int)$_REQUEST['to'] : 0;
+        $out['success'] = false;
+        if (!empty($ids) && $to !== $this->rid && $to > 0) {
+            if ($this->data->move($ids, $this->rid, $to)) {
+                $out['success'] = true;
+            }
+        }
+        return $out;
+    }
+    public function place() {
+        $out = array();
+        $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
+        $dir = isset($_REQUEST['dir']) ? $_REQUEST['dir'] : 'top';
+        $out['success'] = false;
+        if (!empty($ids)) {
+            if ($this->data->place($ids, $dir, $this->rid)) {
+                $out['success'] = true;
+            }
+        }
+        return $out;
+    }
 	public function edit(){
 		$out = array();
 		$id = isset($_REQUEST['sg_id']) ? (int)$_REQUEST['sg_id'] : 0;

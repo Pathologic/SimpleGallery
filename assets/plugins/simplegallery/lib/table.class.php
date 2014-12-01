@@ -51,17 +51,14 @@ class sgData extends \autoTable {
      * @param null $fire_events
      * @return mixed
      */
-    public function delete($ids, $fire_events = NULL) {
+    public function deleteAll($ids, $rid, $fire_events = NULL) {
 		$ids = $this->cleanIDs($ids, ',', array(0));
-		if(empty($ids) || is_scalar($ids) || !min($ids)) return false;
-		$fields = $this->edit(min($ids))->toArray();
-		if(!$this->getID()) return false;
-
+		if(empty($ids) || is_scalar($ids)) return false;
 		$ids = implode(',',$ids);
-		$rows = $this->query('SELECT `template` FROM '.$this->makeTable('site_content').' WHERE id='.$fields['sg_rid']);
+        $rows = $this->query("SELECT `template` FROM {$this->makeTable('site_content')} WHERE id={$rid}");
 		$template = $this->modx->db->getValue($rows);
 		$images = $this->query('SELECT `sg_id`,`sg_image` FROM '.$this->makeTable($this->table).' WHERE `sg_id` IN ('.$this->sanitarIn($ids).')');
-		$out = parent::delete($ids, $fire_events);
+		$out = $this->delete($ids, $fire_events);
 		while ($row = $this->modx->db->getRow($images)) {
 			$this->deleteThumb($row['sg_image']);
 			$this->invokeEvent('OnSimpleGalleryDelete',array(
@@ -74,13 +71,73 @@ class sgData extends \autoTable {
 				'template'	=>	$template
 				),true);
 		}
-		$index = $fields['sg_index'] - 1;
-		$this->query("SET @index := ".$index);
-		$this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_index`>{$index} AND `sg_rid`={$fields['sg_rid']}) ORDER BY `sg_index` ASC");
-		$this->query("ALTER TABLE {$this->makeTable($this->table)} AUTO_INCREMENT = 1");
+        $this->clearIndexes($ids,$rid);
 		return $out;
 	}
 
+    private function clearIndexes($ids, $rid) {
+        $rows = $this->query("SELECT MIN(`sg_index`) FROM {$this->makeTable($this->table)} WHERE `sg_id` IN ({$ids})");
+        $index = $this->modx->db->getValue($rows);
+        $index = $index - 1;
+        $this->query("ALTER TABLE {$this->makeTable($this->table)} AUTO_INCREMENT = 1");
+        $this->query("SET @index := ".$index);
+        $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_index`>{$index} AND `sg_rid`={$rid}) ORDER BY `sg_index` ASC");
+        $out = $this->modx->db->getAffectedRows();
+        return $out;
+    }
+
+    /**
+     * @param $ids
+     * @param int $to
+     * @return bool
+     */
+    public function move($ids, $rid, $to) {
+        $ids = $this->cleanIDs($ids, ',', array(0));
+        $templates = array();
+        if (isset($this->modx->pluginCache['SimpleGalleryProps'])) {
+            $pluginParams = $this->modx->parseProperties($this->modx->pluginCache['SimpleGalleryProps']);
+            if (isset($pluginParams['templates'])) $templates= $pluginParams['templates'];
+        }
+        $templates = $this->cleanIDs($templates,',',array(0));
+        if(empty($ids) || empty($templates) || is_scalar($ids) || is_scalar($templates) || !$to) return false;
+        $rows = $this->query("SELECT `template` FROM {$this->makeTable('site_content')} WHERE id={$to}");
+        $template = $this->modx->db->getValue($rows);
+        if (!in_array($template,$templates)) return;
+        $rows = $this->query("SELECT count(`sg_id`) FROM {$this->makeTable($this->table)} WHERE `sg_rid`={$to}");
+        $index = $this->modx->db->getValue($rows);
+        $ids = implode(',',$ids);
+        $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_rid` = {$to} WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
+        $this->clearIndexes($ids,$rid);
+        $this->query("SET @index := ".($index - 1));
+        $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
+        return true;
+    }
+
+    /**
+     * @param $ids
+     * @param $dir
+     * @param $rid
+     */
+    public function place($ids, $dir, $rid) {
+        $ids = $this->cleanIDs($ids, ',', array(0));
+        if(empty($ids) || is_scalar($ids)) return false;
+        $rows = $this->query("SELECT count(`sg_id`) FROM {$this->makeTable($this->table)} WHERE `sg_rid`={$rid}");
+        $index = $this->modx->db->getValue($rows);
+        $cnt = count($ids);
+        $ids = implode(',',$ids);
+        if ($dir == 'top') {
+            $this->query("SET @index := " . ($index - $cnt - 1));
+            $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
+            $this->query("SET @index := -1");
+        } else {
+            $this->query("SET @index := -1");
+            $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
+            $this->query("SET @index := " . ($cnt - 1));
+        }
+        $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` NOT IN ({$ids})) ORDER BY `sg_index` ASC");
+        $out = $this->modx->db->getAffectedRows();
+        return $out;
+    }
     /**
      * @param $url
      * @param bool $cache

@@ -180,7 +180,7 @@ user-select: none;
 #sgFilesList table tbody tr:nth-child(odd) {
 	background-color: #fff;
 }
-#sgRefreshTpls, #sgRefreshProgress {
+#sgRefreshTpls, #sgRefreshProgress, #sgMove > div {
 	padding:10px;
 }
 #sgRefreshTpls label {
