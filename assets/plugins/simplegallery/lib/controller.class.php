@@ -105,11 +105,13 @@ class sgController extends sgAbstractController{
         $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
         $to =  isset($_REQUEST['to']) ? (int)$_REQUEST['to'] : 0;
         $out['success'] = false;
+        /*
         if (!empty($ids) && $to !== $this->rid && $to > 0) {
             if ($this->data->move($ids, $this->rid, $to)) {
                 $out['success'] = true;
             }
         }
+        */
         return $out;
     }
     public function place() {
