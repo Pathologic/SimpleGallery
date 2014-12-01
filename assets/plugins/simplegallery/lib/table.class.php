@@ -93,11 +93,7 @@ class sgData extends \autoTable {
      */
     public function move($ids, $rid, $to) {
         $ids = $this->cleanIDs($ids, ',', array(0));
-        $templates = array();
-        if (isset($this->modx->pluginCache['SimpleGalleryProps'])) {
-            $pluginParams = $this->modx->parseProperties($this->modx->pluginCache['SimpleGalleryProps']);
-            if (isset($pluginParams['templates'])) $templates= $pluginParams['templates'];
-        }
+        $templates = isset($this->params['templates']) ? $this->params['templates'] : array();
         $templates = $this->cleanIDs($templates,',',array(0));
         if(empty($ids) || empty($templates) || is_scalar($ids) || is_scalar($templates) || !$to) return false;
         $rows = $this->query("SELECT `template` FROM {$this->makeTable('site_content')} WHERE id={$to}");
@@ -106,11 +102,23 @@ class sgData extends \autoTable {
         $rows = $this->query("SELECT count(`sg_id`) FROM {$this->makeTable($this->table)} WHERE `sg_rid`={$to}");
         $index = $this->modx->db->getValue($rows);
         $ids = implode(',',$ids);
-        $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_rid` = {$to} WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
+        $rows = $this->query("SELECT `sg_image` FROM {$this->makeTable($this->table)} WHERE `sg_id` IN ({$ids})");
+        $images = $this->modx->db->makeArray($rows);
+        $_old = $this->params['folder'].$rid.'/';
+        $_new = $this->params['folder'].$to.'/';
+        $flag = $this->fs->makeDir(MODX_BASE_PATH.$_new, $this->modx->config['new_folder_permissions']);
+        foreach ($images as $image) {
+            $oldFile = MODX_BASE_PATH . $image['sg_image'];
+            $newFile = str_replace($_old,$_new,$oldFile);
+            @rename ($oldFile, $newFile);
+            $this->deleteThumb($image['sg_image']);
+        }
+        $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_rid` = {$to}, `sg_image` = REPLACE(`sg_image`,'{$_old}','{$_new}') WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
+        $out = $this->modx->db->getAffectedRows();
         $this->clearIndexes($ids,$rid);
         $this->query("SET @index := ".($index - 1));
         $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
-        return true;
+        return $out;
     }
 
     /**
@@ -145,18 +153,12 @@ class sgData extends \autoTable {
     public function deleteThumb($url, $cache = false) {
     	$url = $this->fs->relativePath($url);
 		if (empty($url)) return;
-		if ($this->fs->checkFile($url)) {
-			$dir = $this->fs->takeFileDir($url);
-			unlink(MODX_BASE_PATH . $url);
-			$iterator = new \FilesystemIterator($dir);
-			if (!$iterator->valid()) rmdir($dir);
-		}
+		if ($this->fs->checkFile($url)) unlink(MODX_BASE_PATH . $url);
+        $dir = $this->fs->takeFileDir($url);
+        $iterator = new \FilesystemIterator($dir);
+        if (!$iterator->valid()) rmdir($dir);
 		if ($cache) return;
-		$thumbsCache = $this->thumbsCache;
-		if (isset($this->modx->pluginCache['SimpleGalleryProps'])) {
-			$pluginParams = $this->modx->parseProperties($this->modx->pluginCache['SimpleGalleryProps']);
-			if (isset($pluginParams['thumbsCache'])) $thumbsCache = $pluginParams['thumbsCache'];
-		}
+		$thumbsCache = isset($this->params['thumbsCache']) ? $this->params['thumbsCache'] : $this->thumbsCache;
 		$thumb = $thumbsCache.$url;
 		if ($this->fs->checkFile($thumb)) $this->deleteThumb($thumb, true);
 	}
