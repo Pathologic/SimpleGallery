@@ -150,7 +150,7 @@ class sgData extends \autoTable {
             $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
             $this->query("SET @index := " . ($cnt - 1));
         }
-        $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` NOT IN ({$ids})) ORDER BY `sg_index` ASC");
+        $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` NOT IN ({$ids})) AND `sg_rid` = {$rid} ORDER BY `sg_index` ASC");
         $out = $this->modx->db->getAffectedRows();
         return $out;
     }
