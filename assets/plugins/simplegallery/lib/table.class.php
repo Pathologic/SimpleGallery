@@ -99,25 +99,33 @@ class sgData extends \autoTable {
         $rows = $this->query("SELECT `template` FROM {$this->makeTable('site_content')} WHERE id={$to}");
         $template = $this->modx->db->getValue($rows);
         if (!in_array($template,$templates)) return;
-        $rows = $this->query("SELECT count(`sg_id`) FROM {$this->makeTable($this->table)} WHERE `sg_rid`={$to}");
-        $index = $this->modx->db->getValue($rows);
         $ids = implode(',',$ids);
         $rows = $this->query("SELECT `sg_image` FROM {$this->makeTable($this->table)} WHERE `sg_id` IN ({$ids})");
         $images = $this->modx->db->makeArray($rows);
         $_old = $this->params['folder'].$rid.'/';
         $_new = $this->params['folder'].$to.'/';
         $flag = $this->fs->makeDir(MODX_BASE_PATH.$_new, $this->modx->config['new_folder_permissions']);
-        foreach ($images as $image) {
-            $oldFile = MODX_BASE_PATH . $image['sg_image'];
-            $newFile = str_replace($_old,$_new,$oldFile);
-            @rename ($oldFile, $newFile);
-            $this->deleteThumb($image['sg_image']);
+        if ($flag) {
+            foreach ($images as $image) {
+                $oldFile = MODX_BASE_PATH . $image['sg_image'];
+                $newFile = str_replace($_old, $_new, $oldFile);
+                if (!@rename($oldFile, $newFile)) {
+                    $this->modx->logEvent(0, 3, "Cannot move {$oldFile} to {$_new}", "SimpleGallery");
+                } else {
+                    $this->deleteThumb($image['sg_image']);
+                }
+            }
+            $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_rid` = {$to}, `sg_image` = REPLACE(`sg_image`,'{$_old}','{$_new}') WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
+            $out = $this->modx->db->getAffectedRows();
+            $this->clearIndexes($ids,$rid);
+            $rows = $this->query("SELECT count(`sg_id`) FROM {$this->makeTable($this->table)} WHERE `sg_rid`={$to}");
+            $index = $this->modx->db->getValue($rows);
+            $this->query("SET @index := ".($index - 1));
+            $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
+        } else {
+            $this->modx->logEvent(0, 3, "Cannot create {$_new} folder", "SimpleGallery");
+            $out = false;
         }
-        $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_rid` = {$to}, `sg_image` = REPLACE(`sg_image`,'{$_old}','{$_new}') WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
-        $out = $this->modx->db->getAffectedRows();
-        $this->clearIndexes($ids,$rid);
-        $this->query("SET @index := ".($index - 1));
-        $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
         return $out;
     }
 
