@@ -115,11 +115,11 @@ class sgData extends \autoTable {
                     $this->deleteThumb($image['sg_image']);
                 }
             }
+            $rows = $this->query("SELECT count(`sg_id`) FROM {$this->makeTable($this->table)} WHERE `sg_rid`={$to}");
+            $index = $this->modx->db->getValue($rows);
             $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_rid` = {$to}, `sg_image` = REPLACE(`sg_image`,'{$_old}','{$_new}') WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
             $out = $this->modx->db->getAffectedRows();
             $this->clearIndexes($ids,$rid);
-            $rows = $this->query("SELECT count(`sg_id`) FROM {$this->makeTable($this->table)} WHERE `sg_rid`={$to}");
-            $index = $this->modx->db->getValue($rows);
             $this->query("SET @index := ".($index - 1));
             $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_id` IN ({$ids})) ORDER BY `sg_index` ASC");
         } else {
