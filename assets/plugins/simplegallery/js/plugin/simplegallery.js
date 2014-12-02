@@ -367,7 +367,7 @@ var sgHelper = {};
                         onOpen: function() {
                             $('#sgMoveStart').click(function(e){
                                 _to = $('#sgMoveTo').val();
-                                if (!_to) return;
+                                if (!_to || _to === rid) return;
                                 $.post(
                                     _xtAjaxUrl+'?mode=move',
                                     {

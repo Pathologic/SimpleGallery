@@ -42,7 +42,7 @@ class sgPlugin {
         if (!$this->checkTable()) {
             $result = $this->createTable();
             if (!$result) {
-                $modx->logEvent(0, 3, "Cannot create {$this->table}.", "SimpleGallery");
+                $this->modx->logEvent(0, 3, "Cannot create {$this->table} table.", "SimpleGallery");
                 return;
             }
         }
