@@ -20,9 +20,12 @@ if ($roles && !in_array($_SESSION['mgrRole'], $roles)) die();
 
 $mode = (isset($_REQUEST['mode']) && is_scalar($_REQUEST['mode'])) ? $_REQUEST['mode'] : null;
 $out = null;
-
-require_once (MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/controller.class.php');
-$controller = new \SimpleGallery\sgController($modx);
+$controllerClass = isset($modx->event->params['controller']) ? $modx->event->params['controller'] : '';
+if (empty($controllerClass) || !class_exists($controllerClass)) {
+    require_once (MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/controller.class.php');
+    $controllerClass = '\SimpleGallery\sgController';
+}
+$controller = new $controllerClass($modx);
 if($controller instanceof \SimpleGallery\sgAbstractController){
 	if (!empty($mode) && method_exists($controller, $mode)) {
 		$out = call_user_func_array(array($controller, $mode), array());

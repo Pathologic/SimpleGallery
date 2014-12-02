@@ -7,7 +7,8 @@ require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
 class sgPlugin {
 	public $modx = null;
 	public $params = array();
-	
+	public $table = 'sg_images';
+    public $_table = '';
 	protected $fs = null;
 	
 	public $DLTemplate = null;
@@ -20,6 +21,7 @@ class sgPlugin {
      */
     public function __construct($modx, $lang_attribute = 'en', $debug = false) {
         $this->modx = $modx;
+        $this->_table = $modx->getFullTableName($this->table);
         $this->lang_attribute = $lang_attribute;
         $this->params = $modx->event->params;
         if (!isset($this->params['template']) && $modx->event->name != 'OnEmptyTrash') {
@@ -37,21 +39,17 @@ class sgPlugin {
      * @return string
      */
     public function prerender() {
-    	$output = '';
+        if (!$this->checkTable()) {
+            $result = $this->createTable();
+            if (!$result) {
+                $modx->logEvent(0, 3, "Cannot create {$this->table}.", "SimpleGallery");
+                return;
+            }
+        }
+        $output = '';
     	$templates = isset($this->params['templates']) ? explode(',',$this->params['templates']) : false;
 		$roles = isset($this->params['roles']) ? explode(',',$this->params['roles']) : false;
 		if (!$templates || ($templates && !in_array($this->params['template'],$templates)) || ($roles && !in_array($_SESSION['mgrRole'],$roles))) return false;
-		$createTable = isset($this->params['createTable']) ? $this->params['createTable'] : 'No';
-		if ($createTable == 'Yes') {
-			$output = '<script type="text/javascript">alert("';
-			if ($this->createTable()) {
-				$output .= 'Таблица создана. Измените настройки плагина SimpleGallery';
-			} else {
-				$output .= 'Не удалось создать таблицу.';
-			}
-			$output .= '");</script>';
-			return $output;
-		}
 		$plugins = $this->modx->pluginEvent;
 		if(array_search('ManagerManager',$plugins['OnDocFormRender']) === false && !isset($this->modx->loadedjscripts['jQuery'])) {
 			$output .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/plugins/simplegallery/js/jquery/jquery-1.9.1.min.js"></script>';
@@ -126,10 +124,14 @@ class sgPlugin {
     /**
      * @return bool
      */
+    public function checkTable() {
+        $sql = "SHOW TABLES LIKE '{$this->_table}'";
+        return $this->modx->db->getRecordCount( $this->modx->db->query($sql));
+    }
+
     public function createTable() {
-    	$table = $this->modx->db->config['table_prefix'];
     	$sql = <<< OUT
-CREATE TABLE IF NOT EXISTS `{$table}sg_images` (
+CREATE TABLE IF NOT EXISTS {$this->_table} (
 `sg_id` int(10) NOT NULL auto_increment,
 `sg_image` TEXT NOT NULL default '',
 `sg_title` varchar(255) NOT NULL default '',
@@ -144,13 +146,14 @@ PRIMARY KEY  (`sg_id`)
 ) ENGINE=MyISAM COMMENT='Datatable for SimpleGallery plugin.';
 OUT;
     	if ($this->modx->db->query($sql)) {
-    		$result = $this->modx->db->select('`id`',$table.'system_eventnames',"`name` IN ('OnSimpleGallerySave','OnSimpleGalleryDelete','OnSimpleGalleryRefresh')");
+            $eventsTable = $this->modx->getFullTableName('system_eventnames');
+    		$result = $this->modx->db->select('`id`',$eventsTable,"`name` IN ('OnSimpleGallerySave','OnSimpleGalleryDelete','OnSimpleGalleryRefresh')");
 			if (!$this->modx->db->getRecordCount($result)) {
-				$sql = "INSERT INTO `{$table}system_eventnames` VALUES (NULL, 'OnSimpleGallerySave', '6', 'SimpleGallery Events')";
+				$sql = "INSERT INTO {$eventsTable} VALUES (NULL, 'OnSimpleGallerySave', '6', 'SimpleGallery Events')";
 				$this->modx->db->query($sql);
-				$sql = "INSERT INTO `{$table}system_eventnames` VALUES (NULL, 'OnSimpleGalleryDelete', '6', 'SimpleGallery Events')";
+				$sql = "INSERT INTO {$eventsTable} VALUES (NULL, 'OnSimpleGalleryDelete', '6', 'SimpleGallery Events')";
 				$this->modx->db->query($sql);
-				$sql = "INSERT INTO `{$table}system_eventnames` VALUES (NULL, 'OnSimpleGalleryRefresh', '6', 'SimpleGallery Events')";
+				$sql = "INSERT INTO {$eventsTable} VALUES (NULL, 'OnSimpleGalleryRefresh', '6', 'SimpleGallery Events')";
 				$this->modx->db->query($sql);
 			}
     		return true;
