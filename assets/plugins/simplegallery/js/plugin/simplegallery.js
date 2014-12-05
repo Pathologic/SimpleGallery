@@ -158,7 +158,8 @@ var sgHelper = {};
 			var placeholder = $('#sg_images');
 			placeholder.html('');
 			for (i = 0; i < len; i++) {
-                rows[i].sg_properties = $.parseJSON(rows[i].sg_properties);
+                var _properties = rows[i].sg_properties;
+                rows[i].sg_properties = sgHelper.isValidJSON(_properties) ? $.parseJSON(_properties) : {width:0,height:0,size:0};
                 var context = {
                     data: rows[i],
                     sgLang: _sgLang,
