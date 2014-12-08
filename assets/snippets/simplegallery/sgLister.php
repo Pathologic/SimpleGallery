@@ -14,8 +14,10 @@
 
 include_once(MODX_BASE_PATH . 'assets/lib/APIHelpers.class.php');
 
-$prepare = \APIhelpers::getkey($modx->event->params, 'BeforePrepare', '');
-$prepare = explode(",", $prepare);
+$_prepare = explode(",", $prepare);
+$prepare = array();
+$prepare[] = \APIhelpers::getkey($modx->event->params, 'BeforePrepare', '');
+$prepare = array_merge($prepare,$_prepare);
 $prepare[] = 'DLsgLister::prepare';
 $prepare[] = \APIhelpers::getkey($modx->event->params, 'AfterPrepare', '');
 $modx->event->params['prepare'] = trim(implode(",", $prepare), ',');
