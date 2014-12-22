@@ -13,7 +13,7 @@
 			"src":"assets/plugins/simplegallery/js/fileapi/jquery.fileapi.min.js"
 		},
 		"Sortable":{
-			"version":"0.5.1",
+			"version":"1.0.0",
 			"src":"assets/plugins/simplegallery/js/sortable/Sortable.min.js"
 		},
         "handlebars":{
