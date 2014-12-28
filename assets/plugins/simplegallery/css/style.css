@@ -128,20 +128,20 @@ user-select: none;
 	font-weight: bold;
 	text-align: right;
 }
-#sgForm label {
+.sgForm label {
 	display: block;
 	margin:3px 0;
 	font-weight: bold;
 }
-#sgForm input[type="text"], #sgForm textarea {
+.sgForm input[type="text"], .sgForm textarea {
 	width:270px;
 	padding:4px;
 	margin-bottom:5px;
 }
-#sgForm input[type="checkbox"] {
+.sgForm input[type="checkbox"] {
 	vertical-align: bottom;
 }
-#sgForm textarea {
+.sgForm textarea {
 	height:112px;
 }
 #sgProgress {

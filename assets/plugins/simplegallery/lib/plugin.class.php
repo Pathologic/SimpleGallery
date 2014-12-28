@@ -7,7 +7,7 @@ require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
 class sgPlugin {
 	public $modx = null;
 	public $params = array();
-	public $table = 'sg_images';
+    public $table = 'sg_images';
     public $_table = '';
 	protected $fs = null;
 	

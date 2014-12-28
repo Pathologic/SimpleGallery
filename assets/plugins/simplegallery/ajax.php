@@ -8,7 +8,7 @@ if (empty ($modx->config)) {
 if(!isset($_SESSION['mgrValidated'])){
     die();
 }
-$modx->invokeEvent('OnManagerPageInit');
+$modx->invokeEvent('OnManagerPageInit',array('invokedBy'=>'SimpleGallery'));
 if (isset($modx->pluginCache['SimpleGalleryProps'])) {
 	$modx->event->params = $modx->parseProperties($modx->pluginCache['SimpleGalleryProps']);
 } else {
