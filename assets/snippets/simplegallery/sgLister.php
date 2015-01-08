@@ -41,6 +41,9 @@ if(!class_exists("DLsgLister", false)){
 					'input' => $data[$imageField],
 					'options' => $thumbOptions
 				));
+				$info = getimagesize(MODX_BASE_PATH.$data['thumb.'.$imageField]);
+				$data['thumb.width.'.$imageField] = $info[0];
+				$data['thumb.height.'.$imageField] = $info[1];
 			}
 			$titleField = $_DL->getCfgDef('titleField');
 			$data['e.'.$titleField] = htmlentities($data[$titleField], ENT_COMPAT, 'UTF-8', false);
