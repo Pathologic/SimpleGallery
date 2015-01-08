@@ -36,7 +36,7 @@ class sgController extends sgAbstractController{
         		$ext = $this->FS->takeFileExt($name);
         		if (in_array($ext, array('png', 'jpg', 'gif', 'jpeg' ))) {
         			if (@move_uploaded_file($tmp_name, $name)) {
-        				$options = "w={$this->modx->config['maxImageWidth']}&h={$this->modx->config['maxImageHeight']}&q=96&f={$ext}";
+        				$options = "w={$this->modx->config['maxImageWidth']}&h={$this->modx->config['maxImageHeight']}&q=96&ar=x&f={$ext}";
         				if (@$this->data->makeThumb('',$this->FS->relativePath($name),$options)) {
 	        				$info = getimagesize($name);
         					$properties = array (
