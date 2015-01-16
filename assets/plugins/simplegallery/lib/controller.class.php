@@ -171,10 +171,10 @@ class sgController extends sgAbstractController{
 		if ($this->FS->checkFile($file)) {
 			$info = getimagesize($file);
 			if ($w != $info[0] || $h != $info[1]) {
-				@$this->data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
+				@$this->data->makeThumb($thumbsCache,$url,"wl=$w&hp=$h&zc=TL&f=jpg");
 			}
 		} else {
-			@$this->data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
+			@$this->data->makeThumb($thumbsCache,$url,"wl=$w&hp=$h&zc=TL&f=jpg");
 		}
 		session_start();
 		header("Cache-Control: private, max-age=10800, pre-check=10800");
