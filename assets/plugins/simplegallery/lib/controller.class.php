@@ -167,14 +167,16 @@ class sgController extends sgAbstractController{
 			if (isset($this->params['w'])) $w = $this->params['w'];
 			if (isset($this->params['h'])) $h = $this->params['h'];
 		}
+		$thumbOptions = isset($this->params['customThumbOptions']) ? $this->params['customThumbOptions'] : 'w=[+w+]&h=[+h+]&far=C&f=jpg';
+		$thumbOptions = str_replace(array('[+w+]','[+h+]'),array($w, $h),$thumbOptions);
 		$file = MODX_BASE_PATH.$thumbsCache.$url;
 		if ($this->FS->checkFile($file)) {
 			$info = getimagesize($file);
 			if ($w != $info[0] || $h != $info[1]) {
-				@$this->data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
+				@$this->data->makeThumb($thumbsCache,$url,$thumbOptions);
 			}
 		} else {
-			@$this->data->makeThumb($thumbsCache,$url,"w=$w&h=$h&far=C&f=jpg");
+			@$this->data->makeThumb($thumbsCache,$url,$thumbOptions);
 		}
 		session_start();
 		header("Cache-Control: private, max-age=10800, pre-check=10800");
