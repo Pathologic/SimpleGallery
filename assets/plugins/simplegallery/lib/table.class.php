@@ -292,6 +292,8 @@ class sgData extends \autoTable {
 			}
 			$fields = $this->field;
 			$fields['template'] = $template;
+            $fields['sg_id'] = $out;
+            $fields['newDoc'] = $this->newDoc;
 			$this->invokeEvent('OnSimpleGallerySave',$fields,true);
 		}
 		return $out;
