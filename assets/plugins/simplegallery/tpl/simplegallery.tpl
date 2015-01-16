@@ -5,9 +5,11 @@
 .sg_image {
 	width:[+w+]px;
 }
-.sg_image img {
+.sg_image .img {
 	width:[+w+]px;
 	height:[+h+]px;
+    background-color:#fff;
+    background-position: center center;
 }
 .sg_image .del {
 	background: url([+theme+]/images/icons/delete.png) 0 0 no-repeat;
