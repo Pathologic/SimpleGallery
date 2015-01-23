@@ -311,7 +311,7 @@ var sgHelper = {};
         			$.post(
 						_xtAjaxUrl+'?mode=remove', 
 						{
-                            id:id,
+                            ids:id,
                             sg_rid:rid
                         },
 						function(data) {
@@ -331,7 +331,7 @@ var sgHelper = {};
 		    $.messager.confirm(_sgLang['delete'],_sgLang['are_you_sure_to_delete_many'],function(r){
     			if (r){
         			$.post(
-						_xtAjaxUrl+'?mode=removeAll', 
+						_xtAjaxUrl+'?mode=remove', 
 						{
                             ids:ids,
                             sg_rid:rid
