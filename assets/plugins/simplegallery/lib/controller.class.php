@@ -85,19 +85,6 @@ class sgController extends sgAbstractController
     public function remove()
     {
         $out = array();
-        $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
-        $out['success'] = false;
-        if ($id) {
-            if ($this->data->delete($id, $this->rid)) {
-                $out['success'] = true;
-            }
-        }
-        return $out;
-    }
-
-    public function removeAll()
-    {
-        $out = array();
         $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
         $out['success'] = false;
         if (!empty($ids)) {
