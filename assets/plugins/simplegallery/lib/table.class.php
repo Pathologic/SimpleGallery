@@ -60,6 +60,7 @@ class sgData extends \autoTable {
 		$template = $this->modx->db->getValue($rows);
 		$images = $this->query('SELECT `sg_id`,`sg_image` FROM '.$this->makeTable($this->table).' WHERE `sg_id` IN ('.$this->sanitarIn($ids).')');
 		$out = $this->delete($ids, $fire_events);
+        $this->clearIndexes($ids,$rid);
 		while ($row = $this->modx->db->getRow($images)) {
 			$this->deleteThumb($row['sg_image']);
 			$this->invokeEvent('OnSimpleGalleryDelete',array(
@@ -72,7 +73,6 @@ class sgData extends \autoTable {
 				'template'	=>	$template
 				),true);
 		}
-        $this->clearIndexes($ids,$rid);
 		return $out;
 	}
 
