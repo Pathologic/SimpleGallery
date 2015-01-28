@@ -2,6 +2,7 @@
 namespace SimpleGallery;
 require_once (MODX_BASE_PATH . 'assets/lib/MODxAPI/autoTable.abstract.php');
 require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
+require_once (MODX_BASE_PATH . 'assets/lib/Helpers/PHPThumb.php');
 
 class sgData extends \autoTable {
 	/* @var autoTable $table */
@@ -317,22 +318,15 @@ class sgData extends \autoTable {
      */
     public function makeThumb($folder,$url,$options) {
 		if (empty($url)) return false;
-		if(file_exists(MODX_BASE_PATH.'assets/snippets/phpthumb/phpthumb.class.php')){
-			include_once(MODX_BASE_PATH.'assets/snippets/phpthumb/phpthumb.class.php');
-		}
-		$thumb = new \phpthumb();
-		$thumb->sourceFilename = MODX_BASE_PATH . $this->fs->relativePath($url);
-		$options = strtr($options, Array("," => "&", "_" => "=", '{' => '[', '}' => ']'));
-		parse_str($options, $params);
-		foreach ($params as $key => $value) {
-        	$thumb->setParameter($key, $value);
-    	}
-  		$outputFilename = MODX_BASE_PATH. $this->fs->relativePath($folder). '/' . $this->fs->relativePath($url);
-  		$dir = $this->fs->takeFileDir($outputFilename);
-  		$this->fs->makeDir($dir, $this->modx->config['new_folder_permissions']);
-		if ($thumb->GenerateThumbnail() && $thumb->RenderToFile($outputFilename)) {
-        	return true;
+		$thumb = new \Helpers\PHPThumb();
+		$inputFile = MODX_BASE_PATH . $this->fs->relativePath($url);
+		$outputFile = MODX_BASE_PATH. $this->fs->relativePath($folder). '/' . $this->fs->relativePath($url);
+		$dir = $this->fs->takeFileDir($outputFile);
+		$this->fs->makeDir($dir, $this->modx->config['new_folder_permissions']);
+		if ($thumb->create($inputFile,$outputFile,$options)) {
+			return true;
 		} else {
+			$this->modx->logEvent(0, 3, $thumb->debugMessages, 'SimpleGallery');
 			return false;
 		}
 	}
