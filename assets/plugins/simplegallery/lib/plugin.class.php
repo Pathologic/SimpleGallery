@@ -13,6 +13,7 @@ class sgPlugin {
 	
 	public $DLTemplate = null;
 	public $lang_attribute = '';
+    public $jsList = 'scripts.json';
 
     /**
      * @param $modx
@@ -115,7 +116,7 @@ class sgPlugin {
 				'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">\'+_sgLang[\'refresh_previews\']+\'</div></div>' : '',
 				'tpls'			=>	$tpls
 				);
-			$ph['js'] = $this->renderJS('scripts.json',$ph) . $this->renderJS('custom.json',$ph);
+			$ph['js'] = $this->renderJS($this->jsList,$ph) . $this->renderJS('custom.json',$ph);
 			$output = $this->DLTemplate->parseChunk('@CODE:'.$output,$ph);
 		}
 		return $output;
