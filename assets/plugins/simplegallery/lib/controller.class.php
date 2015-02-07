@@ -34,7 +34,7 @@ class sgController extends sgAbstractController
             $flag = $this->FS->makeDir($dir, $this->modx->config['new_folder_permissions']);
             if ($files['sg_files']['error'] == UPLOAD_ERR_OK) {
                 $tmp_name = $files["sg_files"]["tmp_name"];
-                $name = $this->modx->stripAlias($_FILES["sg_files"]["name"]);
+                $name = $this->data->stripName($_FILES["sg_files"]["name"]);
                 $name = $this->FS->getInexistantFilename($dir . $name, true);
                 $ext = $this->FS->takeFileExt($name);
                 if (in_array($ext, array('png', 'jpg', 'gif', 'jpeg'))) {

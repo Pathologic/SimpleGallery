@@ -330,4 +330,12 @@ class sgData extends \autoTable {
 			return false;
 		}
 	}
+
+    /**
+     * @param  string $name
+     * @return string
+     */
+    public function stripName($name) {
+        return $this->modx->stripAlias($name);
+    }
 }
