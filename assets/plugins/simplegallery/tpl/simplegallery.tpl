@@ -1,5 +1,5 @@
-<link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simplegallery/js/easy-ui/themes/bootstrap/easyui.css">
-<link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simplegallery/js/easy-ui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="[+site_url+]assets/lib/SimpleTab/js/easy-ui/themes/bootstrap/easyui.css">
+<link rel="stylesheet" type="text/css" href="[+site_url+]assets/lib/SimpleTab/js/easy-ui/themes/icon.css">
 <link rel="stylesheet" type="text/css" href="[+site_url+]assets/plugins/simplegallery/css/style.css">
 <style type="text/css">
 .sg_image {
