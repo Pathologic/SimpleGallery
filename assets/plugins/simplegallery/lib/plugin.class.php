@@ -6,14 +6,17 @@ require_once (MODX_BASE_PATH . 'assets/lib/Helpers/FS.php');
 
 class sgPlugin {
 	public $modx = null;
+	public $pluginName = 'SimpleGallery';
 	public $params = array();
     public $table = 'sg_images';
+	public $tpl = 'assets/plugins/simplegallery/tpl/simplegallery.tpl';
+	public $jsListDefault = 'assets/plugins/simplegallery/js/scripts.json';
+	public $jsListCustom = 'assets/plugins/simplegallery/js/custom.json';
     public $_table = '';
 	protected $fs = null;
 	
 	public $DLTemplate = null;
 	public $lang_attribute = '';
-    public $jsList = 'scripts.json';
 
     /**
      * @param $modx
@@ -43,9 +46,10 @@ class sgPlugin {
         if (!$this->checkTable()) {
             $result = $this->createTable();
             if (!$result) {
-                $this->modx->logEvent(0, 3, "Cannot create {$this->table} table.", "SimpleGallery");
+                $this->modx->logEvent(0, 3, "Cannot create {$this->table} table.", $this->pluginName);
                 return;
             }
+			$this->registerEvents(array('OnSimpleGallerySave','OnSimpleGalleryDelete','OnSimpleGalleryRefresh'));
         }
         $output = '';
     	$templates = isset($this->params['templates']) ? explode(',',$this->params['templates']) : false;
@@ -53,13 +57,16 @@ class sgPlugin {
 		if (!$templates || ($templates && !in_array($this->params['template'],$templates)) || ($roles && !in_array($_SESSION['mgrRole'],$roles))) return false;
 		$plugins = $this->modx->pluginEvent;
 		if(array_search('ManagerManager',$plugins['OnDocFormRender']) === false && !isset($this->modx->loadedjscripts['jQuery'])) {
-			$output .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/plugins/simplegallery/js/jquery/jquery-1.9.1.min.js"></script>';
+			//TODO: replace simplegallery to SimpleTab
+			$output .= '<script type="text/javascript" src="'.$this->modx->config['site_url'].'assets/lib/simplegallery/js/jquery/jquery-1.9.1.min.js"></script>';
             $this->modx->loadedjscripts['jQuery'] = array('version'=>'1.9.1');
             $output .='<script type="text/javascript">var jQuery = jQuery.noConflict(true);</script>';
 		}
-		$tpl = MODX_BASE_PATH.'assets/plugins/simplegallery/tpl/simplegallery.tpl';
+		$tpl = MODX_BASE_PATH.$this->tpl;
 		if($this->fs->checkFile($tpl)) {
 			$output .= '[+js+]'.file_get_contents($tpl);
+		} else {
+			$this->modx->logEvent(0, 3, "Cannot load {$this->tpl} .", $this->pluginName);
 		}
 		return $output;
     }
@@ -71,7 +78,7 @@ class sgPlugin {
      */
     public function renderJS($list,$ph = array()) {
     	$js = '';
-    	$scripts = MODX_BASE_PATH.'assets/plugins/simplegallery/js/'.$list;
+    	$scripts = MODX_BASE_PATH.$list;
 		if($this->fs->checkFile($scripts)) {
 			$scripts = @file_get_contents($scripts);
 			$scripts = $this->DLTemplate->parseChunk('@CODE:'.$scripts,$ph);
@@ -84,9 +91,40 @@ class sgPlugin {
                     $this->modx->logEvent(0, 3, 'Cannot load '.$params['src'], 'SimpleGallery');
                 }
 			}
+		} else {
+			if ($list == $this->jsListDefault) $this->modx->logEvent(0, 3, "Cannot load {$this->jsListDefault} .", $this->pluginName);
 		}
 		return $js;
     }
+
+	/**
+	 * @return array
+	 */
+	public function getTplPlaceholders() {
+		$templates = trim(preg_replace('/,,+/',',',preg_replace('/[^0-9,]+/', '', $this->params['templates'])),',');
+		$tpls = '[]';
+		if (!empty($templates)) {
+			$table = $this->modx->getFullTableName('site_templates');
+			$sql = "SELECT id,templatename FROM $table WHERE id IN ($templates) ORDER BY templatename ASC";
+			$tpls = json_encode($this->modx->db->makeArray($this->modx->db->query($sql)));
+		}
+		$ph = array(
+			'lang'			=> 	$this->lang_attribute,
+			'id'			=>	$this->params['id'],
+			'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php',
+			'theme'			=>  MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'],
+			'tabName'		=>	$this->params['tabName'],
+			'site_url'		=>	$this->modx->config['site_url'],
+			'manager_url'	=>	MODX_MANAGER_URL,
+			'thumb_prefix' 	=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php?mode=thumb&url=',
+			'kcfinder_url'	=> 	MODX_MANAGER_URL."media/browser/mcpuk/browse.php?type=images",
+			'w' 			=> 	isset($this->params['w']) ? $this->params['w'] : '200',
+			'h' 			=> 	isset($this->params['h']) ? $this->params['h'] : '150',
+			'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">\'+_sgLang[\'refresh_previews\']+\'</div></div>' : '',
+			'tpls'			=>	$tpls
+		);
+		return $ph;
+	}
 
     /**
      * @return string
@@ -94,29 +132,8 @@ class sgPlugin {
     public function render() {
 		$output = $this->prerender();
 		if ($output !== false) {
-			$templates = trim(preg_replace('/,,+/',',',preg_replace('/[^0-9,]+/', '', $this->params['templates'])),',');
-			$tpls = '[]';
-			if (!empty($templates)) {
-				$table = $this->modx->getFullTableName('site_templates');
-				$sql = "SELECT id,templatename FROM $table WHERE id IN ($templates) ORDER BY templatename ASC";
-				$tpls = json_encode($this->modx->db->makeArray($this->modx->db->query($sql)));
-			}
-			$ph = array(
-				'lang'			=> 	$this->lang_attribute,
-				'id'			=>	$this->params['id'],
-				'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php',
-				'theme'			=>  MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'],
-				'tabName'		=>	$this->params['tabName'],
-				'site_url'		=>	$this->modx->config['site_url'],
-				'manager_url'	=>	MODX_MANAGER_URL,
-				'thumb_prefix' 	=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php?mode=thumb&url=',
-				'kcfinder_url'	=> 	MODX_MANAGER_URL."media/browser/mcpuk/browse.php?type=images",
-				'w' 			=> 	isset($this->params['w']) ? $this->params['w'] : '200',
-				'h' 			=> 	isset($this->params['h']) ? $this->params['h'] : '150',
-				'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">\'+_sgLang[\'refresh_previews\']+\'</div></div>' : '',
-				'tpls'			=>	$tpls
-				);
-			$ph['js'] = $this->renderJS($this->jsList,$ph) . $this->renderJS('custom.json',$ph);
+			$ph = $this->getTplPlaceholders();
+			$ph['js'] = $this->renderJS($this->jsListDefault,$ph) . $this->renderJS($this->jsListCustom,$ph);
 			$output = $this->DLTemplate->parseChunk('@CODE:'.$output,$ph);
 		}
 		return $output;
@@ -146,20 +163,17 @@ CREATE TABLE IF NOT EXISTS {$this->_table} (
 PRIMARY KEY  (`sg_id`)
 ) ENGINE=MyISAM COMMENT='Datatable for SimpleGallery plugin.';
 OUT;
-    	if ($this->modx->db->query($sql)) {
-            $eventsTable = $this->modx->getFullTableName('system_eventnames');
-    		$result = $this->modx->db->select('`id`',$eventsTable,"`name` IN ('OnSimpleGallerySave','OnSimpleGalleryDelete','OnSimpleGalleryRefresh')");
-			if (!$this->modx->db->getRecordCount($result)) {
-				$sql = "INSERT INTO {$eventsTable} VALUES (NULL, 'OnSimpleGallerySave', '6', 'SimpleGallery Events')";
-				$this->modx->db->query($sql);
-				$sql = "INSERT INTO {$eventsTable} VALUES (NULL, 'OnSimpleGalleryDelete', '6', 'SimpleGallery Events')";
-				$this->modx->db->query($sql);
-				$sql = "INSERT INTO {$eventsTable} VALUES (NULL, 'OnSimpleGalleryRefresh', '6', 'SimpleGallery Events')";
-				$this->modx->db->query($sql);
-			}
-    		return true;
-    	} else {
-    		return false;
-    	}
+    	return $this->modx->db->query($sql);
     }
+
+	public function registerEvents($events = array(), $eventsType = '6') {
+		$eventsTable = $this->modx->getFullTableName('system_eventnames');
+		foreach ($events as $event) {
+			$result = $this->modx->db->select('`id`',$eventsTable,"`name` = '{$event}'");
+			if (!$this->modx->db->getRecordCount($result)) {
+				$sql = "INSERT INTO {$eventsTable} VALUES (NULL, '{$event}', '{$eventsType}', '{$this->pluginName} Events')";
+				if (!$this->modx->db->query($sql)) $this->modx->logEvent(0, 3, "Cannot register {$event} event.", $this->pluginName);
+			}
+		}
+	}
 }

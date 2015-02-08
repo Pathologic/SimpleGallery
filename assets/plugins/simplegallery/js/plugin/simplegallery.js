@@ -16,18 +16,18 @@ var sgHelper = {};
                 return options.inverse(this);
             });
             var workspace = $('#SimpleGallery');
-            workspace.append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="'+_modxTheme+'/images/icons/folder_page_add.png">'+_sgLang['upload']+'</div><input id="sg_files" name="sg_files" class="btn-input" type="file" multiple /></div>'+_xtRefreshBtn+'<div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
+            workspace.append('<div class="js-fileapi-wrapper"><div class="btn"><div class="btn-text"><img src="'+sgConfig._modxTheme+'/images/icons/folder_page_add.png">'+_sgLang['upload']+'</div><input id="sg_files" name="sg_files" class="btn-input" type="file" multiple /></div>'+sgConfig._xtRefreshBtn+'<div id="sg_pages"></div><div id="sg_images"></div><div style="clear:both;"></div></div>');
 			$('#sg_refresh').click(function(){
 		    	sgHelper.refresh();
 		    });
             workspace.fileapi({
-            	url: _xtAjaxUrl+'?mode=upload',
+            	url: sgConfig._xtAjaxUrl+'?mode=upload',
             	autoUpload: true,
             	accept: 'image/*',
             	multiple: true,
             	clearOnSelect: true,
             	data: {
-            		'sg_rid': rid
+            		sg_rid:sgConfig.rid
             	},
             	filterFn: function (file, info) {
             		return /jpeg|gif|png$/.test(file.type);
@@ -37,7 +37,7 @@ var sgHelper = {};
                     var context = {
                         files: uiE.files,
                         sgLang: _sgLang,
-                        modxTheme: _modxTheme
+                        modxTheme: sgConfig._modxTheme
                     };
 	            	var uploadStateForm = $(Handlebars.templates.uploadForm(context));
 	            	uploadStateForm.window({
@@ -51,7 +51,7 @@ var sgHelper = {};
 		    			resizable:false,
 		    			onOpen: function() {
 	            			$('body').css('overflow','hidden');
-	            			$('#sgProgress > span').html(_sgLang['uploaded']+' <span>'+sgFileId+'</span> '+_sgLang['from']+' '+total);
+	            			$('#sgProgress > span').html(_sgLang['uploaded']+' <span>'+sgConfig.sgFileId+'</span> '+_sgLang['from']+' '+total);
 	            			$('#sgUploadCancel').click(function(e){
 	            				uploadStateForm.window('close');
 	            			})
@@ -68,22 +68,22 @@ var sgHelper = {};
     				$('#sgProgress > div').css('width',100*part+'%');
 				},
 				onFilePrepare: function (e,uiE) {
-					sgFileId++;
+					sgConfig.sgFileId++;
 				},
 				onFileProgress: function (e,uiE) {
 					var part = uiE.loaded / uiE.total;
-					$('.progress','#sgFilesListRow'+(sgFileId-1)).text(Math.floor(100*part)+'%');
+					$('.progress','#sgFilesListRow'+(sgConfig.sgFileId-1)).text(Math.floor(100*part)+'%');
 				},
             	onFileComplete: function(e,uiE) {
                     if (uiE.result === undefined) return;
             		var errorCode = parseInt(uiE.result.data._FILES.sg_files.error);
             		if (errorCode) {
-            			$('.progress','#sgFilesListRow'+(sgFileId-1)).html('<img src="'+_modxTheme+'/images/icons/error.png'+'" title="'+_sgUploadResult[errorCode]+'">');
+            			$('.progress','#sgFilesListRow'+(sgConfig.sgFileId-1)).html('<img src="'+sgConfig._modxTheme+'/images/icons/error.png'+'" title="'+_sgUploadResult[errorCode]+'">');
             		}
-    				$('#sgProgress > span > span').text(sgFileId);
+    				$('#sgProgress > span > span').text(sgConfig.sgFileId);
             	},
             	onComplete: function(e,uiE) {
-                    sgFileId = 0;
+                    sgConfig.sgFileId = 0;
             		var btn = $('#sg_files');
             		btn.replaceWith(btn.val('').clone(true));
             		e.widget.files = [];
@@ -122,7 +122,7 @@ var sgHelper = {};
                 ],
 			    onSelectPage:function(pageNumber, pageSize){
 					$(this).pagination('loading');
-						$.post(_xtAjaxUrl, { rows: pageSize, page: pageNumber, sg_rid: rid }, function(data) {
+						$.post(sgConfig._xtAjaxUrl, { rows: pageSize, page: pageNumber, sg_rid: sgConfig.rid }, function(data) {
                             data = sgHelper.getData(data);
                             if (data.success) {
                                 $('#sg_pages').pagination('refresh',{total: data.total});
@@ -163,7 +163,7 @@ var sgHelper = {};
                 var context = {
                     data: rows[i],
                     sgLang: _sgLang,
-                    thumbPrefix: _xtThumbPrefix
+                    thumbPrefix: sgConfig._xtThumbPrefix
                 };
  				var image = $(Handlebars.templates.preview(context));
  				image.data('properties',rows[i]);
@@ -193,11 +193,11 @@ var sgHelper = {};
 		        _this.edit($(this));
 		    });
 		    $('body').attr('ondragstart','');
-		    if (sgSort !== null) sgSort.destroy();
-		    sgSort = new Sortable(sg_images,{
+		    if (sgConfig.sgSort !== null) sgConfig.sgSort.destroy();
+			sgConfig.sgSort = new Sortable(sg_images,{
 		    	draggable: '.sg_image',
 		    	onStart: function (e) {
-		    		sgBeforeDragState = {
+		    		sgConfig.sgBeforeDragState = {
 		    			prev: e.item.previousSibling != null ? $(e.item.previousSibling).data('properties').sg_index : -1,
 		    			next: e.item.nextSibling != null ? $(e.item.nextSibling).data('properties').sg_index : -1
 		    		};
@@ -207,7 +207,7 @@ var sgHelper = {};
 						prev: e.item.previousSibling != null ? $(e.item.previousSibling).data('properties').sg_index : -1,
 		    			next: e.item.nextSibling != null ? $(e.item.nextSibling).data('properties').sg_index : -1
 					};
-					if (sgAfterDragState.prev == sgBeforeDragState.prev && sgAfterDragState.next == sgBeforeDragState.next) return;
+					if (sgAfterDragState.prev == sgConfig.sgBeforeDragState.prev && sgAfterDragState.next == sgConfig.sgBeforeDragState.next) return;
 					var source = $(e.item).data('properties');
 					sourceIndex = parseInt(source.sg_index); 
 					sourceId = source.sg_id;
@@ -229,8 +229,8 @@ var sgHelper = {};
 						}
 					}
 					$.post(
-						_xtAjaxUrl+'?mode=reorder', {
-							sg_rid: rid, 
+						sgConfig._xtAjaxUrl+'?mode=reorder', {
+							sg_rid: sgConfig.rid,
 							sourceId: sourceId, 
 							sourceIndex: sourceIndex, 
 							targetIndex: targetIndex 
@@ -256,8 +256,8 @@ var sgHelper = {};
 		},
 		select: function(image,e) {
 			var _image = $('.sg_image');
-            if(!sgLastChecked)
-                    sgLastChecked = image;
+            if(!sgConfig.sgLastChecked)
+                    sgConfig.sgLastChecked = image;
 		    if (e.ctrlKey || e.metaKey) {
 		        if (image.hasClass('selected'))
 		            image.removeClass('selected');
@@ -265,13 +265,13 @@ var sgHelper = {};
 		            image.addClass('selected');
 		    } else if (e.shiftKey) {
 		    	var start = _image.index(image);
-                var end = _image.index(sgLastChecked);
+                var end = _image.index(sgConfig.sgLastChecked);
                 _image.slice(Math.min(start,end), Math.max(start,end)+ 1).addClass('selected');
 
 		    } else {
 		        _image.removeClass('selected');
 		        image.addClass('selected');
-		        sgLastChecked=image;
+		        sgConfig.sgLastChecked=image;
 		    }
 		    var images = $('.sg_image.selected').get();
 		    if(images.length) {
@@ -309,10 +309,10 @@ var sgHelper = {};
 			$.messager.confirm(_sgLang['delete'],_sgLang['are_you_sure_to_delete'],function(r){
     			if (r){
         			$.post(
-						_xtAjaxUrl+'?mode=remove', 
+						sgConfig._xtAjaxUrl+'?mode=remove', 
 						{
                             ids:id,
-                            sg_rid:rid
+                            sg_rid:sgConfig.rid
                         },
 						function(data) {
                             data = sgHelper.getData(data);
@@ -331,10 +331,10 @@ var sgHelper = {};
 		    $.messager.confirm(_sgLang['delete'],_sgLang['are_you_sure_to_delete_many'],function(r){
     			if (r){
         			$.post(
-						_xtAjaxUrl+'?mode=remove', 
+						sgConfig._xtAjaxUrl+'?mode=remove', 
 						{
                             ids:ids,
-                            sg_rid:rid
+                            sg_rid:sgConfig.rid
                         },
 						function(data) {
                             data = sgHelper.getData(data);
@@ -353,7 +353,7 @@ var sgHelper = {};
             $.messager.confirm(_sgLang['move'],_sgLang['are_you_sure_to_move'],function(r){
                 if (r){
                     var context = {
-                        modxTheme: _modxTheme,
+                        modxTheme: sgConfig._modxTheme,
                         sgLang: _sgLang
                     };
                     var moveForm = $(Handlebars.templates.moveForm(context));
@@ -368,11 +368,11 @@ var sgHelper = {};
                         onOpen: function() {
                             $('#sgMoveStart').click(function(e){
                                 _to = $('#sgMoveTo').val();
-                                if (!_to || _to === rid) return;
+                                if (!_to || _to === sgConfig.rid) return;
                                 $.post(
-                                    _xtAjaxUrl+'?mode=move',
+                                    sgConfig._xtAjaxUrl+'?mode=move',
                                     {
-                                        sg_rid:rid,
+                                        sg_rid:sgConfig.rid,
                                         ids:ids,
                                         to:_to
                                     },
@@ -400,9 +400,9 @@ var sgHelper = {};
             $.messager.confirm(_sgLang['move'],_sgLang['are_you_sure_to_move'],function(r){
                 if (r){
                     $.post(
-                        _xtAjaxUrl+'?mode=place',
+                        sgConfig._xtAjaxUrl+'?mode=place',
                         {
-                            sg_rid:rid,
+                            sg_rid:sgConfig.rid,
                             ids:ids,
                             dir:"top"
                         },
@@ -423,9 +423,9 @@ var sgHelper = {};
             $.messager.confirm(_sgLang['move'],_sgLang['are_you_sure_to_move'],function(r){
                 if (r){
                     $.post(
-                        _xtAjaxUrl+'?mode=place',
+                        sgConfig._xtAjaxUrl+'?mode=place',
                         {
-                            sg_rid:rid,
+                            sg_rid:sgConfig.rid,
                             ids:ids,
                             dir:"bottom"
                         },
@@ -445,8 +445,8 @@ var sgHelper = {};
 			var data = image.data('properties');
             var context = {
                 data: data,
-                modxTheme: _modxTheme,
-                modxSiteUrl: _modxSiteUrl,
+                modxTheme: sgConfig._modxTheme,
+                modxSiteUrl: sgConfig._modxSiteUrl,
                 sgLang: _sgLang
             };
 			var editForm = $(Handlebars.templates.editForm(context));
@@ -464,7 +464,7 @@ var sgHelper = {};
     				});
     				$('#sgEditSave').click(function(e){
     					$.post(
-						_xtAjaxUrl+'?mode=edit', 
+						sgConfig._xtAjaxUrl+'?mode=edit', 
 						$('#sgForm').serialize(),
 						function(data) {
                             data = sgHelper.getData(data);
@@ -513,7 +513,7 @@ var sgHelper = {};
 				total = 0;
 			function processRefresh() {
 			    $.ajax({
-		            url: _xtAjaxUrl+'?mode=processRefresh',
+		            url: sgConfig._xtAjaxUrl+'?mode=processRefresh',
 		            type: 'POST',
 		            timeout: 25000,
 		            data: {
@@ -536,7 +536,7 @@ var sgHelper = {};
 			}
 			function refreshStatus() {
 				$.post(
-					_xtAjaxUrl+'?mode=getRefreshStatus', 
+					sgConfig._xtAjaxUrl+'?mode=getRefreshStatus', 
 					{
 						template:templates
 					},
@@ -549,7 +549,7 @@ var sgHelper = {};
     						if (data.processed < total) {
     							processRefresh();
     						} else {
-    							$('#sgRefreshStart > div').html('<img src="'+_modxTheme+'/images/icons/delete.png"><span>'+_sgLang['close']+'</span>');
+    							$('#sgRefreshStart > div').html('<img src="'+sgConfig._modxTheme+'/images/icons/delete.png"><span>'+_sgLang['close']+'</span>');
     							$('#sgRefreshStart').unbind('click').click(function(e) {
     								$('#sgRefresh').window('close');
     							})
@@ -562,14 +562,14 @@ var sgHelper = {};
 			}
 			$.messager.confirm(_sgLang['refresh_previews'],_sgLang['are_you_sure_to_refresh'],function(r){
     			if (r){
-    				var tpls = $.parseJSON(_xtTpls);
+    				var tpls = $.parseJSON(sgConfig._xtTpls);
 	            	$.each(tpls,function(i,tpl) {
 	            		tpl.templatename = sgHelper.stripText(tpl.templatename,21);
 	            	});
                     var context = {
                         tpls: tpls,
                         sgLang: _sgLang,
-                        modxTheme: _modxTheme
+                        modxTheme: sgConfig._modxTheme
                     };
     				var refreshForm = $(Handlebars.templates.refreshForm(context));
 	            	refreshForm.window({
@@ -587,7 +587,7 @@ var sgHelper = {};
 	            				templates = $('form','#sgRefreshTpls').serializeArray();
                                 if (templates.length === 0) return;
 					            $.post(
-									_xtAjaxUrl+'?mode=initRefresh', 
+									sgConfig._xtAjaxUrl+'?mode=initRefresh', 
 									{
 										template:templates
 									},

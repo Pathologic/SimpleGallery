@@ -33,33 +33,34 @@
 }
 </style>
 <script type="text/javascript">
-var rid = [+id+],
-	_modxManagerUrl = '[+manager_url+]',
-	_modxTheme = '[+theme+]',
-	_modxSiteUrl = '[+site_url+]',
-	_xtRefreshBtn = '[+refreshBtn+]',
-	_xtThumbPrefix = '[+thumb_prefix+]',
-	_xtAjaxUrl = '[+url+]',
-	_xtTpls = '[+tpls+]',
-    sgLoaded = false,
-    sgSort = null,
-    sgFileId = 0,
-    sgLastChecked = null,
-    sgBeforeDragState = null;
+var sgConfig = {
+	rid:[+id+],
+	_modxTheme:'[+theme+]',
+	_modxSiteUrl:'[+site_url+]',
+	_xtRefreshBtn:'[+refreshBtn+]',
+	_xtThumbPrefix:'[+thumb_prefix+]',
+	_xtAjaxUrl:'[+url+]',
+	_xtTpls:'[+tpls+]',
+	sgLoaded:false,
+	sgSort:null,
+	sgFileId:0,
+	sgLastChecked:null,
+	sgBeforeDragState:null
+};
 (function($) {
 	$(window).load(function(){
     	if ($('#sg-tab')) {
     		$('#sg-tab.selected').trigger('click');    
 		}
-	})
+	});
 	$(document).ready(function() {
 		$('#sg-tab').click(function(){
-    		if (sgLoaded) {
+    		if (sgConfig.sgLoaded) {
         		$('#sg_pages').pagination('select');
     		} else {
         		sgHelper.init();
         		$('#sg_pages').pagination('select');
-        		sgLoaded = true;
+				sgConfig.sgLoaded = true;
     		}
 		})
 	})
