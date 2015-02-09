@@ -1,13 +1,15 @@
 <?php namespace SimpleGallery;
 
-require_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/controller.abstract.php');
+require_once(MODX_BASE_PATH . 'assets/lib/SimpleTab/controller.abstract.php');
 require_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/table.class.php');
 
-class sgController extends sgAbstractController
+class sgController extends \SimpleTab\AbstractController
 {
     public function __construct(\DocumentParser $modx)
     {
         parent::__construct($modx);
+        $this->ridField = 'sg_rid';
+        $this->rid = isset($_REQUEST[$this->ridField]) ? (int)$_REQUEST[$this->ridField] : 0;
         $this->data = new \SimpleGallery\sgData($this->modx);
     }
 
@@ -161,7 +163,6 @@ class sgController extends sgAbstractController
 
     public function thumb()
     {
-        $out = array();
         $w = 200;
         $h = 150;
         $url = $_REQUEST['url'];
@@ -194,7 +195,7 @@ class sgController extends sgAbstractController
         header("Content-type: image/jpeg");
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
         readfile($file);
-        return $out;
+        return;
     }
 
     public function initRefresh()
@@ -261,35 +262,4 @@ class sgController extends sgAbstractController
         return $out;
     }
 
-    public function listing()
-    {
-        $out = array();
-        if (!$this->rid) {
-            $this->isExit = true;
-            return;
-        }
-        $param = array(
-            "controller" => "onetable",
-            "table" => "sg_images",
-            'idField' => "sg_id",
-            "api" => $this->data->fieldNames(),
-            "idType" => "documents",
-            'ignoreEmpty' => "1",
-            'JSONformat' => "new"
-        );
-        $display = 10;
-        $display = isset($_REQUEST['rows']) ? (int)$_REQUEST['rows'] : $display;
-        $offset = isset($_REQUEST['page']) ? (int)$_REQUEST['page'] : 1;
-        $offset = $offset ? $offset : 1;
-        $offset = $display * abs($offset - 1);
-
-        $param['display'] = $display;
-        $param['offset'] = $offset;
-        $param['sortBy'] = 'sg_index';
-        $param['sortDir'] = 'DESC';
-
-        $param['addWhereList'] = "`sg_rid`=$this->rid";
-        $out = $this->modx->runSnippet("DocLister", $param);
-        return $out;
-    }
 }
