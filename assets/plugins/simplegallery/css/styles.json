@@ -1,0 +1,16 @@
+{
+  "styles": {
+    "EasyUICss" : {
+      "version":"1.4.1",
+      "src":"assets/lib/SimpleTab/js/easy-ui/themes/bootstrap/easyui.css"
+    },
+    "EasyUIIconsCss": {
+      "version":"1.4.1",
+      "src":"assets/lib/SimpleTab/js/easy-ui/themes/icon.css"
+    },
+    "SimpleGalletyCss" : {
+      "version":"1.0.0",
+      "src":"assets/plugins/simplegallery/css/simplegallery.css"
+    }
+  }
+}

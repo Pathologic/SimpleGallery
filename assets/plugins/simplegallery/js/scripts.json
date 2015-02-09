@@ -2,38 +2,38 @@
 	"scripts": {
 		"EasyUI" : {
 			"version":"1.4.1",
-			"src":"assets/plugins/simplegallery/js/easy-ui/jquery.easyui.min.js"
+			"src":"assets/lib/SimpleTab/js/easy-ui/jquery.easyui.min.js"
 		},
+	  	"easyui-lang-[+lang+]":{
+			"version":"1.4.1",
+			"src":"assets/lib/SimpleTab/js/easy-ui/locale/easyui-lang-[+lang+].js"
+	  	},
 		"FileAPI": {
 			"version":"2.0.8",
-			"src":"assets/plugins/simplegallery/js/fileapi/FileAPI.min.js"
+			"src":"assets/lib/SimpleTab/js/fileapi/FileAPI.min.js"
 		},
 		"jquery.fileapi":{
 			"version":"0.4.5",
-			"src":"assets/plugins/simplegallery/js/fileapi/jquery.fileapi.min.js"
+			"src":"assets/lib/SimpleTab/js/fileapi/jquery.fileapi.min.js"
 		},
 		"Sortable":{
 			"version":"1.0.0",
-			"src":"assets/plugins/simplegallery/js/sortable/Sortable.min.js"
+			"src":"assets/lib/SimpleTab/js/sortable/Sortable.min.js"
 		},
         "handlebars":{
             "version":"2.0.0",
-            "src":"assets/plugins/simplegallery/js/handlebars/handlebars.runtime.min.js"
+            "src":"assets/lib/SimpleTab/js/handlebars/handlebars.runtime.min.js"
         },
         "templates":{
             "version":"1.0.0",
             "src":"assets/plugins/simplegallery/js/tpl/templates.js"
         },
 		"SimpleGallery":{
-			"version":"0.9",
+			"version":"1.0.0",
 			"src":"assets/plugins/simplegallery/js/plugin/simplegallery.js"
 		},
-		"easyui-lang-[+lang+]":{
-			"version":"1.4.1",
-			"src":"assets/plugins/simplegallery/js/easy-ui/locale/easyui-lang-[+lang+].js"
-		},
 		"sg-lang-[+lang+]":{
-			"version":"0.9",
+			"version":"1.0.0",
 			"src":"assets/plugins/simplegallery/js/lang/[+lang+].js"
 		}
 	}

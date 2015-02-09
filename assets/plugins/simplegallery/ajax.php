@@ -1,6 +1,6 @@
 <?php
 define('MODX_API_MODE', true);
-include_once(dirname(__FILE__)."/../../../index.php");
+include_once(__DIR__."/../../../index.php");
 $modx->db->connect();
 if (empty ($modx->config)) {
     $modx->getSettings();
@@ -26,7 +26,7 @@ if (empty($controllerClass) || !class_exists($controllerClass)) {
     $controllerClass = '\SimpleGallery\sgController';
 }
 $controller = new $controllerClass($modx);
-if($controller instanceof \SimpleGallery\sgAbstractController){
+if($controller instanceof \SimpleTab\AbstractController){
 	if (!empty($mode) && method_exists($controller, $mode)) {
 		$out = call_user_func_array(array($controller, $mode), array());
 	}else{
