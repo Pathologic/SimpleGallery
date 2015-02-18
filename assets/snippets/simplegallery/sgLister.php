@@ -27,7 +27,7 @@ $params = array_merge(array(
 	"config"		=>	"sgLister:assets/snippets/simplegallery/config/"
 ), $modx->event->params, array(
 	'depth' => '0',
-	'showParent' => '1'
+	'showParent' => '-1'
 ));
 
 if(!class_exists("DLsgLister", false)){
@@ -45,11 +45,6 @@ if(!class_exists("DLsgLister", false)){
 				$data['thumb.width.'.$imageField] = $info[0];
 				$data['thumb.height.'.$imageField] = $info[1];
 			}
-			$titleField = $_DL->getCfgDef('titleField');
-			$data['e.'.$titleField] = htmlentities($data[$titleField], ENT_COMPAT, 'UTF-8', false);
-
-			$descField = $_DL->getCfgDef('descField');
-			$data['e.'.$descField] = htmlentities($data[$descField], ENT_COMPAT, 'UTF-8', false);
             return $data;
 		}
 	}

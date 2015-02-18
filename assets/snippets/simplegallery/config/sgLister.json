@@ -9,7 +9,6 @@
 	"addWhereList" : "`sg_isactive`=1",
 	"thumbOptions" : "hp=90&wl=90&far=C",
 	"imageField" : "sg_image",
-	"titleField" : "sg_title",
-	"descField": "sg_description",
-	"noneWrapOuter" : "0"
+	"noneWrapOuter" : "0",
+	"e" : "sg_title,sg_description"
 }
