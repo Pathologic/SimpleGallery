@@ -75,8 +75,10 @@ var sgHelper = {};
 					$('.progress','#sgFilesListRow'+(sgConfig.sgFileId-1)).text(Math.floor(100*part)+'%');
 				},
             	onFileComplete: function(e,uiE) {
-                    if (uiE.result === undefined) return;
-            		var errorCode = parseInt(uiE.result.data._FILES.sg_files.error);
+                    var errorCode = 101;
+                    if (uiE.result.data !== undefined) {
+                        errorCode = parseInt(uiE.result.data._FILES.sg_files.error);
+                    }
             		if (errorCode) {
             			$('.progress','#sgFilesListRow'+(sgConfig.sgFileId-1)).html('<img src="'+sgConfig._modxTheme+'/images/icons/error.png'+'" title="'+_sgUploadResult[errorCode]+'">');
             		}
