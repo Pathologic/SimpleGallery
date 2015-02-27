@@ -71,7 +71,7 @@ class sgData extends \autoTable {
 				'ext' => $this->fs->takeFileExt($row['sg_image']),
 				'mime' => $this->fs->takeFileMIME($row['sg_image']),
 				'template'	=>	$template
-				),true);
+				),$fire_events);
 		}
 		return $out;
 	}
@@ -289,13 +289,13 @@ class sgData extends \autoTable {
 					'filepath' => $this->get('filepath'),
 					'filename' => $this->get('filename'),
 					'template' => $template
-					),true);
+					),$fire_events);
 			}
 			$fields = $this->field;
 			$fields['template'] = $template;
             $fields['sg_id'] = $out;
             $fields['newDoc'] = $this->newDoc;
-			$this->invokeEvent('OnSimpleGallerySave',$fields,true);
+			$this->invokeEvent('OnSimpleGallerySave',$fields,$fire_events);
 		}
 		return $out;
 	}
@@ -303,11 +303,11 @@ class sgData extends \autoTable {
     /**
      * @param $id
      */
-    public function refresh($id) {
+    public function refresh($id, $fire_events = null) {
 		$fields = $this->edit($id)->toArray();
 		$q = $this->query('SELECT template FROM '.$this->makeTable('site_content').' WHERE id='.$fields['sg_rid']);
 		$fields['template'] = $this->modx->db->getValue($q);
-		$this->invokeEvent('OnSimpleGalleryRefresh',$fields,true);
+		$this->invokeEvent('OnSimpleGalleryRefresh',$fields,$fire_events);
 	}
 
     /**

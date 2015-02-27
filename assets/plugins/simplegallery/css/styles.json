@@ -8,7 +8,7 @@
       "version":"1.4.1",
       "src":"assets/lib/SimpleTab/js/easy-ui/themes/icon.css"
     },
-    "SimpleGalletyCss" : {
+    "SimpleGalleryCss" : {
       "version":"1.0.0",
       "src":"assets/plugins/simplegallery/css/simplegallery.css"
     }
