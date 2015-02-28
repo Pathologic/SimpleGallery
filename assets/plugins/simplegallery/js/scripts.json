@@ -2,27 +2,27 @@
 	"scripts": {
 		"EasyUI" : {
 			"version":"1.4.1",
-			"src":"assets/lib/SimpleTab/js/easy-ui/jquery.easyui.min.js"
+			"src":"assets/js/easy-ui/jquery.easyui.min.js"
 		},
 	  	"easyui-lang-[+lang+]":{
 			"version":"1.4.1",
-			"src":"assets/lib/SimpleTab/js/easy-ui/locale/easyui-lang-[+lang+].js"
+			"src":"assets/js/easy-ui/locale/easyui-lang-[+lang+].js"
 	  	},
 		"FileAPI": {
 			"version":"2.0.8",
-			"src":"assets/lib/SimpleTab/js/fileapi/FileAPI.min.js"
+			"src":"assets/js/fileapi/FileAPI.min.js"
 		},
 		"jquery.fileapi":{
 			"version":"0.4.5",
-			"src":"assets/lib/SimpleTab/js/fileapi/jquery.fileapi.min.js"
+			"src":"assets/js/fileapi/jquery.fileapi.min.js"
 		},
 		"Sortable":{
 			"version":"1.0.0",
-			"src":"assets/lib/SimpleTab/js/sortable/Sortable.min.js"
+			"src":"assets/js/sortable/Sortable.min.js"
 		},
         "handlebars":{
             "version":"2.0.0",
-            "src":"assets/lib/SimpleTab/js/handlebars/handlebars.runtime.min.js"
+            "src":"assets/js/handlebars/handlebars.runtime.min.js"
         },
         "templates":{
             "version":"1.0.0",
