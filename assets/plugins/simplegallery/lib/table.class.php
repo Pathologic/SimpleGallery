@@ -92,7 +92,7 @@ class sgData extends \autoTable {
      * @param int $to
      * @return bool
      */
-    public function move($ids, $rid, $to) {
+    public function move($ids, $rid, $to, $fire_events = NULL) {
         $ids = $this->cleanIDs($ids, ',', array(0));
         $templates = isset($this->params['templates']) ? $this->params['templates'] : array();
         $templates = $this->cleanIDs($templates,',',array(0));
@@ -101,7 +101,7 @@ class sgData extends \autoTable {
         $template = $this->modx->db->getValue($rows);
         if (!in_array($template,$templates)) return;
         $ids = implode(',',$ids);
-        $rows = $this->query("SELECT `sg_image` FROM {$this->makeTable($this->table)} WHERE `sg_id` IN ({$ids})");
+        $rows = $this->query("SELECT `sg_id`,`sg_image` FROM {$this->makeTable($this->table)} WHERE `sg_id` IN ({$ids})");
         $images = $this->modx->db->makeArray($rows);
         $_old = $this->params['folder'].$rid.'/';
         $_new = $this->params['folder'].$to.'/';
@@ -114,6 +114,15 @@ class sgData extends \autoTable {
                     $this->modx->logEvent(0, 3, "Cannot move {$oldFile} to {$_new}", "SimpleGallery");
                 } else {
                     $this->deleteThumb($image['sg_image']);
+                    $this->invokeEvent('OnSimpleGalleryMove',array(
+                        'id'        => $image['sg_id'],
+                        'image'     => $image['sg_image'],
+                        'rid'       => $rid,
+                        'to'        => $to,
+                        'oldFile'   => $oldFile,
+                        'newFile'   => $newFile,
+                        'template'  => $template
+                    ),$fire_events);
                 }
             }
             $rows = $this->query("SELECT count(`sg_id`) FROM {$this->makeTable($this->table)} WHERE `sg_rid`={$to}");

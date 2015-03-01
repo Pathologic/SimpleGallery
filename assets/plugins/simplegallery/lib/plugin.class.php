@@ -10,7 +10,7 @@ class sgPlugin extends \SimpleTab\Plugin {
 	public $jsListCustom = 'assets/plugins/simplegallery/js/custom.json';
 	public $cssListDefault = 'assets/plugins/simplegallery/css/styles.json';
 	public $cssListCustom = 'assets/plugins/simplegallery/css/custom.json';
-	public $pluginEvents = array('OnSimpleGallerySave', 'OnSimpleGalleryDelete', 'OnSimpleGalleryRefresh');
+	public $pluginEvents = array('OnSimpleGallerySave', 'OnSimpleGalleryDelete', 'OnSimpleGalleryMove', 'OnSimpleGalleryRefresh');
 
 	/**
 	 * @return array
