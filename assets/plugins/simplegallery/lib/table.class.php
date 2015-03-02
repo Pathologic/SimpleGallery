@@ -61,6 +61,7 @@ class sgData extends \autoTable {
 		$images = $this->query('SELECT `sg_id`,`sg_image` FROM '.$this->makeTable($this->table).' WHERE `sg_id` IN ('.$this->sanitarIn($ids).')');
 		$this->clearIndexes($ids,$rid);
         $out = $this->delete($ids, $fire_events);
+        $this->query("ALTER TABLE {$this->makeTable($this->table)} AUTO_INCREMENT = 1");
 		while ($row = $this->modx->db->getRow($images)) {
 			$this->deleteThumb($row['sg_image']);
 			$this->invokeEvent('OnSimpleGalleryDelete',array(
@@ -80,7 +81,6 @@ class sgData extends \autoTable {
         $rows = $this->query("SELECT MIN(`sg_index`) FROM {$this->makeTable($this->table)} WHERE `sg_id` IN ({$ids})");
         $index = $this->modx->db->getValue($rows);
         $index = $index - 1;
-        $this->query("ALTER TABLE {$this->makeTable($this->table)} AUTO_INCREMENT = 1");
         $this->query("SET @index := ".$index);
         $this->query("UPDATE {$this->makeTable($this->table)} SET `sg_index` = (@index := @index + 1) WHERE (`sg_index`>{$index} AND `sg_rid`={$rid} AND `sg_id` NOT IN ({$ids})) ORDER BY `sg_index` ASC");
         $out = $this->modx->db->getAffectedRows();
