@@ -38,7 +38,10 @@ if(!class_exists("DLsgController", false)){
                     $ph['e.sg_title'] = htmlentities($image['sg_title'], ENT_COMPAT, 'UTF-8', false);
                     $ph['e.sg_description'] = htmlentities($image['sg_description'], ENT_COMPAT, 'UTF-8', false);
                     //добавили поля e.sg_title и e.sg_description
-                    
+                    $properties = json_decode($image['sg_properties'],true);
+                        foreach ($properties as $key => $value) {
+                        $ph['properties.'.$key] = $value;
+                    }
                     $wrapper .= $_DocLister->parseChunk($_DocLister->getCfgDef('sgRowTpl'), $ph);
                     //обработали чанк sgRowTpl - для каждой картинки
                 }
