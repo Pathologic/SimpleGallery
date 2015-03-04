@@ -5,7 +5,7 @@
  * DocLister wrapper for SimpleGallery table
  *
  * @category 	snippet
- * @version 	0.10
+ * @version 	1.0.0
  * @license 	http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
  * @internal	@properties
  * @internal	@modx_category Content
@@ -44,6 +44,10 @@ if(!class_exists("DLsgLister", false)){
 				$info = getimagesize(MODX_BASE_PATH.$data['thumb.'.$imageField]);
 				$data['thumb.width.'.$imageField] = $info[0];
 				$data['thumb.height.'.$imageField] = $info[1];
+			}
+			$properties = json_decode($data['sg_properties'],true);
+			foreach ($properties as $key => $value) {
+				$data['properties.'.$key] = $value;
 			}
             return $data;
 		}
