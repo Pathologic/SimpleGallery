@@ -262,4 +262,9 @@ class sgController extends \SimpleTab\AbstractController
         return $out;
     }
 
+    public function listing() {
+        $_REQUEST['sort'] = 'sg_index';
+        $_REQUEST['order'] = 'DESC';
+        return parent::listing();
+    }
 }
