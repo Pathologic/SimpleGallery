@@ -26,7 +26,9 @@ sgHelper.rteForm = function(textarea) {
             sgHelper.initRTE();
         },
         onClose: function() {
+            var mask = $('.window-mask');
             sgHelper.destroyWindow(rteForm);
+            $('body').append(mask);
         }
     })
 };
