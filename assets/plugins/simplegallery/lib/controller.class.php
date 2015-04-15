@@ -10,7 +10,6 @@ class sgController extends \SimpleTab\AbstractController
     public function __construct(\DocumentParser $modx)
     {
         parent::__construct($modx);
-        $this->rid = isset($_REQUEST[$this->rfName]) ? (int)$_REQUEST[$this->rfName] : 0;
         $this->data = new \SimpleGallery\sgData($this->modx);
     }
 
