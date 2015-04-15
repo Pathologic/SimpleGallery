@@ -11,6 +11,7 @@ class sgController extends \SimpleTab\AbstractController
     {
         parent::__construct($modx);
         $this->data = new \SimpleGallery\sgData($this->modx);
+        $this->dlInit();
     }
 
     public function upload()
@@ -238,9 +239,10 @@ class sgController extends \SimpleTab\AbstractController
         return $out;
     }
 
-    public function listing() {
-        $_REQUEST['sort'] = 'sg_index';
-        $_REQUEST['order'] = 'DESC';
-        return parent::listing();
+    public function dlInit() {
+        parent::dlInit();
+        $this->dlParams['sortBy'] = 'sg_index';
+        $this->dlParams['sortDir'] = 'DESC';
     }
+
 }
