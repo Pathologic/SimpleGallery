@@ -5,11 +5,12 @@ require_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/table.class.php'
 
 class sgController extends \SimpleTab\AbstractController
 {
+    public $rfName = 'sg_rid';
+
     public function __construct(\DocumentParser $modx)
     {
         parent::__construct($modx);
-        $this->ridField = 'sg_rid';
-        $this->rid = isset($_REQUEST[$this->ridField]) ? (int)$_REQUEST[$this->ridField] : 0;
+        $this->rid = isset($_REQUEST[$this->rfName]) ? (int)$_REQUEST[$this->rfName] : 0;
         $this->data = new \SimpleGallery\sgData($this->modx);
     }
 
@@ -155,8 +156,11 @@ class sgController extends \SimpleTab\AbstractController
         $sourceIndex = (int)$_REQUEST['sourceIndex'];
         $targetIndex = (int)$_REQUEST['targetIndex'];
         $sourceId = (int)$_REQUEST['sourceId'];
-        $rows = $this->data->reorder($sourceIndex, $targetIndex, $sourceId, $this->rid);
-
+        $source = array('sg_index'=>$sourceIndex,'sg_id'=>$sourceId);
+        $target = array('sg_index'=>$targetIndex);
+        $point = $sourceIndex < $targetIndex ? 'top' : 'bottom';
+        $orderDir = 'desc';
+        $rows = $this->data->reorder($source, $target, $point, $this->rid, $orderDir);
         $out['success'] = $rows;
         return $out;
     }
