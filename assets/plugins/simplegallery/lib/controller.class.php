@@ -84,19 +84,6 @@ class sgController extends \SimpleTab\AbstractController
         }
     }
 
-    public function remove()
-    {
-        $out = array();
-        $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
-        $out['success'] = false;
-        if (!empty($ids)) {
-            if ($this->data->deleteAll($ids, $this->rid)) {
-                $out['success'] = true;
-            }
-        }
-        return $out;
-    }
-
     public function move()
     {
         $out = array();
@@ -110,20 +97,6 @@ class sgController extends \SimpleTab\AbstractController
             }
         }
 
-        return $out;
-    }
-
-    public function place()
-    {
-        $out = array();
-        $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
-        $dir = isset($_REQUEST['dir']) ? $_REQUEST['dir'] : 'top';
-        $out['success'] = false;
-        if (!empty($ids)) {
-            if ($this->data->place($ids, $dir, $this->rid)) {
-                $out['success'] = true;
-            }
-        }
         return $out;
     }
 
