@@ -12,7 +12,7 @@ if(!isset($_SESSION['mgrValidated'])){
 }
 $modx->invokeEvent('OnManagerPageInit',array('invokedBy'=>'SimpleGallery'));
 if (isset($modx->pluginCache['SimpleGalleryProps'])) {
-	$modx->event->params = $modx->parseProperties($modx->pluginCache['SimpleGalleryProps']);
+	$modx->event->params = $modx->parseProperties($modx->pluginCache['SimpleGalleryProps'],'SimpleGallery','plugin');
 } else {
 	die();
 }
