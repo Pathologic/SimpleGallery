@@ -25,10 +25,8 @@ class sgPlugin extends \SimpleTab\Plugin {
 		}
 		$ph = array(
 			'lang'			=> 	$this->lang_attribute,
-			'id'			=>	$this->params['id'],
 			'url'			=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php',
 			'theme'			=>  MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'],
-			'tabName'		=>	$this->params['tabName'],
 			'site_url'		=>	$this->modx->config['site_url'],
 			'manager_url'	=>	MODX_MANAGER_URL,
 			'thumb_prefix' 	=> 	$this->modx->config['site_url'].'assets/plugins/simplegallery/ajax.php?mode=thumb&url=',
@@ -38,7 +36,7 @@ class sgPlugin extends \SimpleTab\Plugin {
 			'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">\'+_sgLang[\'refresh_previews\']+\'</div></div>' : '',
 			'tpls'			=>	$tpls
 		);
-		return $ph;
+		return array_merge($this->params,$ph);
 	}
 
     public function createTable() {
