@@ -80,6 +80,7 @@ user-select: none;
 .sg_image .img {
 	background-color:#fff;
 	background-position: center center;
+	background-repeat: no-repeat;
 }
 .selected,.selected:hover {
 	background: #5b9bda;

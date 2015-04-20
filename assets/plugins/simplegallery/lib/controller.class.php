@@ -149,7 +149,7 @@ class sgController extends \SimpleTab\AbstractController
             if (isset($this->params['w'])) $w = $this->params['w'];
             if (isset($this->params['h'])) $h = $this->params['h'];
         }
-        $thumbOptions = isset($this->params['customThumbOptions']) ? $this->params['customThumbOptions'] : 'w=[+w+]&h=[+h+]&far=C&f=jpg';
+        $thumbOptions = isset($this->params['customThumbOptions']) ? $this->params['customThumbOptions'] : 'w=[+w+]&h=[+h+]&far=C&bg=FFFFFF&f=jpg';
         $thumbOptions = urldecode(str_replace(array('[+w+]', '[+h+]'), array($w, $h), $thumbOptions));
         $file = MODX_BASE_PATH . $thumbsCache . $url;
         if ($this->FS->checkFile($file)) {
