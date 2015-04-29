@@ -55,7 +55,7 @@ class sgController extends \SimpleTab\AbstractController
                                 'sg_rid' => $this->rid,
                                 'sg_title' => preg_replace('/\\.[^.\\s]{2,4}$/', '', $_FILES["sg_files"]["name"]),
                                 'sg_properties' => $properties
-                            ))->save();
+                            ))->save(true);
                         } else {
                             @unlink($name);
                             $files['sg_files']['error'] = 100;
@@ -84,6 +84,20 @@ class sgController extends \SimpleTab\AbstractController
             return $out;
         }
     }
+    
+    public function remove()
+    {
+        $out = array();
+        $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
+        $ids = isset($_REQUEST['id']) ? (string)$_REQUEST['id'] : $ids;
+        $out['success'] = false;
+        if (!empty($ids)) {
+            if ($this->data->deleteAll($ids, $this->rid, true)) {
+                $out['success'] = true;
+            }
+        }
+        return $out;
+    }
 
     public function move()
     {
@@ -93,7 +107,7 @@ class sgController extends \SimpleTab\AbstractController
         $out['success'] = false;
 
         if (!empty($ids) && $to !== $this->rid && $to > 0) {
-            if ($this->data->move($ids, $this->rid, $to)) {
+            if ($this->data->move($ids, $this->rid, $to, true)) {
                 $out['success'] = true;
             }
         }
@@ -112,7 +126,7 @@ class sgController extends \SimpleTab\AbstractController
                 'sg_add' => $_REQUEST['sg_add']
             );
             $fields['sg_isactive'] = isset($_REQUEST['sg_isactive']) ? 1 : 0;
-            $out['success'] = $this->data->edit($id)->fromArray($fields)->save();
+            $out['success'] = $this->data->edit($id)->fromArray($fields)->save(true);
         } else {
             $out['success'] = false;
         }
