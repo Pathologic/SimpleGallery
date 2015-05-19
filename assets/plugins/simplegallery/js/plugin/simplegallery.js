@@ -103,7 +103,7 @@ var sgHelper = {};
             };
             if (Object.keys(sgConfig.clientResize).length) {
                 fileapiOptions.imageTransform = sgConfig.clientResize;
-                fileapiOptions.autoRotate = true;
+                fileapiOptions.imageAutoOrientation = true;
             }
             workspace.fileapi(fileapiOptions);
             $('#sg_pages').pagination({
