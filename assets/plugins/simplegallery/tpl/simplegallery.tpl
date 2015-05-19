@@ -38,7 +38,8 @@ var sgConfig = {
 	sgSort:null,
 	sgFileId:0,
 	sgLastChecked:null,
-	sgBeforeDragState:null
+	sgBeforeDragState:null,
+    clientResize:[+clientResize+]
 };
 (function($) {
 	$(window).load(function(){

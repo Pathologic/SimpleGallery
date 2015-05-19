@@ -20,89 +20,92 @@ var sgHelper = {};
 			$('#sg_refresh').click(function(){
 		    	sgHelper.refresh();
 		    });
-            workspace.fileapi({
-            	url: sgConfig._xtAjaxUrl+'?mode=upload',
-            	autoUpload: true,
-            	accept: 'image/*',
-            	multiple: true,
-            	clearOnSelect: true,
-            	data: {
-            		sg_rid:sgConfig.rid
-            	},
-            	filterFn: function (file, info) {
-            		return /jpeg|gif|png$/.test(file.type);
-            	},
-                imageAutoOrientation: sgConfig.clientAutoRotate,
-                imageTransform: sgConfig.clientResize,
-            	onBeforeUpload: function(e,uiE) {
-	            	var total = uiE.files.length;
+            var fileapiOptions = {
+                url: sgConfig._xtAjaxUrl+'?mode=upload',
+                autoUpload: true,
+                accept: 'image/*',
+                multiple: true,
+                clearOnSelect: true,
+                data: {
+                    sg_rid:sgConfig.rid
+                },
+                filterFn: function (file, info) {
+                    return /jpeg|gif|png$/.test(file.type);
+                },
+                onBeforeUpload: function(e,uiE) {
+                    var total = uiE.files.length;
                     var context = {
                         files: uiE.files,
                         sgLang: _sgLang,
                         modxTheme: sgConfig._modxTheme
                     };
-	            	var uploadStateForm = $(Handlebars.templates.uploadForm(context));
-	            	uploadStateForm.window({
-	    				width:450,
-	    				modal:true,
-	    				title:_sgLang['files_upload'],
-	    				doSize:true,
-		    			collapsible:false,
-		    			minimizable:false,
-		    			maximizable:false,
-		    			resizable:false,
-		    			onOpen: function() {
-	            			$('body').css('overflow','hidden');
-	            			$('#sgProgress > span').html(_sgLang['uploaded']+' <span>'+sgConfig.sgFileId+'</span> '+_sgLang['from']+' '+total);
-	            			$('#sgUploadCancel').click(function(e){
-	            				uploadStateForm.window('close');
-	            			})
-		    			},
-		    			onClose: function() {
+                    var uploadStateForm = $(Handlebars.templates.uploadForm(context));
+                    uploadStateForm.window({
+                        width:450,
+                        modal:true,
+                        title:_sgLang['files_upload'],
+                        doSize:true,
+                        collapsible:false,
+                        minimizable:false,
+                        maximizable:false,
+                        resizable:false,
+                        onOpen: function() {
+                            $('body').css('overflow','hidden');
+                            $('#sgProgress > span').html(_sgLang['uploaded']+' <span>'+sgConfig.sgFileId+'</span> '+_sgLang['from']+' '+total);
+                            $('#sgUploadCancel').click(function(e){
+                                uploadStateForm.window('close');
+                            })
+                        },
+                        onClose: function() {
                             workspace.fileapi('abort');
-		    				sgHelper.destroyWindow(uploadStateForm);
+                            sgHelper.destroyWindow(uploadStateForm);
                             sgHelper.update();
-		    			}
-		    		});
-            	},
-            	onProgress: function (e, uiE){
-    				var part = uiE.loaded / uiE.total;
-    				$('#sgProgress > div').css('width',100*part+'%');
-				},
-				onFilePrepare: function (e,uiE) {
-					sgConfig.sgFileId++;
-				},
-				onFileProgress: function (e,uiE) {
-					var part = uiE.loaded / uiE.total;
-					$('.progress','#sgFilesListRow'+(sgConfig.sgFileId-1)).text(Math.floor(100*part)+'%');
-				},
-            	onFileComplete: function(e,uiE) {
+                        }
+                    });
+                },
+                onProgress: function (e, uiE){
+                    var part = uiE.loaded / uiE.total;
+                    $('#sgProgress > div').css('width',100*part+'%');
+                },
+                onFilePrepare: function (e,uiE) {
+                    sgConfig.sgFileId++;
+                },
+                onFileProgress: function (e,uiE) {
+                    var part = uiE.loaded / uiE.total;
+                    $('.progress','#sgFilesListRow'+(sgConfig.sgFileId-1)).text(Math.floor(100*part)+'%');
+                },
+                onFileComplete: function(e,uiE) {
                     var errorCode = 101;
                     if (uiE.result.data !== undefined) {
                         errorCode = parseInt(uiE.result.data._FILES.sg_files.error);
                     }
-            		if (errorCode) {
-            			$('.progress','#sgFilesListRow'+(sgConfig.sgFileId-1)).html('<img src="'+sgConfig._modxTheme+'/images/icons/error.png'+'" title="'+_sgUploadResult[errorCode]+'">');
-            		}
-    				$('#sgProgress > span > span').text(sgConfig.sgFileId);
-            	},
-            	onComplete: function(e,uiE) {
+                    if (errorCode) {
+                        $('.progress','#sgFilesListRow'+(sgConfig.sgFileId-1)).html('<img src="'+sgConfig._modxTheme+'/images/icons/error.png'+'" title="'+_sgUploadResult[errorCode]+'">');
+                    }
+                    $('#sgProgress > span > span').text(sgConfig.sgFileId);
+                },
+                onComplete: function(e,uiE) {
                     sgConfig.sgFileId = 0;
-            		var btn = $('#sg_files');
-            		btn.replaceWith(btn.val('').clone(true));
-            		e.widget.files = [];
-            		e.widget.uploaded = [];
-            		sgHelper.update();
-            		$('#sgUploadCancel span').text(_sgLang['close']);
+                    var btn = $('#sg_files');
+                    btn.replaceWith(btn.val('').clone(true));
+                    e.widget.files = [];
+                    e.widget.uploaded = [];
+                    sgHelper.update();
+                    $('#sgUploadCancel span').text(_sgLang['close']);
                     if (!uiE.error) $('#sgUploadCancel').trigger('click');
-            	},
-            	elements: {
-          			dnd: {
-	        			el: '.js-fileapi-wrapper',
-			        	hover: 'dnd_hover'
-      				}
-            	}
-        	});
+                },
+                elements: {
+                    dnd: {
+                        el: '.js-fileapi-wrapper',
+                        hover: 'dnd_hover'
+                    }
+                }
+            };
+            if (Object.keys(sgConfig.clientResize).length) {
+                fileapiOptions.imageTransform = sgConfig.clientResize;
+                fileapiOptions.autoRotate = true;
+            }
+            workspace.fileapi(fileapiOptions);
             $('#sg_pages').pagination({
 			    total:0,
 			    pageSize:10,
