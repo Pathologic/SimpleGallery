@@ -34,7 +34,9 @@ class sgPlugin extends \SimpleTab\Plugin {
 			'w' 			=> 	isset($this->params['w']) ? $this->params['w'] : '200',
 			'h' 			=> 	isset($this->params['h']) ? $this->params['h'] : '150',
 			'refreshBtn'	=>	($_SESSION['mgrRole'] == 1) ? '<div id="sg_refresh" class="btn-right btn"><div class="btn-text"><img src="'.MODX_MANAGER_URL.'media/style/'.$this->modx->config['manager_theme'].'/images/icons/refresh.png">\'+_sgLang[\'refresh_previews\']+\'</div></div>' : '',
-			'tpls'			=>	$tpls
+			'tpls'			=>	$tpls,
+            'clientResize'  =>  $this->params['clientResize'] == 'Yes' ? '{maxWidth: '.$this->modx->config['maxImageWidth'].', maxHeight: '.$this->modx->config['maxImageWidth'].'}' : '{}',
+            'clientAutoRotate'  =>  $this->params['clientResize'] == 'Yes' ? 'true' : 'false'
 		);
 		return array_merge($this->params,$ph);
 	}

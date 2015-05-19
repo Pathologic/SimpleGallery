@@ -32,6 +32,8 @@ var sgHelper = {};
             	filterFn: function (file, info) {
             		return /jpeg|gif|png$/.test(file.type);
             	},
+                imageAutoOrientation: sgConfig.clientAutoRotate,
+                imageTransform: sgConfig.clientResize,
             	onBeforeUpload: function(e,uiE) {
 	            	var total = uiE.files.length;
                     var context = {
