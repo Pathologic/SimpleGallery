@@ -31,6 +31,7 @@ _sgLang['move'] = 'Перемещение';
 _sgLang['are_you_sure_to_move'] = 'Вы уверены, что хотите переместить выделенные картинки?';
 _sgLang['move_fail'] = 'Не удалось переместить.';
 _sgLang['select_resource_id'] = 'Введите ID документа, в который нужно переместить:';
+_sgLang['save_document_to_continue'] = 'Для работы с галереей необходимо сохранить документ.';
 _sgUploadResult = [];
 _sgUploadResult[0] = 'Файл успешно загружен';
 _sgUploadResult[1] = 'Размер файла превысил значение upload_max_filesize';

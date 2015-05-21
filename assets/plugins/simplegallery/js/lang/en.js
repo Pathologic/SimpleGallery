@@ -31,6 +31,7 @@ _sgLang['move'] = 'Move';
 _sgLang['are_you_sure_to_move'] = 'Are you sure to move selected images?';
 _sgLang['move_fail'] = 'Failed to move.';
 _sgLang['select_resource_id'] = 'Enter target document ID:';
+_sgLang['save_document_to_continue'] = 'Save document to work with gallery.';
 _sgUploadResult = [];
 _sgUploadResult[0] = 'File uploaded successfully';
 _sgUploadResult[1] = 'File size is greater than upload_max_filesize';

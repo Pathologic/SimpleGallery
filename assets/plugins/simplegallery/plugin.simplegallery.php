@@ -1,11 +1,15 @@
 <?php
 if (IN_MANAGER_MODE != 'true') die();
 $e = &$modx->event;
-if ($e->name == 'OnDocFormRender' && $id) {
+if ($e->name == 'OnDocFormRender') {
     include_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/plugin.class.php');
     global $modx_lang_attribute;
     $plugin = new \SimpleGallery\sgPlugin($modx, $modx_lang_attribute);
-    $output = $plugin->render();
+    if ($id) {
+        $output = $plugin->render();
+    } else {
+        $output = $plugin->renderEmpty();
+    }
     if ($output) $e->output($output);
 }
 if ($e->name == 'OnEmptyTrash') {

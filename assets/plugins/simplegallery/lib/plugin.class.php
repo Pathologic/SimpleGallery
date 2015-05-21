@@ -6,8 +6,10 @@ class sgPlugin extends \SimpleTab\Plugin {
 	public $pluginName = 'SimpleGallery';
     public $table = 'sg_images';
 	public $tpl = 'assets/plugins/simplegallery/tpl/simplegallery.tpl';
+	public $emptyTpl = 'assets/plugins/simplegallery/tpl/empty.tpl';
 	public $jsListDefault = 'assets/plugins/simplegallery/js/scripts.json';
 	public $jsListCustom = 'assets/plugins/simplegallery/js/custom.json';
+	public $jsListEmpty = 'assets/plugins/simplegallery/js/empty.json';
 	public $cssListDefault = 'assets/plugins/simplegallery/css/styles.json';
 	public $cssListCustom = 'assets/plugins/simplegallery/css/custom.json';
 	public $pluginEvents = array('OnSimpleGallerySave', 'OnSimpleGalleryDelete', 'OnSimpleGalleryMove', 'OnSimpleGalleryRefresh');
