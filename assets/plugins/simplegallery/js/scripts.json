@@ -21,7 +21,7 @@
 			"src":"assets/js/fileapi/jquery.fileapi.min.js"
 		},
 		"Sortable":{
-			"version":"1.0.0",
+			"version":"1.2.0",
 			"src":"assets/js/sortable/Sortable.min.js"
 		},
         "handlebars":{
