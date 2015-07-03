@@ -185,6 +185,7 @@ class sgController extends \SimpleTab\AbstractController
         }
         header("Content-type: image/jpeg");
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
+        ob_clean();
         readfile($file);
         return;
     }
