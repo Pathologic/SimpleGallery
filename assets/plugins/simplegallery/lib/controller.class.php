@@ -246,7 +246,7 @@ class sgController extends \SimpleTab\AbstractController
         $sql = "SELECT sg_id FROM $table WHERE sg_rid IN ($ids) AND sg_id >= $minId ORDER BY sg_id ASC";
         $rows = $this->modx->db->query($sql);
         while ($image = $this->modx->db->getRow($rows)) {
-            $result = $this->data->refresh($image['sg_id']);
+            $result = $this->data->refresh($image['sg_id'],true);
             $_SESSION['refresh']['minId'] = $image['sg_id'];
             $_SESSION['refresh']['processed']++;
         }
