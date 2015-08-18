@@ -204,7 +204,8 @@ class sgData extends \SimpleTab\dataTable {
 				$this->invokeEvent('OnFileBrowserUpload',array(
 					'filepath' => $this->get('filepath'),
 					'filename' => $this->get('filename'),
-					'template' => $template
+					'template' => $template,
+                    'rid'      => $rid
 					),$fire_events);
 			}
 			$fields = $this->field;
