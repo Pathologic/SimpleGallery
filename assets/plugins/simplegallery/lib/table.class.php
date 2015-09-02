@@ -224,6 +224,8 @@ class sgData extends \SimpleTab\dataTable {
 		$fields = $this->edit($id)->toArray();
 		$q = $this->query('SELECT template FROM '.$this->makeTable('site_content').' WHERE id='.$fields['sg_rid']);
 		$fields['template'] = $this->modx->db->getValue($q);
+        $fields['filepath'] = $this->get('filepath');
+        $fields['filename'] = $this->get('filename');
 		$this->invokeEvent('OnSimpleGalleryRefresh',$fields,$fire_events);
 	}
 
