@@ -42,6 +42,15 @@ class sg_site_contentDocLister extends site_contentDocLister
                     break;
             }
             $images = $this->dbQuery($sql);
+            $count = $this->getCFGDef('count',0);
+            if ($count) {
+                $sql = "SELECT `sg_rid`, COUNT(`sg_rid`) AS cnt FROM {$table} WHERE `sg_rid` IN ({$rid}) {$sgAddWhereList} GROUP BY sg_rid";
+                $_count = $this->dbQuery($sql);
+                while ($count = $this->modx->db->getRow($_count)) {
+                    $_rid = $count['sg_rid'];
+                    $docs[$_rid]['count'] = $count['cnt'];
+                }
+            }
             while ($image = $this->modx->db->getRow($images)) {
                 $_rid = $image['sg_rid'];
                 $docs[$_rid]['images'][] = $image;
