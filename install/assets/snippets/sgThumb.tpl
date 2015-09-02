@@ -1,6 +1,6 @@
 //<?php
 /**
- * sgLister
+ * sgThumb
  *
  * Snippet for get thumbnails for SimpleGallery
  *
