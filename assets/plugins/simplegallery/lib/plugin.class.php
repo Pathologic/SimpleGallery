@@ -55,7 +55,8 @@ CREATE TABLE IF NOT EXISTS {$this->_table} (
 `sg_rid` int(10) default NULL,
 `sg_index` int(10) NOT NULL default '0',
 `sg_createdon` datetime NOT NULL,
-PRIMARY KEY  (`sg_id`)
+PRIMARY KEY  (`sg_id`),
+KEY `sg_isactive` (`sg_isactive`)
 ) ENGINE=MyISAM COMMENT='Datatable for SimpleGallery plugin.';
 OUT;
     	return $this->modx->db->query($sql);
