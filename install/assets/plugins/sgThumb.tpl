@@ -9,7 +9,7 @@
  * @license 	http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
  * @author      Pathologic (m@xim.name)
  * @internal	@properties &tconfig=Thumbnails Configuration;textarea;See plugin code for details
- * @internal	@events OnFileBrowseUpload,OnSimpleGalleryRefresh,OnSimpleGalleryDelete
+ * @internal	@events OnFileBrowserUpload,OnSimpleGalleryRefresh,OnSimpleGalleryDelete
  * @internal    @installset base
  */
 

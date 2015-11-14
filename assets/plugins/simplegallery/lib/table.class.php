@@ -205,7 +205,7 @@ class sgData extends \SimpleTab\dataTable {
 					'filepath' => $this->get('filepath'),
 					'filename' => $this->get('filename'),
 					'template' => $template,
-                    'rid'      => $rid
+                    'sg_rid'      => $rid
 					),$fire_events);
 			}
 			$fields = $this->field;
