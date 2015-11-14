@@ -45,13 +45,14 @@ class sgData extends \SimpleTab\dataTable {
         while ($row = $this->modx->db->getRow($images)) {
 			$this->deleteThumb($row['sg_image']);
 			$this->invokeEvent('OnSimpleGalleryDelete',array(
-				'id'		=>	$row['sg_id'],
+				'sg_id'		=>	$row['sg_id'],
 				'filepath' => $this->fs->takeFileDir($row['sg_image']),
 				'name' => $this->fs->takeFileName($row['sg_image']),
 				'filename' => $this->fs->takeFileBasename($row['sg_image']),
 				'ext' => $this->fs->takeFileExt($row['sg_image']),
 				'mime' => $this->fs->takeFileMIME($row['sg_image']),
-				'template'	=>	$template
+				'template'	=>	$template,
+                'sg_rid' => $rid
 				),$fire_events);
 		}
 		return $out;
@@ -85,9 +86,9 @@ class sgData extends \SimpleTab\dataTable {
                 } else {
                     $this->deleteThumb($image['sg_image']);
                     $this->invokeEvent('OnSimpleGalleryMove',array(
-                        'id'        => $image['sg_id'],
-                        'image'     => $image['sg_image'],
-                        'rid'       => $rid,
+                        'sg_id'        => $image['sg_id'],
+                        'sg_image'     => $image['sg_image'],
+                        'sg_rid'       => $rid,
                         'to'        => $to,
                         'oldFile'   => $oldFile,
                         'newFile'   => $newFile,
