@@ -17,31 +17,35 @@ if (!function_exists('getThumbConfig')) {
         $thumbs = \jsonHelper::jsonDecode(urldecode($tconfig), array('assoc' => true), true);
         foreach ($thumbs as $thumb) {
             if ($thumb['rid'] == $rid || $thumb['template'] == $template) {
-                $out = $thumb;
-                break;
+                $out[] = $thumb;
             }
         }
         return $out;
     }
 }
 if (($e->name == "OnFileBrowserUpload" && isset($template)) || $e->name == "OnSimpleGalleryRefresh") {
-        $thumb = new \Helpers\PHPThumb();
-        $thumb->optimize($filepath.'/'.$filename);
-        $fs = \Helpers\FS::getInstance();
-        $thumbConfig = getThumbConfig($tconfig,$sg_rid,$template);
-        if (!empty($thumbConfig))  {
-            extract($thumbConfig);
+    $thumb = new \Helpers\PHPThumb();
+    $thumb->optimize($filepath.'/'.$filename);
+    $fs = \Helpers\FS::getInstance();
+    $thumbConfig = getThumbConfig($tconfig,$sg_rid,$template);
+    if (!empty($thumbConfig))  {
+        foreach ($thumbConfig as $_thumbConfig) {
+            extract($_thumbConfig);
+            $thumb = new \Helpers\PHPThumb();
             $fs->makeDir($filepath.'/'.$folder);
             $thumb->create($filepath.'/'.$filename,$filepath.'/'.$folder.'/'.$filename,$options);
             $thumb->optimize($filepath.'/'.$folder.'/'.$filename);
         }
+    }
 }
 if ($e->name == "OnSimpleGalleryDelete") {
-        $fs = \Helpers\FS::getInstance();
-        $thumbConfig = getThumbConfig($tconfig,$sg_rid,$template);
-        if (!empty($thumbConfig))  {
-            extract($thumbConfig);
+    $fs = \Helpers\FS::getInstance();
+    $thumbConfig = getThumbConfig($tconfig,$sg_rid,$template);
+    if (!empty($thumbConfig))  {
+        foreach ($thumbConfig as $_thumbConfig) {
+            extract($_thumbConfig);
             $file = $filepath.'/'.$folder.'/'.$filename;
             if (file_exists($file)) unlink($file);
         }
+    }
 }
