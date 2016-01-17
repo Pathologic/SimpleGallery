@@ -26,7 +26,7 @@ class sg_site_contentDocLister extends site_contentDocLister
         $sgOrderBy = $this->modx->db->escape($this->getCFGDef('sgOrderBy','sg_index ASC'));
 
         $sgDisplay = $this->getCFGDef('sgDisplay','all');
-        $sgAddWhereList = $this->modx->db->escape($this->getCFGDef('sgAddWhereList',''));
+        $sgAddWhereList = $this->getCFGDef('sgAddWhereList','');
 
         if (!empty($sgAddWhereList)) $sgAddWhereList = ' AND ('.$sgAddWhereList.')';
         if (!empty($rid) && ($sgDisplay == 'all' || is_numeric($sgDisplay))) {
