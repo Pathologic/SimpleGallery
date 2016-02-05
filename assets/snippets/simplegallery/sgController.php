@@ -24,15 +24,28 @@ if(!class_exists("DLsgController", false)){
                 foreach ($data['images'] as $image) {
                     $ph = $image;
                     if(!empty($thumbOptions) && !empty($thumbSnippet)){
-                        $ph['thumb.'.$imageField] = $modx->runSnippet($thumbSnippet, array(
-                            'input' => $image[$imageField],
-                            'options' => $thumbOptions
-                        ));
-                        $info = getimagesize(MODX_BASE_PATH.$ph['thumb.'.$imageField]);
-                        $ph['thumb.width.'.$imageField] = $info[0];
-                        $ph['thumb.height.'.$imageField] = $info[1];
+                        $_thumbOptions = json_decode($thumbOptions,true);
+                        if (is_array($_thumbOptions)) {
+                            foreach ($_thumbOptions as $key => $value) {
+                                $postfix = $key == 'default' ? '.' : '_'.$key.'.';
+                                $data['thumb'.$postfix.$imageField] = $modx->runSnippet($thumbSnippet, array(
+                                    'input' => $data[$imageField],
+                                    'options' => $value
+                                )); 
+                                $info = getimagesize(MODX_BASE_PATH.$data['thumb'.$postfix.$imageField]);
+                                $data['thumb'.$postfix.'width.'.$imageField] = $info[0];
+                                $data['thumb'.$postfix.'height.'.$imageField] = $info[1];
+                            }
+                        } else {
+                            $data['thumb.'.$imageField] = $modx->runSnippet($thumbSnippet, array(
+                                'input' => $data[$imageField],
+                                'options' => $thumbOptions
+                            )); 
+                            $info = getimagesize(MODX_BASE_PATH.$data['thumb.'.$imageField]);
+                            $data['thumb.width.'.$imageField] = $info[0];
+                            $data['thumb.height.'.$imageField] = $info[1];
+                        }
                     }
-                    
                     //сделали превьюшку
 
                     $ph['e.sg_title'] = htmlentities($image['sg_title'], ENT_COMPAT, 'UTF-8', false);

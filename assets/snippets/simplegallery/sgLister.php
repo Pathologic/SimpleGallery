@@ -54,10 +54,10 @@ if(!class_exists("DLsgLister", false)){
 						'input' => $data[$imageField],
 						'options' => $thumbOptions
 					));	
+					$info = getimagesize(MODX_BASE_PATH.$data['thumb.'.$imageField]);
+					$data['thumb.width.'.$imageField] = $info[0];
+					$data['thumb.height.'.$imageField] = $info[1];
 				}
-				$info = getimagesize(MODX_BASE_PATH.$data['thumb.'.$imageField]);
-				$data['thumb.width.'.$imageField] = $info[0];
-				$data['thumb.height.'.$imageField] = $info[1];
 			}
 			$properties = json_decode($data['sg_properties'],true);
 			foreach ($properties as $key => $value) {
