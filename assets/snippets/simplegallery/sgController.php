@@ -28,22 +28,22 @@ if(!class_exists("DLsgController", false)){
                         if (is_array($_thumbOptions)) {
                             foreach ($_thumbOptions as $key => $value) {
                                 $postfix = $key == 'default' ? '.' : '_'.$key.'.';
-                                $data['thumb'.$postfix.$imageField] = $modx->runSnippet($thumbSnippet, array(
-                                    'input' => $data[$imageField],
+                                $ph['thumb'.$postfix.$imageField] = $modx->runSnippet($thumbSnippet, array(
+                                    'input' => $ph[$imageField],
                                     'options' => $value
                                 )); 
-                                $info = getimagesize(MODX_BASE_PATH.$data['thumb'.$postfix.$imageField]);
-                                $data['thumb'.$postfix.'width.'.$imageField] = $info[0];
-                                $data['thumb'.$postfix.'height.'.$imageField] = $info[1];
+                                $info = getimagesize(MODX_BASE_PATH.$ph['thumb'.$postfix.$imageField]);
+                                $ph['thumb'.$postfix.'width.'.$imageField] = $info[0];
+                                $ph['thumb'.$postfix.'height.'.$imageField] = $info[1];
                             }
                         } else {
-                            $data['thumb.'.$imageField] = $modx->runSnippet($thumbSnippet, array(
-                                'input' => $data[$imageField],
+                            $ph['thumb.'.$imageField] = $modx->runSnippet($thumbSnippet, array(
+                                'input' => $ph[$imageField],
                                 'options' => $thumbOptions
                             )); 
-                            $info = getimagesize(MODX_BASE_PATH.$data['thumb.'.$imageField]);
-                            $data['thumb.width.'.$imageField] = $info[0];
-                            $data['thumb.height.'.$imageField] = $info[1];
+                            $info = getimagesize(MODX_BASE_PATH.$ph['thumb.'.$imageField]);
+                            $ph['thumb.width.'.$imageField] = $info[0];
+                            $ph['thumb.height.'.$imageField] = $info[1];
                         }
                     }
                     //сделали превьюшку
