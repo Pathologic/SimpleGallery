@@ -10,5 +10,5 @@
 	"thumbOptions" : "hp=90&wl=90&far=C",
 	"imageField" : "sg_image",
 	"noneWrapOuter" : "0",
-	"e" : "sg_title,sg_description"
+	"e" : "sg_title,sg_description,sg_add"
 }
