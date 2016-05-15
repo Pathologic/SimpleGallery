@@ -12,10 +12,6 @@
 			"version":"2.0.8",
 			"src":"assets/js/fileapi/FileAPI/FileAPI.min.js"
 		},
-        "FileAPIExif": {
-            "version":"2.0.8",
-            "src":"assets/js/fileapi/FileAPI/FileAPI.exif.js"
-        },
 		"jquery.fileapi":{
 			"version":"0.4.5",
 			"src":"assets/js/fileapi/jquery.fileapi.min.js"
