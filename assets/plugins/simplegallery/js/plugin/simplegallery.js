@@ -108,7 +108,7 @@ var sgHelper = {};
             workspace.fileapi(fileapiOptions);
             $('#sg_pages').pagination({
 			    total:0,
-			    pageSize:10,
+			    pageSize:50,
 	    		buttons: [
                     {
 					    iconCls:'btn-deleteAll btn-extra',
