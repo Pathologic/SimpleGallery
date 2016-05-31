@@ -128,6 +128,7 @@ user-select: none;
 }
 #sgEdit table {
 	width:100%;
+	word-break: break-all;
 }
 #sgEdit table td {
 	padding:0 5px;
@@ -136,6 +137,7 @@ user-select: none;
 #sgEdit table td.rowTitle {
 	font-weight: bold;
 	text-align: right;
+	width:70px;
 }
 .sgForm label {
 	display: block;

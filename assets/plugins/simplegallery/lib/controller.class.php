@@ -48,11 +48,12 @@ class sgController extends \SimpleTab\AbstractController
                         if ($info[0] > $this->modx->config['maxImageWidth'] || $info[1] > $this->modx->config['maxImageHeight']) {
                             $options[] = "w={$this->modx->config['maxImageWidth']}&h={$this->modx->config['maxImageHeight']}";
                         }
-                        if (in_array($ext,array('jpg','jpeg'))) $options[] = "q=96&ar=x";
-                        $options[] = "f={$ext}";
+                        if (in_array($ext,array('jpg','jpeg'))) {
+                            $quality = 100 * $this->params['jpegQuality'];
+                            $options[] = "q={$quality}&ar=x";
+                        }
                         $options = implode('&',$options);
-                        //
-                        if (@$this->data->makeThumb('', $this->FS->relativePath($name), $options)) {
+                        if (empty($options) || $this->params['clientResize'] == 'Yes' ? true : @$this->data->makeThumb('', $this->FS->relativePath($name), $options)) {
                             $info = getimagesize($name);
                             $properties = array(
                                 'width' => $info[0],

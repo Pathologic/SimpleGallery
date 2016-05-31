@@ -104,11 +104,13 @@ var sgHelper = {};
             if (Object.keys(sgConfig.clientResize).length) {
                 fileapiOptions.imageTransform = sgConfig.clientResize;
                 fileapiOptions.imageAutoOrientation = true;
+            } else {
+                fileapiOptions.imageAutoOrientation = false;
             }
             workspace.fileapi(fileapiOptions);
             $('#sg_pages').pagination({
 			    total:0,
-			    pageSize:10,
+			    pageSize:50,
 	    		buttons: [
                     {
 					    iconCls:'btn-deleteAll btn-extra',
