@@ -53,7 +53,7 @@ class sgController extends \SimpleTab\AbstractController
                             $options[] = "q={$quality}&ar=x";
                         }
                         $options = implode('&',$options);
-                        if (empty($options) || $this->params['clientResize'] == 'Yes' ? true : @$this->data->makeThumb('', $this->FS->relativePath($name), $options)) {
+                        if (empty($options) || $this->params['clientResize'] == 'Yes' || $this->params['skipPHPThumb'] == 'Yes' ? true : @$this->data->makeThumb('', $this->FS->relativePath($name), $options)) {
                             $info = getimagesize($name);
                             $properties = array(
                                 'width' => $info[0],
