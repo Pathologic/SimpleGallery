@@ -42,7 +42,7 @@ var sgConfig = {
     clientResize:[+clientResize+]
 };
 (function($) {
-	$(window).load(function(){
+	$(window).on('load',function(){
     	if ($('#sg-tab')) {
     		$('#sg-tab.selected').trigger('click');    
 		}
