@@ -98,8 +98,8 @@ class sgController extends \SimpleTab\AbstractController
     public function remove()
     {
         $out = array();
-        $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
-        $ids = isset($_REQUEST['id']) ? (string)$_REQUEST['id'] : $ids;
+        $ids = isset($_POST['ids']) ? (string)$_POST['ids'] : '';
+        $ids = isset($_POST['id']) ? (string)$_POST['id'] : $ids;
         $out['success'] = false;
         if (!empty($ids)) {
             if ($this->data->deleteAll($ids, $this->rid, true)) {
@@ -112,8 +112,8 @@ class sgController extends \SimpleTab\AbstractController
     public function move()
     {
         $out = array();
-        $ids = isset($_REQUEST['ids']) ? (string)$_REQUEST['ids'] : '';
-        $to = isset($_REQUEST['to']) ? (int)$_REQUEST['to'] : 0;
+        $ids = isset($_POST['ids']) ? (string)$_POST['ids'] : '';
+        $to = isset($_POST['to']) ? (int)$_POST['to'] : 0;
         $out['success'] = false;
 
         if (!empty($ids) && $to !== $this->rid && $to > 0) {
@@ -128,14 +128,14 @@ class sgController extends \SimpleTab\AbstractController
     public function edit()
     {
         $out = array();
-        $id = isset($_REQUEST['sg_id']) ? (int)$_REQUEST['sg_id'] : 0;
+        $id = isset($_POST['sg_id']) ? (int)$_POST['sg_id'] : 0;
         if ($id) {
             $fields = array(
-                'sg_title' => $_REQUEST['sg_title'],
-                'sg_description' => $_REQUEST['sg_description'],
-                'sg_add' => $_REQUEST['sg_add']
+                'sg_title' => $_POST['sg_title'],
+                'sg_description' => $_POST['sg_description'],
+                'sg_add' => $_POST['sg_add']
             );
-            $fields['sg_isactive'] = isset($_REQUEST['sg_isactive']) ? 1 : 0;
+            $fields['sg_isactive'] = isset($_POST['sg_isactive']) ? 1 : 0;
             $out['success'] = $this->data->edit($id)->fromArray($fields)->save(true);
         } else {
             $out['success'] = false;
@@ -150,9 +150,9 @@ class sgController extends \SimpleTab\AbstractController
             $this->isExit = true;
             return;
         }
-        $sourceIndex = (int)$_REQUEST['sourceIndex'];
-        $targetIndex = (int)$_REQUEST['targetIndex'];
-        $sourceId = (int)$_REQUEST['sourceId'];
+        $sourceIndex = (int)$_POST['sourceIndex'];
+        $targetIndex = (int)$_POST['targetIndex'];
+        $sourceId = (int)$_POST['sourceId'];
         $source = array('sg_index'=>$sourceIndex,'sg_id'=>$sourceId);
         $target = array('sg_index'=>$targetIndex);
         $point = $sourceIndex < $targetIndex ? 'top' : 'bottom';
@@ -166,7 +166,7 @@ class sgController extends \SimpleTab\AbstractController
     {
         $w = 200;
         $h = 150;
-        $url = $_REQUEST['url'];
+        $url = $_POST['url'];
         $thumbsCache = $this->data->thumbsCache;
         if (isset($this->params)) {
             if (isset($this->params['thumbsCache'])) $thumbsCache = $this->params['thumbsCache'];
@@ -205,9 +205,9 @@ class sgController extends \SimpleTab\AbstractController
         $out = array();
         unset($_SESSION['refresh']);
         $out['success'] = false;
-        if (isset($_REQUEST['template'])) {
+        if (isset($_POST['template'])) {
             $templates = array();
-            foreach ($_REQUEST['template'] as $template) {
+            foreach ($_POST['template'] as $template) {
                 $templates[] = (int)$template['value'];
             }
             $templates = implode(',', $templates);

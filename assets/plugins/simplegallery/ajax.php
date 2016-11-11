@@ -1,6 +1,6 @@
 <?php
 define('MODX_API_MODE', true);
-define('IN_MANAGER_MODE', true);
+define('IN_MANAGER_MODE', 'true');
 
 include_once(__DIR__."/../../../index.php");
 $modx->db->connect();
@@ -16,6 +16,7 @@ if (isset($modx->pluginCache['SimpleGalleryProps'])) {
 } else {
 	die();
 }
+$params = $modx->event->params;
 
 $roles = isset($params['role']) ? explode(',',$params['role']) : false;
 if ($roles && !in_array($_SESSION['mgrRole'], $roles)) die();
