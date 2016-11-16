@@ -166,7 +166,7 @@ class sgController extends \SimpleTab\AbstractController
     {
         $w = 200;
         $h = 150;
-        $url = $_POST['url'];
+        $url = $_GET['url'];
         $thumbsCache = $this->data->thumbsCache;
         if (isset($this->params)) {
             if (isset($this->params['thumbsCache'])) $thumbsCache = $this->params['thumbsCache'];
