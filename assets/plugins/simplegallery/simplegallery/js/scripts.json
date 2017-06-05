@@ -1,20 +1,16 @@
 {
 	"scripts": {
 		"EasyUI" : {
-			"version":"1.4.1",
+			"version":"1.5.2",
 			"src":"assets/js/easy-ui/jquery.easyui.min.js"
 		},
 	  	"easyui-lang-[+lang+]":{
-			"version":"1.4.1",
+			"version":"1.5.2",
 			"src":"assets/js/easy-ui/locale/easyui-lang-[+lang+].js"
 	  	},
 		"FileAPI": {
 			"version":"2.0.20",
 			"src":"assets/js/fileapi/FileAPI/FileAPI.min.js"
-		},
-		"jquery.fileapi":{
-			"version":"0.4.9",
-			"src":"assets/js/fileapi/jquery.fileapi.min.js"
 		},
 		"FileAPIExif": {
 		    "version":"2.0.8",
@@ -28,16 +24,28 @@
             "version":"2.0.0",
             "src":"assets/js/handlebars/handlebars.runtime.min.js"
         },
+        "handlebars-helpers":{
+            "version":"2.0.0",
+            "src":"assets/js/handlebars/helpers.js"
+        },
         "templates":{
-            "version":"1.0.0",
+            "version":"1.2.0",
             "src":"assets/plugins/simplegallery/js/tpl/templates.js"
         },
-		"SimpleGallery":{
-			"version":"1.0.0",
+		"EUIUploader":{
+			"version":"1.2.0",
+			"src":"assets/js/euiuploader/js/euiuploader.js"
+		},
+        "EUIUploader-lang-[+lang+]":{
+          "version":"1.2.0",
+          "src":"assets/js/euiuploader/lang/[+lang+].js"
+        },
+        "SimpleGallery":{
+			"version":"1.2.0",
 			"src":"assets/plugins/simplegallery/js/plugin/simplegallery.js"
 		},
 		"sg-lang-[+lang+]":{
-			"version":"1.0.0",
+			"version":"1.2.0",
 			"src":"assets/plugins/simplegallery/js/lang/[+lang+].js"
 		}
 	}

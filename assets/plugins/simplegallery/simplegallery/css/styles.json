@@ -1,0 +1,16 @@
+{
+  "styles": {
+    "EasyUIMODX" : {
+      "version":"1.5.2",
+      "src":"assets/js/easy-ui/themes/modx/easyui.css"
+    },
+    "EUIUploaderCss" : {
+      "version":"1.2.0",
+      "src":"assets/js/euiuploader/css/euiuploader.css"
+    },
+    "SimpleGalleryCss" : {
+      "version":"1.2.0",
+      "src":"assets/plugins/simplegallery/css/simplegallery.css"
+    }
+  }
+}

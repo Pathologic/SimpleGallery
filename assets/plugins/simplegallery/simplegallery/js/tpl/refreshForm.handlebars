@@ -1,0 +1,16 @@
+<div id="sgRefresh">
+<form>
+<div class="group"><label><input type="radio" value="0" name="method" checked>{{sgLang.refresh_current}}</label></div>
+<div class="group"><label><input type="radio" value="1" name="method">{{sgLang.refresh_ids}}</label>
+    <input type="text" name="ids" class="elements">
+</div>
+<div class="group"><label><input type="radio" value="2" name="method">{{sgLang.refresh_tpls}}</label>
+    <div class="templates elements">
+    {{#each tpls}}
+    <label><input type="checkbox" value="{{this.id}}" name="template[]">{{stripText this.templatename 21}}</label>
+    {{/each}}
+    </div>
+</div>
+</form>
+<div id="sgRefreshProgress"></div>
+</div>
