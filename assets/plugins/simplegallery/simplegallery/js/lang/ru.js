@@ -30,4 +30,5 @@ _sgLang['are_you_sure_to_move'] = 'Вы уверены, что хотите пе
 _sgLang['move_fail'] = 'Не удалось переместить.';
 _sgLang['select_resource_id'] = 'Введите ID документа, в который нужно переместить:';
 _sgLang['save_document_to_continue'] = 'Для работы с галереей необходимо сохранить документ.';
-_sgLang['server_error'] = 'Server error: ';
+_sgLang['server_error'] = 'Ошибка сервера: ';
+_sgLang['parse_error'] = 'Не удалось обработать ответ сервера';

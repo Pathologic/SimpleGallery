@@ -31,3 +31,4 @@ _sgLang['move_fail'] = 'Failed to move.';
 _sgLang['select_resource_id'] = 'Enter target document ID:';
 _sgLang['save_document_to_continue'] = 'Save document to work with gallery.';
 _sgLang['server_error'] = 'Server error: ';
+_sgLang['parse_error'] = 'Failed to process server response';

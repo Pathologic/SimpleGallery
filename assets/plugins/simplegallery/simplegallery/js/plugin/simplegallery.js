@@ -78,9 +78,7 @@ var sgHelper = {};
                             $('#sg_pages').pagination('refresh', {total: response.total});
                             sgHelper.renderImages(response.rows);
                         }, 'json'
-                    ).fail(function (xhr) {
-                        $.messager.alert(_sgLang['error'], _sgLang['server_error'] + xhr.status + ' ' + xhr.statusText, 'error');
-                    });
+                    ).fail(sgHelper.handleAjaxError);
                     $(this).pagination('loaded');
                     $('.btn-extra').parent().parent().hide();
                 }
@@ -256,9 +254,7 @@ var sgHelper = {};
                                 $.messager.alert(_sgLang['error'], _sgLang['delete_fail']);
                             }
                         }, 'json'
-                    ).fail(function (xhr) {
-                        $.messager.alert(_sgLang['error'], _sgLang['server_error'] + xhr.status + ' ' + xhr.statusText, 'error');
-                    });
+                    ).fail(sgHelper.handleAjaxError);
                 }
             });
         },
@@ -297,9 +293,7 @@ var sgHelper = {};
                                     $.messager.alert(_sgLang['error'], _sgLang['move_fail']);
                                 }
                             }, 'json'
-                        ).fail(function (xhr) {
-                            $.messager.alert(_sgLang['error'], _sgLang['server_error'] + xhr.status + ' ' + xhr.statusText, 'error');
-                        });
+                        ).fail(sgHelper.handleAjaxError);
                     }
                 }, {
                     iconCls: 'btn-red fa fa-ban fa-lg',
@@ -331,9 +325,7 @@ var sgHelper = {};
                                 $.messager.alert(_sgLang['error'], _sgLang['move_fail']);
                             }
                         }, 'json'
-                    ).fail(function (xhr) {
-                        $.messager.alert(_sgLang['error'], _sgLang['server_error'] + xhr.status + ' ' + xhr.statusText, 'error');
-                    });
+                    ).fail(sgHelper.handleAjaxError);
                 }
             });
         },
@@ -368,9 +360,7 @@ var sgHelper = {};
                                     $.messager.alert(_sgLang['error'], _sgLang['save_fail']);
                                 }
                             }, 'json'
-                        ).fail(function (xhr) {
-                            $.messager.alert(_sgLang['error'], _sgLang['server_error'] + xhr.status + ' ' + xhr.statusText, 'error');
-                        });
+                        ).fail(sgHelper.handleAjaxError);
                     }
                 }, {
                     iconCls: 'btn-red fa fa-ban fa-lg',
@@ -389,6 +379,10 @@ var sgHelper = {};
                     sgHelper.destroyWindow(editForm);
                 }
             });
+        },
+        handleAjaxError: function(xhr) {
+            var message = xhr.status == 200 ? _sgLang['parse_error'] : _sgLang['server_error'] + xhr.status + ' ' + xhr.statusText;
+            $.messager.alert(_sgLang['error'], message, 'error');
         },
         escape: function (str) {
             return str
@@ -421,7 +415,7 @@ var sgHelper = {};
                     }
                 }).fail(function (xhr) {
                     $.messager.alert(_sgLang['error'], _sgLang['server_error'] + xhr.status + ' ' + xhr.statusText, 'error');
-                });
+                })
             }
 
             function refreshStatus() {
