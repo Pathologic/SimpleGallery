@@ -52,7 +52,7 @@ class sgController extends AbstractController
                 $ext = $this->FS->takeFileExt($name);
                 if (in_array($ext, array('png', 'jpg', 'gif', 'jpeg'))) {
                     if (@move_uploaded_file($tmp_name, $name)) {
-                        $out = $this->data->upload($name,preg_replace('/\\.[^.\\s]{2,4}$/', '', $file["name"]), $this->rid, true);
+                        $out = $this->data->upload($name, $this->rid, preg_replace('/\\.[^.\\s]{2,4}$/', '', $file["name"]), true);
                         if (!$out) {
                             @unlink($name);
                             $message = 'unable_to_process_image';
