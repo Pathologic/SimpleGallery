@@ -1,0 +1,40 @@
+<div id="sgEdit">
+    <div class="sgRow">
+        <div class="image" style="font-size:0;text-align:center;">
+            <img src="{{modxSiteUrl}}{{data.sg_image}}">
+        </div>
+        <div>
+            <table>
+                <tr>
+                    <td class="rowTitle">ID</td>
+                    <td>{{data.sg_id}}</td>
+                </tr>
+                <tr>
+                    <td class="rowTitle">{{sgLang.file}}</td>
+                    <td>{{data.sg_image}}</td>
+                </tr>
+                <tr>
+                    <td class="rowTitle">{{sgLang.size}}</td>
+                    <td>{{data.sg_properties.width}}x{{data.sg_properties.height}}, {{bytesToSize data.sg_properties.size}}</td>
+                </tr>
+                <tr>
+                    <td class="rowTitle">{{sgLang.createdon}}</td><td>{{data.sg_createdon}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="sgRow">
+        <div>
+            <form id="sgForm" class="sgForm"><input type="hidden" name="sg_id" value="{{data.sg_id}}">
+                <label>{{sgLang.title}}</label>
+                <input name="sg_title" maxlength="255" type="text" value="{{data.sg_title}}">
+                <label>{{sgLang.description}}</label>
+                <textarea name="sg_description">{{data.sg_description}}</textarea>
+                <label>{{sgLang.add}}</label>
+                <input name="sg_add" type="text" value="{{data.sg_add}}">
+                <label>{{sgLang.show}}</label>
+                <input type="checkbox" name="sg_isactive" value="1"{{#ifCond data.sg_isactive "1"}} checked{{/ifCond}}>{{sgLang.yes}}
+            </form>
+        </div>
+    </div>
+</div>

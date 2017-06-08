@@ -1,0 +1,20 @@
+{
+    "scripts": {
+        "sgTinyMCE" : {
+            "version":"0.0.0",
+            "src":"assets/plugins/simplegallery/js/plugin/tinymce.js"
+        },
+        "editFormRTE" : {
+            "version":"1.4.1",
+            "src":"assets/plugins/simplegallery/js/tpl/editFormRTE.js"
+        },
+        "rteForm" : {
+            "version":"1.4.1",
+            "src":"assets/plugins/simplegallery/js/tpl/rteForm.js"
+        },
+        "editrte":{
+            "version":"1.4.1",
+            "src":"assets/plugins/simplegallery/js/plugin/editrte.js"
+        }        
+    }
+}

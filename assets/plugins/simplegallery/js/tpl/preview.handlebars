@@ -1,0 +1,6 @@
+<div class="sg_image">
+    <a href="javascript:void(0)" class="del" title="{{sgLang.delete}}"><i class="fa fa-trash fa-lg"></i></a>
+    <div class="img" title="{{stripText data.sg_description 100}}" style="background-image:url('{{thumbPrefix}}{{data.sg_image}}');"></div>
+    <div class="name{{#ifCond data.sg_isactive "0"}} notactive{{/ifCond}}">{{data.sg_title}}</div>
+    {{#ifCond data.sg_description ""}}<a href="javascript:void(0)" class="edit" title="{{sgLang.emptydesc}}"><i class="fa fa-warning fa-lg"></i></a>{{/ifCond}}
+</div>

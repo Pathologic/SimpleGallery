@@ -1,0 +1,8 @@
+{
+	"scripts": {
+		"sg-lang-[+lang+]":{
+			"version":"1.0.0",
+			"src":"assets/plugins/simplegallery/js/lang/[+lang+].js"
+		}
+	}
+}

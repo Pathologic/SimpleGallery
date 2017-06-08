@@ -1,0 +1,148 @@
+.btn-left {
+    display:inline-block;
+}
+.btn-right {
+	float: right;
+	margin-left: 10px;
+}
+#sg_pages {
+	margin-top:20px;
+	background:#efefef;
+	border:1px solid #ccc;
+}
+#sg_images {
+	margin:20px 0;
+}
+.sg_image {
+	display:inline-block;
+	border:1px solid #ccc;
+	margin:0 13px 13px 0;
+	padding:5px;
+	border-radius: 5px;
+	background: none;
+	position:relative;
+    box-sizing: content-box;
+}
+.sg_image:hover {
+	background: #ddebf8;
+}
+.sg_image .img {
+	background-color:#fff;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.selected,.selected:hover {
+	background: #5b9bda;
+}
+.sg_image .name {
+	font-weight: bold;
+    height: 32px;
+    margin-top: 5px;
+    overflow: hidden;
+    text-align: center;
+    font-size:11px;
+    font-family:Tahoma,Verdana,Arial,sans-serif;
+    text-overflow: ellipsis;
+}
+.sg_image .notactive {
+	color:red;
+	font-style: italic;
+}
+.sg_image .del, .sg_image .edit {
+	display: inline-block;
+	position: absolute;
+}
+.sg_image .del {
+    top:-8px;
+    right:-8px;
+    color:red;
+    font-size:16px;
+}
+.sg_image .edit {
+    color: #ffcc00;
+	left:10px;
+	top:10px;
+    text-shadow: 1px 1px 0 #000, -1px -1px 0 #000,1px -1px 0 #000, -1px 1px 0 #000;
+}
+.sg_image a {
+    opacity:.8;
+}
+.sg_image a:hover {
+    opacity: 1;
+}
+.sortable-ghost {
+	opacity: .2;
+	cursor: move;
+}
+#sgEdit img {
+	max-width: 100%;
+	max-height: 210px;
+}
+#sgEdit .sgRow {
+	width: 300px;
+	float:left;
+}
+#sgEdit .sgRow > div {
+	padding:10px;
+}
+#sgEdit table {
+	width:100%;
+	word-break: break-all;
+}
+#sgEdit table td {
+	padding:0 5px;
+	vertical-align: top;
+}
+#sgEdit table td.rowTitle {
+	font-weight: bold;
+	text-align: right;
+	width:70px;
+}
+.sgForm label {
+	display: block;
+	margin:3px 0;
+	font-weight: bold;
+}
+.sgForm input[type="text"], .sgForm textarea {
+	width:270px;
+	padding:4px;
+	margin-bottom:5px;
+}
+.sgForm input[type="checkbox"] {
+	vertical-align: bottom;
+}
+.sgForm textarea {
+	height:112px;
+}
+#sgRefresh, #sgMove {
+    padding:10px;
+}
+#sgRefreshTpls {
+	padding:0 0 10px;
+}
+#sgRefresh .group, #sgMove form {
+    margin-bottom:15px;
+}
+#sgRefresh .elements {
+    display:none;
+}
+#sgRefresh label {
+    display:block;
+    margin-bottom:5px;
+}
+#sgRefresh .templates label {
+	display: inline-block;
+	width:200px;
+}
+#sgRefresh input[type="checkbox"] {
+	vertical-align: bottom;
+}
+#sgRefresh input[name="ids"] {
+    width:100%;
+}
+.btn-red {
+    color:red;
+}
+.btn-green {
+    color:green;
+}
