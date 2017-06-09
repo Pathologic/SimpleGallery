@@ -437,8 +437,7 @@ var sgHelper = {};
                         if (nWidth > 280 || nHeight > 210) {
                             var img = $(this);
                             var minRatio = Math.min(1, wWidth / nWidth, wHeight / nHeight );
-
-                            var width  = Math.floor( minRatio * nWidth ) - 50;
+                            var width  = Math.floor( minRatio * nWidth );
                             var height = Math.floor( minRatio * nHeight );
 
                             img.wrap('<a href="javascript:void(0);"></a>').parent().click(function(e) {

@@ -92,6 +92,8 @@ class sgData extends dataTable
         $templates = $this->cleanIDs($templates, ',', array(0));
         $documents = isset($this->params['documents']) ? $this->params['documents'] : array();
         $documents = $this->cleanIDs($documents, ',', array(0));
+        $ignoreDocuments = isset($this->params['ignoreDoc']) ? $this->params['ignoreDoc'] : array();
+        $ignoreDocuments = $this->cleanIDs($ignoreDocuments, ',', array(0));
 
         if (empty($ids) || !$to) {
             return false;
@@ -102,7 +104,7 @@ class sgData extends dataTable
         if (!empty($templates) && in_array($template, $templates)) {
             $flag = true;
         }
-        if (!empty($documents) && in_array($to,$documents)) {
+        if (!empty($documents) && in_array($to,$documents) &&!in_array($to,$ignoreDocuments)) {
             $flag = $flag || true;
         }
         if (!$flag) {
