@@ -341,6 +341,7 @@ var sgHelper = {};
                             function (response) {
                                 if (response.success) {
                                     total = response.total > 0 ? response.total : 0;
+                                    $('#sgMoveTo').prop('disabled',true);
                                     progressbar = $('#sgMoveRefreshProgress',moveForm).progressbar();
                                     progressbar.progressbar('setText', '0 ' + _sgLang['from'] + ' ' + total + ' ({value}%)');
                                     processRefresh();
@@ -568,6 +569,7 @@ var sgHelper = {};
                                     break;
                                 }
                                 if (formdata.ids.length == 0) return;
+                                $('form input', '#sgRefresh').prop('disabled',true);
                                 $.post(
                                     sgConfig._xtAjaxUrl + '?mode=initRefresh',
                                     formdata,

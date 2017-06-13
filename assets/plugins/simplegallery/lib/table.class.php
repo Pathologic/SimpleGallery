@@ -298,6 +298,8 @@ class sgData extends dataTable
         } elseif (is_array($item)) {
             $fields = $item;
             $fields['sg_properties'] = \jsonHelper::jsonDecode($fields['sg_properties'], array('assoc' => true), true);
+            $fields['filepath'] = $this->fs->takeFileDir($fields['sg_image']);
+            $fields['filename'] = $this->fs->takeFileBasename($fields['sg_image']);
         }
         if ($fields) {
             $this->invokeEvent('OnSimpleGalleryRefresh', $fields, $fire_events);
