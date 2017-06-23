@@ -17,7 +17,7 @@ if ($e->name == 'OnEmptyTrash') {
     include_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/plugin.class.php');
     $plugin = new \SimpleGallery\sgPlugin($modx);
     $where = implode(',', $ids);
-    $modx->db->delete($plugin->_table, "`sg_rid` IN ($where)");
+    $modx->db->delete($plugin->_table, "`sg_rid` IN ({$where})");
     $plugin->clearFolders($ids, MODX_BASE_PATH . $e->params['thumbsCache'] . $e->params['folder']);
     $plugin->clearFolders($ids, MODX_BASE_PATH . $e->params['folder']);
     $sql = "ALTER TABLE {$plugin->_table} AUTO_INCREMENT = 1";

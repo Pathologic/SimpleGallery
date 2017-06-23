@@ -1,15 +1,15 @@
 {
   "styles": {
-    "EasyUICss" : {
-      "version":"1.4.1",
-      "src":"assets/js/easy-ui/themes/bootstrap/easyui.css"
+    "EasyUIMODX" : {
+      "version":"1.5.2",
+      "src":"assets/js/easy-ui/themes/modx/easyui.css"
     },
-    "EasyUIIconsCss": {
-      "version":"1.4.1",
-      "src":"assets/js/easy-ui/themes/icon.css"
+    "EUIUploaderCss" : {
+      "version":"1.2.0",
+      "src":"assets/js/euiuploader/css/euiuploader.css"
     },
     "SimpleGalleryCss" : {
-      "version":"1.0.0",
+      "version":"1.2.0",
       "src":"assets/plugins/simplegallery/css/simplegallery.css"
     }
   }
