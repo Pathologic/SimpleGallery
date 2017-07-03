@@ -1,10 +1,8 @@
 <?php
 include_once(MODX_BASE_PATH . 'assets/lib/APIHelpers.class.php');   
     
-$_prepare = explode(",", $prepare);
 $prepare = array();
 $prepare[] = \APIhelpers::getkey($modx->event->params, 'BeforePrepare', '');
-$prepare = array_merge($prepare,$_prepare);
 $prepare[] = 'DLsgController::prepare';
 $prepare[] = \APIhelpers::getkey($modx->event->params, 'AfterPrepare', '');
 $modx->event->params['prepare'] = trim(implode(",", $prepare), ',');
