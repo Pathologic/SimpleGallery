@@ -6,6 +6,9 @@
 		width:[+w+]px;
 		height:[+h+]px;
 	}
+    .sg_image .name {
+        width:[+w+]px;
+    }
 </style>
 <script type="text/javascript">
 var sgConfig = {

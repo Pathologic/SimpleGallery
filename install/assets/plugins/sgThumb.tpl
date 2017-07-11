@@ -5,7 +5,7 @@
  * Plugin to create thumbnails for SimpleGallery images
  *
  * @category 	plugin
- * @version 	1.2-dev
+ * @version 	1.2.1
  * @license 	http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
  * @author      Pathologic (m@xim.name)
  * @internal	@properties &tconfig=Thumbnails Configuration;textarea;See plugin code for details
