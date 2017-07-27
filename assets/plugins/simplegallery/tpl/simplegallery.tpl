@@ -22,6 +22,7 @@ var sgConfig = {
 	sgSort:null,
 	sgLastChecked:null,
 	sgBeforeDragState:null,
+    sgDisableSelectAll:null,
     clientResize:[+clientResize+]
 };
 (function($){

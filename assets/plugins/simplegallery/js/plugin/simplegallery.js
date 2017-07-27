@@ -214,7 +214,7 @@ var sgHelper = {};
             }
         },
         selectAll: function (e) {
-            if ((!e.ctrlKey && !e.metaKey) || ((e.keyCode != 65) && (e.keyCode != 97)))
+            if (sgConfig.sgDisableSelectAll || (!e.ctrlKey && !e.metaKey) || ((e.keyCode != 65) && (e.keyCode != 97)))
                 return false;
             var images = $('.sg_image').get();
             if (images.length) {
@@ -396,6 +396,7 @@ var sgHelper = {};
                 modxSiteUrl: sgConfig._modxSiteUrl,
                 sgLang: _sgLang
             };
+            sgConfig.sgDisableSelectAll = true;
             var editForm = $(Handlebars.templates.editForm(context));
             editForm.dialog({
                 modal: true,
@@ -459,6 +460,7 @@ var sgHelper = {};
                     });
                 },
                 onClose: function () {
+                    sgConfig.sgDisableSelectAll = false;
                     sgHelper.destroyWindow(editForm);
                 }
             });
