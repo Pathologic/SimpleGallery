@@ -1,4 +1,2 @@
 <?php
-$file = array_pop(explode('/',$input));
-return str_replace($file,$options.'/'.$file,$input);
-?>
+return preg_replace('#(^.*[\\\/])#','$1'.$options.'/',$input);
