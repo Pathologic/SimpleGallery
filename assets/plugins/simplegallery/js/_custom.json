@@ -4,6 +4,10 @@
             "version":"4.3.6",
             "src":"assets/plugins/tinymce4/tinymce/tinymce.min.js"
         },
+        "editFormRTE" : {
+            "version":"1.4.1",
+            "src":"assets/plugins/simplegallery/js/tpl/editFormRTE.js"
+        },
         "rteForm" : {
             "version":"1.4.1",
             "src":"assets/plugins/simplegallery/js/tpl/rteForm.js"
