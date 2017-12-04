@@ -1,8 +1,8 @@
 {
     "scripts": {
-        "sgTinyMCE" : {
-            "version":"0.0.0",
-            "src":"assets/plugins/simplegallery/js/plugin/tinymce.js"
+        "TinyMCE4": {
+            "version":"4.3.6",
+            "src":"assets/plugins/tinymce4/tinymce/tinymce.min.js"
         },
         "rteForm" : {
             "version":"1.4.1",

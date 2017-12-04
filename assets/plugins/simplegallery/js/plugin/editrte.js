@@ -134,8 +134,10 @@ sgHelper.edit = function(image) {
             }
         }],
         onOpen: function() {
+            var descriptionField = $('textarea[name="sg_description"]','#sgEdit');
+            descriptionField.after('<a href="javascript:" class="btn-rte">Редактировать</a>');
             $('.btn-rte').click(function(e){
-                sgHelper.rteForm($('textarea','#sgEdit'));
+                sgHelper.rteForm(descriptionField);
             });
             $('.image img',editForm).on('load',function() {
                 var nWidth = this.naturalWidth,
