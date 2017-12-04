@@ -100,7 +100,7 @@ sgHelper.edit = function(image) {
         sgLang: _sgLang
     };
     sgConfig.sgDisableSelectAll = true;
-    var editForm = $(Handlebars.templates.editFormRTE(context));
+    var editForm = $(Handlebars.templates.editForm(context));
     editForm.dialog({
         modal: true,
         title: '[' + data.sg_id + '] ' + sgHelper.escape(Handlebars.helpers.stripText(data.sg_title, 80)),
