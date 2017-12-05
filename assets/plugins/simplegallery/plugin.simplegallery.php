@@ -3,7 +3,11 @@ if (IN_MANAGER_MODE != 'true') die();
 $e = &$modx->event;
 if ($e->name == 'OnDocFormRender') {
     include_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/plugin.class.php');
-    global $modx_lang_attribute;
+    global $modx_lang_attribute, $richtexteditorIds;
+    //Hack to check if TinyMCE scripts are loaded
+    if (isset($richtexteditorIds['TinyMCE4'])) {
+        $modx->loadedjscripts['TinyMCE4'] = array('version' => '4.3.6');
+    }
     $plugin = new \SimpleGallery\sgPlugin($modx, $modx_lang_attribute);
     if ($id) {
         $output = $plugin->render();
