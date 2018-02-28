@@ -16,9 +16,13 @@ if (!function_exists('getThumbConfig')) {
         include_once (MODX_BASE_PATH.'assets/snippets/DocLister/lib/jsonHelper.class.php');
         $thumbs = \jsonHelper::jsonDecode(urldecode($tconfig), array('assoc' => true), true);
         foreach ($thumbs as $thumb) {
-            if ($thumb['rid'] == $rid || $thumb['template'] == $template) {
-                $out[] = $thumb;
-            }
+			if (isset($thumb['rid'])) {
+				$_rid = explode(',',$thumb['rid']);
+				if (in_array($rid, $_rid)) $out[] = $thumb;
+			} elseif (isset($thumb['template'])) {
+				$_template = explode(',',$thumb['template']);
+				if (in_array($template, $_template)) $out[] = $thumb;
+			}
         }
         return $out;
     }
