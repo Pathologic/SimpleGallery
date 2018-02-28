@@ -247,7 +247,6 @@ var sgHelper = {};
                             sg_rid: sgConfig.rid
                         },
                         function (response) {
-                            console.log(response.success);
                             if (response.success) {
                                 sgHelper.update();
                             } else {

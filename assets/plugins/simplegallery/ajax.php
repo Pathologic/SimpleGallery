@@ -1,6 +1,6 @@
 <?php
 define('MODX_API_MODE', true);
-define('IN_MANAGER_MODE', 'true');
+define('IN_MANAGER_MODE', true);
 
 include_once(__DIR__."/../../../index.php");
 $modx->db->connect();
