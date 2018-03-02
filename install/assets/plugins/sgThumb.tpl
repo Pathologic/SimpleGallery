@@ -8,7 +8,7 @@
  * @version 	1.2.2
  * @license 	http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
  * @author      Pathologic (m@xim.name)
- * @internal	@properties &tconfig=Thumbnails Configuration;textarea;See plugin code for details
+ * @internal	@properties &tconfig=Thumbnails Configuration;textarea;See plugin code for details &keepOriginal=Keep original images;list;No,Yes;No &originalFolder=Folder for original images;text;original
  * @internal	@events OnFileBrowserUpload,OnSimpleGalleryRefresh,OnSimpleGalleryDelete,OnSimpleGalleryMove
  * @internal    @installset base
  */
