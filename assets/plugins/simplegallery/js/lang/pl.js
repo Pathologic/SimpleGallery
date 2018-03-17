@@ -1,4 +1,3 @@
-_sgLang = [];
 _sgLang['cancel'] = 'Anuluj';
 _sgLang['from'] = 'z';
 _sgLang['close'] = 'Zamknij';

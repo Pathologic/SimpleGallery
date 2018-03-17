@@ -1,4 +1,3 @@
-_sgLang = [];
 _sgLang['cancel'] = 'Annuleer';
 _sgLang['from'] = 'van';
 _sgLang['close'] = 'Sluit';

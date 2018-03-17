@@ -36,6 +36,10 @@
 			"version":"1.2.0",
 			"src":"assets/js/euiuploader/js/euiuploader.js"
 		},
+        "EUIUploader-lang-en":{
+          "version":"1.2.0",
+          "src":"assets/js/euiuploader/lang/en.js"
+        },
         "EUIUploader-lang-[+lang+]":{
           "version":"1.2.0",
           "src":"assets/js/euiuploader/lang/[+lang+].js"
@@ -44,6 +48,10 @@
 			"version":"1.2.0",
 			"src":"assets/plugins/simplegallery/js/plugin/simplegallery.js"
 		},
+        "sg-lang-en":{
+            "version":"1.2.0",
+            "src":"assets/plugins/simplegallery/js/lang/en.js"
+        },
 		"sg-lang-[+lang+]":{
 			"version":"1.2.0",
 			"src":"assets/plugins/simplegallery/js/lang/[+lang+].js"
