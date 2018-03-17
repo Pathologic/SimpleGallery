@@ -1,4 +1,3 @@
-_sgLang = [];
 _sgLang['cancel'] = 'Отменить';
 _sgLang['from'] = 'из';
 _sgLang['file'] = 'Файл';
