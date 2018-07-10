@@ -63,10 +63,10 @@ class sgPlugin extends Plugin
         while(false !== ( $file = readdir($dir)) ) { 
             if (( $file != '.' ) && ( $file != '..' )) { 
                 if ( is_dir($src . '/' . $file) ) { 
-                    $this->copy($src . '/' . $file,$dst . '/' . $file); 
+                    $this->copyFolders($src . '/' . $file,$dst . '/' . $file); 
                 } 
                 else { 
-                    copyFolders($src . '/' . $file,$dst . '/' . $file); 
+                    copy($src . '/' . $file,$dst . '/' . $file); 
                 } 
             } 
         } 
