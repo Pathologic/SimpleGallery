@@ -27,3 +27,24 @@ if ($e->name == 'OnEmptyTrash') {
     $sql = "ALTER TABLE {$plugin->_table} AUTO_INCREMENT = 1";
     $rows = $modx->db->query($sql);
 }
+if ($e->name == 'OnDocDuplicate' && isset($allowDuplicate) && $allowDuplicate == 'Yes') {
+    include_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/plugin.class.php');
+    $plugin = new \SimpleGallery\sgPlugin($modx);
+    $sql = "SHOW COLUMNS FROM {$plugin->_table}";
+    $rows = $modx->db->query($sql);
+    $columns = array();
+    while ($row = $modx->db->getRow($rows)) {
+        if ($row['Key'] == 'PRI') continue;
+        $columns[] = '`' . $row['Field'] . '`';
+    }
+    $fields = implode(',',$columns);
+    $oldFolder = $e->params['folder'] . $id . '/';
+    $newFolder = $e->params['folder'] . $new_id . '/';
+    $values = str_replace(['`sg_rid`','`sg_image`'],[$new_id,"REPLACE(`sg_image`,'{$oldFolder}', '{$newFolder}')"], $fields);
+    $sql = "INSERT INTO {$plugin->_table} ({$fields}) SELECT {$values} FROM {$plugin->_table} WHERE `sg_rid`={$id}";
+    $modx->db->query($sql);
+    $plugin->copyFolders(MODX_BASE_PATH . $oldFolder, MODX_BASE_PATH . $newFolder);
+    $oldFolder = $e->params['thumbsCache'] . $e->params['folder'] . $id . '/';
+    $newFolder = $e->params['thumbsCache'] . $e->params['folder'] . $new_id . '/';
+    $plugin->copyFolders(MODX_BASE_PATH . $oldFolder, MODX_BASE_PATH . $newFolder);
+}

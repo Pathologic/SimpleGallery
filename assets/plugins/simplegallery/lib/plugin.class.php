@@ -57,6 +57,22 @@ class sgPlugin extends Plugin
         return array_merge($this->params, $ph);
     }
 
+    public function copyFolders($src, $dst) {
+        $dir = opendir($src); 
+        @mkdir($dst); 
+        while(false !== ( $file = readdir($dir)) ) { 
+            if (( $file != '.' ) && ( $file != '..' )) { 
+                if ( is_dir($src . '/' . $file) ) { 
+                    $this->copy($src . '/' . $file,$dst . '/' . $file); 
+                } 
+                else { 
+                    copyFolders($src . '/' . $file,$dst . '/' . $file); 
+                } 
+            } 
+        } 
+        closedir($dir); 
+    }
+
     /**
      * @return mixed
      */
