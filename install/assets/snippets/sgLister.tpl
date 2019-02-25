@@ -5,7 +5,7 @@
  * DocLister wrapper for SimpleGallery table
  *
  * @category 	snippet
- * @version 	1.2.1
+ * @version 	1.2.4
  * @license 	http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
  * @internal	@properties
  * @internal	@modx_category Content

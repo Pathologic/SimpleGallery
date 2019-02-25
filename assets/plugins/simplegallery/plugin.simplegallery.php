@@ -1,5 +1,7 @@
 <?php
-if (IN_MANAGER_MODE != 'true') die();
+if (IN_MANAGER_MODE != 'true') {
+    die();
+}
 $e = &$modx->event;
 if ($e->name == 'OnDocFormRender') {
     include_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/plugin.class.php');
@@ -14,10 +16,14 @@ if ($e->name == 'OnDocFormRender') {
     } else {
         $output = $plugin->renderEmpty();
     }
-    if ($output) $e->output($output);
+    if ($output) {
+        $e->output($output);
+    }
 }
 if ($e->name == 'OnEmptyTrash') {
-    if (empty($ids)) return;
+    if (empty($ids)) {
+        return;
+    }
     include_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/plugin.class.php');
     $plugin = new \SimpleGallery\sgPlugin($modx);
     $where = implode(',', $ids);
@@ -34,13 +40,20 @@ if ($e->name == 'OnDocDuplicate' && isset($allowDuplicate) && $allowDuplicate ==
     $rows = $modx->db->query($sql);
     $columns = array();
     while ($row = $modx->db->getRow($rows)) {
-        if ($row['Key'] == 'PRI') continue;
+        if ($row['Key'] == 'PRI') {
+            continue;
+        }
         $columns[] = '`' . $row['Field'] . '`';
     }
-    $fields = implode(',',$columns);
+    $q = $modx->db->query("SELECT `sg_id` FROM {$plugin->_table} WHERE `sg_rid`={$id} LIMIT 1");
+    if (!$modx->db->getValue($q)) {
+        return;
+    }
+    $fields = implode(',', $columns);
     $oldFolder = $e->params['folder'] . $id . '/';
     $newFolder = $e->params['folder'] . $new_id . '/';
-    $values = str_replace(['`sg_rid`','`sg_image`'],[$new_id,"REPLACE(`sg_image`,'{$oldFolder}', '{$newFolder}')"], $fields);
+    $values = str_replace(['`sg_rid`', '`sg_image`'], [$new_id, "REPLACE(`sg_image`,'{$oldFolder}', '{$newFolder}')"],
+        $fields);
     $sql = "INSERT INTO {$plugin->_table} ({$fields}) SELECT {$values} FROM {$plugin->_table} WHERE `sg_rid`={$id}";
     $modx->db->query($sql);
     $plugin->copyFolders(MODX_BASE_PATH . $oldFolder, MODX_BASE_PATH . $newFolder);
