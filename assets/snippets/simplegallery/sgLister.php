@@ -45,18 +45,23 @@ if(!class_exists("DLsgLister", false)){
 							'input' => $data[$imageField],
 							'options' => $value
 						));	
-						$info = getimagesize(MODX_BASE_PATH.$data['thumb'.$postfix.$imageField]);
-						$data['thumb'.$postfix.'width.'.$imageField] = $info[0];
-						$data['thumb'.$postfix.'height.'.$imageField] = $info[1];
+						if (file_exists(MODX_BASE_PATH . $data['thumb' . $postfix . $imageField])) {
+						    $info = getimagesize(MODX_BASE_PATH . $data['thumb' . $postfix . $imageField]);
+						    $data['thumb' . $postfix . 'width.' . $imageField] = $info[0];
+						    $data['thumb' . $postfix . 'height.' . $imageField] = $info[1];
+						}
+
 					}
 				} else {
 					$data['thumb.'.$imageField] = $modx->runSnippet($thumbSnippet, array(
 						'input' => $data[$imageField],
 						'options' => $thumbOptions
 					));	
-					$info = getimagesize(MODX_BASE_PATH.$data['thumb.'.$imageField]);
-					$data['thumb.width.'.$imageField] = $info[0];
-					$data['thumb.height.'.$imageField] = $info[1];
+					if (file_exists(MODX_BASE_PATH . $data['thumb.' . $imageField])) {
+						$info = getimagesize(MODX_BASE_PATH . $data['thumb.' . $imageField]);
+						$data['thumb.width.' . $imageField] = $info[0];
+						$data['thumb.height.' . $imageField] = $info[1];
+					}
 				}
 			}
 			$properties = json_decode($data['sg_properties'],true);
