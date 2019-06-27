@@ -2,7 +2,7 @@
 if (IN_MANAGER_MODE != 'true') {
     die();
 }
-$e = &$modx->event;
+$e = $modx->event;
 if ($e->name == 'OnDocFormRender') {
     include_once(MODX_BASE_PATH . 'assets/plugins/simplegallery/lib/plugin.class.php');
     global $modx_lang_attribute, $richtexteditorIds;
@@ -17,7 +17,7 @@ if ($e->name == 'OnDocFormRender') {
         $output = $plugin->renderEmpty();
     }
     if ($output) {
-        $e->output($output);
+        $modx->event->output($output);
     }
 }
 if ($e->name == 'OnEmptyTrash') {
