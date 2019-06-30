@@ -5,7 +5,7 @@
  * Snippet for get thumbnails for SimpleGallery
  *
  * @category 	snippet
- * @version 	1.2.4
+ * @version 	1.2.5
  * @license 	http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
  * @internal	@properties
  * @internal	@modx_category Content
