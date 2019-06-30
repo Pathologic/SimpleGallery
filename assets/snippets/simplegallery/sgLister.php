@@ -44,7 +44,7 @@ if (!class_exists('DLsgLister', false)) {
             $thumbSnippet = $_DL->getCfgDef('thumbSnippet');
             if (!empty($thumbOptions) && !empty($thumbSnippet)) {
                 $_thumbOptions = jsonHelper::jsonDecode($thumbOptions, ['assoc' => true], true);
-                if (is_array($_thumbOptions)) {
+                if (!empty($_thumbOptions) && is_array($_thumbOptions)) {
                     foreach ($_thumbOptions as $key => $value) {
                         $postfix = $key == 'default' ? '.' : '_' . $key . '.';
                         $data['thumb' . $postfix . $imageField] = $modx->runSnippet($thumbSnippet, array(
