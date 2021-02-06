@@ -320,11 +320,11 @@ class sgData extends dataTable
     /**
      * @param $file
      * @param $rid
-     * @param string $title
+     * @param array|string $data
      * @param bool $fire_events
      * @return bool|int
      */
-    public function upload($file, $rid, $title = '', $fire_events = false)
+    public function upload($file, $rid, $data = '', $fire_events = false)
     {
         $out = false;
         $file = $this->fs->relativePath($file);
@@ -358,9 +358,13 @@ class sgData extends dataTable
             $this->create(array(
                 'sg_image'      => $this->fs->relativePath($file),
                 'sg_rid'        => $rid,
-                'sg_title'      => $title,
                 'sg_properties' => $properties
             ));
+            if (is_array($data)) {
+                $this->fromArray($data);
+            } elseif (is_scalar($data)) {
+                $this->set('sg_title', $data);
+            }
 
             $results = $this->getInvokeEventResult('OnBeforeFileBrowserUpload', array(
                 'sgObj'    => $this,
