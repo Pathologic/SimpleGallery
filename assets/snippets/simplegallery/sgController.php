@@ -46,8 +46,8 @@ if (!class_exists('DLsgController', false)) {
                                     'input'   => $ph[$imageField],
                                     'options' => $value
                                 ));
-                                $info = getimagesize(MODX_BASE_PATH . $ph['thumb' . $postfix . $imageField]);
-                                if ($info) {
+                                $file = MODX_BASE_PATH . $ph['thumb' . $postfix . $imageField];
+                                if (file_exists($file) && is_readable($file) && ($info = getimagesize($file))) {
                                     $ph['thumb' . $postfix . 'width.' . $imageField] = $info[0];
                                     $ph['thumb' . $postfix . 'height.' . $imageField] = $info[1];
                                 }
@@ -57,8 +57,8 @@ if (!class_exists('DLsgController', false)) {
                                 'input'   => $ph[$imageField],
                                 'options' => $thumbOptions
                             ));
-                            $info = getimagesize(MODX_BASE_PATH . $ph['thumb.' . $imageField]);
-                            if ($info) {
+                            $file = MODX_BASE_PATH . $ph['thumb.' . $imageField];
+                            if (file_exists($file) && is_readable($file) && ($info = getimagesize($file))) {
                                 $ph['thumb.width.' . $imageField] = $info[0];
                                 $ph['thumb.height.' . $imageField] = $info[1];
                             }
@@ -78,10 +78,9 @@ if (!class_exists('DLsgController', false)) {
                     $wrapper .= $_DocLister->parseChunk($_DocLister->getCfgDef('sgRowTpl'), $ph);
                     //обработали чанк sgRowTpl - для каждой картинки
                 }
-                $data['images'] = $_DocLister->parseChunk($_DocLister->getCfgDef('sgOuterTpl'),
-                    array('wrapper' => $wrapper));
-                //обработали чанк sgOuterTpl
-            }
+                $data['images'] = $_DocLister->parseChunk($_DocLister->getCfgDef('sgOuterTpl'), array('wrapper' => $wrapper));
+                    //обработали чанк sgOuterTpl
+             }
 
             return $data;
         }
