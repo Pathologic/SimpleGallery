@@ -14,7 +14,11 @@
 
 include_once(MODX_BASE_PATH . 'assets/lib/APIHelpers.class.php');
 
-$_prepare = explode(',', $prepare);
+if (isset($prepare)) {
+    $_prepare = explode(',', $prepare);
+} else {
+    $_prepare = array();
+}
 $prepare = array();
 $prepare[] = \APIhelpers::getkey($modx->event->params, 'BeforePrepare', '');
 $prepare = array_merge($prepare, $_prepare);
