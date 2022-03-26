@@ -25,10 +25,9 @@ if (!class_exists('DLsgController', false)) {
          * @return array
          */
         public static function prepare (
-            array $data = array(),
+            array $data,
             DocumentParser $modx,
-            $_DocLister,
-            prepare_DL_Extender $_extDocLister
+            $_DocLister
         ) {
             if (isset($data['images'])) {
                 $wrapper = '';
