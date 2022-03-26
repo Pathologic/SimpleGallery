@@ -38,10 +38,9 @@ if (!class_exists('DLsgLister', false)) {
     class DLsgLister
     {
         public static function prepare (
-            array $data = array(),
+            array $data,
             DocumentParser $modx,
-            $_DL,
-            prepare_DL_Extender $_extDocLister
+            $_DL
         ) {
             $imageField = $_DL->getCfgDef('imageField');
             $thumbOptions = $_DL->getCfgDef('thumbOptions');
