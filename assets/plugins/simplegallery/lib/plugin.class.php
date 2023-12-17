@@ -31,7 +31,7 @@ class sgPlugin extends Plugin
      */
     public function getTplPlaceholders()
     {
-        $templates = trim(preg_replace('/,,+/', ',', preg_replace('/[^0-9,]+/', '', $this->params['templates'])), ',');
+        $templates = trim(preg_replace('/,,+/', ',', preg_replace('/[^0-9,]+/', '', ($this->params['templates'] ?? ''))), ',');
         $tpls = '[]';
         if (!empty($templates)) {
             $table = $this->modx->getFullTableName('site_templates');
