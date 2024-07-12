@@ -55,7 +55,7 @@ class sgController extends AbstractController
                 $name = $this->data->stripName($file["name"]);
                 $name = $this->FS->getInexistantFilename($dir . $name, true);
                 $ext = $this->FS->takeFileExt($name, true);
-                if (in_array($ext, array('png', 'jpg', 'gif', 'jpeg'))) {
+                if (in_array($ext, array('png', 'jpg', 'gif', 'jpeg', 'webp'))) {
                     if (@move_uploaded_file($tmp_name, $name)) {
                         $out = $this->data->upload($name, $this->rid,
                             preg_replace('/\\.[^.\\s]{2,4}$/', '', $file["name"]), true);
