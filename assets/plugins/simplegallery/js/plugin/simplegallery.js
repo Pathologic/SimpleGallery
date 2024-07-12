@@ -20,7 +20,7 @@ var sgHelper = {};
                     sg_rid: sgConfig.rid
                 },
                 filterFn: function (file) {
-                    return /jpeg|gif|png$/.test(file.type);
+                    return /jpeg|gif|png|webp$/.test(file.type);
                 },
                 completeCallback: function () {
                     sgHelper.update();
