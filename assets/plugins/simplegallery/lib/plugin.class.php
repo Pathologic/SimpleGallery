@@ -39,7 +39,7 @@ class sgPlugin extends Plugin
             $tpls = json_encode($this->modx->db->makeArray($this->modx->db->query($sql)));
         }
         $ph = array(
-            'lang'         => $this->lang_attribute,
+            'lang'         => evo()->getLocale(),
             'url'          => $this->modx->config['site_url'] . 'assets/plugins/simplegallery/ajax.php',
             'site_url'     => $this->modx->config['site_url'],
             'manager_url'  => MODX_MANAGER_URL,
